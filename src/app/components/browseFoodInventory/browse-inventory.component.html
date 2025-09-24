@@ -1,3 +1,7 @@
+<div class="layout">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+  
 <main class="content">
   <!-- Header -->
   <header class="inventory-header">
@@ -27,18 +31,31 @@
   <div *ngIf="showFilter" class="filter-panel">
     <h4>Source</h4>
     <label>
+<<<<<<< Updated upstream
       <input type="radio" name="source" [checked]="filter.source === 'donation'"
              (change)="setSource('donation')" /> Donation Listing
     </label>
     <label>
       <input type="radio" name="source" [checked]="filter.source === 'inventory'"
              (change)="setSource('inventory')" /> Inventory Only
+=======
+      <input type="checkbox" [checked]="filter.donation"
+             (change)="toggleSource('donation')" /> Donation Listing
+    </label>
+    <label>
+      <input type="checkbox" [checked]="filter.inventory"
+             (change)="toggleSource('inventory')" /> Inventory Only
+>>>>>>> Stashed changes
     </label>
 
     <h4>Category</h4>
     <label>
       <input type="checkbox" [checked]="filter.categories.all"
+<<<<<<< Updated upstream
              (change)="toggleAllCategories()" /> All
+=======
+             (change)="toggleCategory('all')" /> All
+>>>>>>> Stashed changes
     </label>
     <label>
       <input type="checkbox" [checked]="filter.categories.fruit"
@@ -66,12 +83,25 @@
       {{category.name}}
     </h3>
 
+<<<<<<< Updated upstream
     <div *ngFor="let item of filteredItems(category.items)" class="item">
+=======
+    <div *ngFor="let item of category.items" class="item"
+         (mouseenter)="hoverItem = item" 
+         (mouseleave)="hoverItem = null">
+>>>>>>> Stashed changes
       <span class="item-name">{{item.name}}</span>
       <div class="quantity">
         <button (click)="decreaseItem(item)">-</button>
         <span>{{item.quantity}}</span>
         <button (click)="increaseItem(item)">+</button>
+      </div>
+
+      <!-- Hover buttons -->
+      <div class="actions" *ngIf="hoverItem === item">
+        <button class="used">Used</button>
+        <button class="meal">Meal</button>
+        <button class="donate">Donate</button>
       </div>
     </div>
   </section>
