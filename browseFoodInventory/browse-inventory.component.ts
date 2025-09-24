@@ -1,15 +1,26 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-browse-inventory',
-  templateUrl: './browse-inventory.component.html',
-  styleUrls: ['./browse-inventory.component.css']
+  selector: 'app-inventory',
+  templateUrl: './inventory.component.html',
+  styleUrls: ['./inventory.component.css']
 })
-export class BrowseInventoryComponent {
-  username = 'junkaiyane';
-
+export class InventoryComponent {
   locations = ['Fridge', 'Freezer', 'Shelf'];
   selectedLocation = 'Fridge';
+  showFilter = false;
+
+  filter = {
+    donation: false,
+    inventory: true,
+    categories: {
+      all: true,
+      fruit: true,
+      vegetable: true,
+      meat: false
+    },
+    expiredIn: 15
+  };
 
   categories = [
     {
@@ -32,6 +43,21 @@ export class BrowseInventoryComponent {
       ]
     }
   ];
+
+  toggleFilterPanel() {
+    this.showFilter = !this.showFilter;
+  }
+
+  filteredCategories() {
+    // Filter logic
+    if (this.filter.categories.all) return this.categories;
+
+    return this.categories.filter(cat =>
+      (this.filter.categories.fruit && cat.name === 'Fruit') ||
+      (this.filter.categories.vegetable && cat.name === 'Vegetable') ||
+      (this.filter.categories.meat && cat.name === 'Meat')
+    );
+  }
 
   increaseItem(item: any) {
     item.quantity++;
