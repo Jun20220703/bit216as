@@ -5,6 +5,6 @@ import { RegistrationPageComponent } from './components/registerAndPrivacySettin
 
 export const routes: Routes = [
   { path: 'inventory', component: InventoryComponent },
-  { path: 'registrationPage', component: RegistrationPageComponent },
-  { path: '', redirectTo: 'inventory', pathMatch: 'full' }
+  { path: 'registration', component: RegistrationPageComponent },
+  { path: '', redirectTo: 'registration', pathMatch: 'full' }
 ];
