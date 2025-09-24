@@ -1,0 +1,57 @@
+<div class="container">
+  <!-- サイドバー -->
+  <aside class="sidebar">
+    <h2>Food Shield</h2>
+    <div class="profile">
+      <img src="assets/user.png" alt="user avatar" />
+      <p>Hello, junkaiyane</p>
+    </div>
+    <nav>
+      <ul>
+        <li>Manage Inventory</li>
+        <li>Browse Inventory</li>
+        <li>View Analytics</li>
+        <li>Plan Weekly Meals</li>
+        <li>Notification</li>
+        <li>Account Settings</li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- メイン -->
+  <main class="content">
+    <h1>Food Inventory</h1>
+    <div class="buttons">
+      <button (click)="addFoodItem()">+ Add food item</button>
+      <button (click)="goToDonationList()">Donation List</button>
+    </div>
+
+    <!-- テーブル -->
+    <table>
+      <thead>
+        <tr>
+          <th>Item Name</th>
+          <th>Qty</th>
+          <th>Expiry Date</th>
+          <th>Category</th>
+          <th>Storage</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of foodItems">
+          <td>{{ item.name }}</td>
+          <td>{{ item.qty }}</td>
+          <td>{{ item.expiry }}</td>
+          <td>{{ item.category }}</td>
+          <td>{{ item.storage }}</td>
+          <td>
+            <button (click)="editItem(item)">Edit</button>
+            <button (click)="deleteItem(item)">Delete</button>
+            <button (click)="donateItem(item)">Donate</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</div>
