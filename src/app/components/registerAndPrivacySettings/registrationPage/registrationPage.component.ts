@@ -1,9 +1,13 @@
 import { Component } from '@angular/core';
+import { NgForm, FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-registration-page',
+  standalone: true,
   templateUrl: './registrationPage.component.html',
-  styleUrls: ['./registrationPage.component.css']
+  styleUrls: ['./registrationPage.component.css'],
+  imports: [CommonModule, FormsModule]
 })
 export class RegistrationPageComponent {
 
@@ -12,15 +16,23 @@ export class RegistrationPageComponent {
 
   clearInput(inputRef: HTMLInputElement) {
     inputRef.value = '';
+    // Trigger change detection for ngModel
+    inputRef.dispatchEvent(new Event('input'));
   }
 
-  onSubmit(form: any) {
+  onSubmit(form: NgForm) {
     if (this.password !== this.confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
 
-    alert('Registration successful!');
-    form.resetForm();
+    if (form.valid) {
+      alert('Registration successful!');
+      form.resetForm();
+      this.password = '';
+      this.confirmPassword = '';
+    } else {
+      alert('Please fill in all required fields correctly.');
+    }
   }
 }
