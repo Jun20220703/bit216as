@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common'; 
+import { FormsModule } from '@angular/forms';    
 
 @Component({
   selector: 'app-inventory',
+  standalone: true,
   templateUrl: './browse-inventory.component.html',
-  styleUrls: ['./browse-inventory.component.css']
+  styleUrls: ['./browse-inventory.component.css'],
+  imports: [CommonModule, FormsModule]  
 })
+
 export class InventoryComponent {
   locations = ['Fridge', 'Freezer', 'Shelf'];
   selectedLocation = 'Fridge';
