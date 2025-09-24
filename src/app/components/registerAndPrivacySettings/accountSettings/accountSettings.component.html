@@ -1,0 +1,95 @@
+<div class="account-settings-container">
+  <!-- Header with Tabs -->
+  <div class="header">
+    <div class="tabs">
+      <button 
+        class="tab" 
+        [class.active]="activeTab === 'account'"
+        (click)="setActiveTab('account')">
+        Account Settings
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="activeTab === 'privacy'"
+        (click)="setActiveTab('privacy')">
+        Privacy & Security settings
+      </button>
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="content">
+    <!-- Account Settings Tab -->
+    <div *ngIf="activeTab === 'account'" class="tab-content">
+      <div class="settings-card">
+        <h3>Account Information</h3>
+        <div class="setting-item">
+          <span class="setting-label">Username</span>
+          <span class="setting-value">junkaiyane</span>
+        </div>
+        <div class="setting-item">
+          <span class="setting-label">Email</span>
+          <span class="setting-value">junkaiyane@example.com</span>
+        </div>
+        <div class="setting-item">
+          <span class="setting-label">Member Since</span>
+          <span class="setting-value">January 2024</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Privacy & Security Settings Tab -->
+    <div *ngIf="activeTab === 'privacy'" class="tab-content">
+      <div class="settings-card">
+        <div class="setting-item">
+          <span class="setting-label">Profile Visibility</span>
+          <div class="toggle-switch">
+            <input type="checkbox" id="profile-visibility" class="toggle-input">
+            <label for="profile-visibility" class="toggle-label">
+              <span class="toggle-slider"></span>
+              <span class="toggle-text">OFF</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <span class="setting-label">Email Visibility</span>
+          <div class="toggle-switch">
+            <input type="checkbox" id="email-visibility" class="toggle-input">
+            <label for="email-visibility" class="toggle-label">
+              <span class="toggle-slider"></span>
+              <span class="toggle-text">OFF</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <span class="setting-label">Food Listing Visibility</span>
+          <div class="toggle-switch">
+            <input type="checkbox" id="food-listing-visibility" class="toggle-input">
+            <label for="food-listing-visibility" class="toggle-label">
+              <span class="toggle-slider"></span>
+              <span class="toggle-text">OFF</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <span class="setting-label">Two-Factor Authentication</span>
+          <div class="toggle-switch">
+            <input type="checkbox" id="two-factor-auth" class="toggle-input">
+            <label for="two-factor-auth" class="toggle-label">
+              <span class="toggle-slider"></span>
+              <span class="toggle-text">OFF</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="back-button-container">
+    <button class="back-button" (click)="onBack()">Back</button>
+  </div>
+</div>
