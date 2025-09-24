@@ -1,0 +1,53 @@
+<div class="container">
+  <!-- Left Panel -->
+  <aside class="sidebar">
+    <div class="profile">
+      <img src="assets/avatar.png" alt="avatar">
+      <h2>HELLO,<br>{{username}}</h2>
+    </div>
+
+    <nav class="menu">
+      <a routerLink="/manage" class="menu-item">📦 Manage inventory</a>
+      <a routerLink="/browse" class="menu-item active">🔎 Browse inventory</a>
+      <a routerLink="/analytics" class="menu-item">📊 View Analytics</a>
+      <a routerLink="/meals" class="menu-item">🍽 Plan Weekly Meals</a>
+      <a routerLink="/notifications" class="menu-item">🔔 Notification</a>
+      <a routerLink="/settings" class="menu-item">⚙️ Account Settings</a>
+    </nav>
+  </aside>
+
+  <!-- Right Panel -->
+  <main class="content">
+    <header class="inventory-header">
+      <label>Inventory:</label>
+      <select [(ngModel)]="selectedLocation">
+        <option *ngFor="let loc of locations">{{loc}}</option>
+      </select>
+      <div class="header-icons">
+        <button><i class="fa fa-search"></i></button>
+        <button><i class="fa fa-sliders-h"></i></button>
+      </div>
+    </header>
+
+    <section *ngFor="let category of categories" class="category" [ngClass]="category.colorClass">
+      <h3>
+        <span class="emoji">{{category.icon}}</span>
+        {{category.name}}
+      </h3>
+
+      <div *ngFor="let item of category.items" class="item">
+        <span class="item-name">{{item.name}}</span>
+        <div class="quantity">
+          <button (click)="decreaseItem(item)">-</button>
+          <span>{{item.quantity}}</span>
+          <button (click)="increaseItem(item)">+</button>
+        </div>
+        <div class="actions">
+          <button class="used">Used</button>
+          <button class="meal">Meal</button>
+          <button class="donate">Donate</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
