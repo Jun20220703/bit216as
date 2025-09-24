@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <main class="content">
   <!-- Header -->
   <header class="inventory-header">
@@ -51,6 +52,89 @@
         <span>{{item.quantity}}</span>
         <button (click)="increaseItem(item)">+</button>
       </div>
+=======
+<div class="layout">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+  
+  <main class="content">
+    <!-- Header -->
+    <header class="inventory-header">
+      <label>Inventory:</label>
+      <select [(ngModel)]="selectedLocation">
+        <option *ngFor="let loc of locations">{{loc}}</option>
+      </select>
+      <div class="header-icons">
+        <button (click)="toggleFilterPanel()">
+          <i class="fa fa-search"></i>
+        </button>
+        <button (click)="toggleFilterPanel()">
+          <i class="fa fa-sliders-h"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Filter Panel -->
+    <div *ngIf="showFilter" class="filter-panel">
+      <h4>Source</h4>
+      <label>
+        <input type="checkbox" [checked]="filter.donation"
+               (change)="toggleSource('donation')" /> Donation Listing
+      </label>
+      <label>
+        <input type="checkbox" [checked]="filter.inventory"
+               (change)="toggleSource('inventory')" /> Inventory Only
+      </label>
+
+      <h4>Category</h4>
+      <label>
+        <input type="checkbox" [checked]="filter.categories.all"
+               (change)="toggleCategory('all')" /> All
+      </label>
+      <label>
+        <input type="checkbox" [checked]="filter.categories.fruit"
+               (change)="toggleCategory('fruit')" /> Fruit
+      </label>
+      <label>
+        <input type="checkbox" [checked]="filter.categories.vegetable"
+               (change)="toggleCategory('vegetable')" /> Vegetable
+      </label>
+      <label>
+        <input type="checkbox" [checked]="filter.categories.meat"
+               (change)="toggleCategory('meat')" /> Meat
+      </label>
+
+      <h4>Expired In</h4>
+      <input type="range" min="0" max="30" [(ngModel)]="filter.expiredIn" />
+      <span>{{filter.expiredIn}} days</span>
+>>>>>>> Stashed changes
     </div>
-  </section>
-</main>
+
+    <!-- Categories -->
+    <section *ngFor="let category of filteredCategories()" 
+             class="category" [ngClass]="category.colorClass">
+      <h3>
+        <span class="emoji">{{category.icon}}</span>
+        {{category.name}}
+      </h3>
+
+      <div *ngFor="let item of category.items" class="item"
+           (mouseenter)="hoverItem = item" 
+           (mouseleave)="hoverItem = null">
+        <span class="item-name">{{item.name}}</span>
+        <div class="quantity">
+          <button (click)="decreaseItem(item)">-</button>
+          <span>{{item.quantity}}</span>
+          <button (click)="increaseItem(item)">+</button>
+        </div>
+
+        <!-- Hover buttons -->
+        <div class="actions" *ngIf="hoverItem === item">
+          <button class="used">Used</button>
+          <button class="meal">Meal</button>
+          <button class="donate">Donate</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
