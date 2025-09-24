@@ -1,0 +1,86 @@
+body {
+    background: #35744c;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+.logo {
+    text-align: center;
+    margin-top: 32px;
+}
+.logo-img {
+    width: 320px;
+    max-width: 90vw;
+    height: auto;
+    display: inline-block;
+}
+.container {
+    background: #fff;
+    max-width: 500px;
+    margin: 40px auto;
+    border-radius: 36px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+    padding: 40px 36px 32px 36px;
+}
+h2 {
+    text-align: center;
+    font-family: 'Indie Flower', cursive;
+    color: #35744c;
+    font-size: 2rem;
+    margin-bottom: 32px;
+}
+form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #222;
+    font-size: 1.08rem;
+}
+.input-group {
+    position: relative;
+    margin-bottom: 22px;
+}
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 12px 40px 12px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #eaf3ec;
+    font-size: 1rem;
+    outline: none;
+}
+.input-group input[type="date"] {
+    padding-right: 40px;
+}
+.input-group .icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a0a0a0;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.input-group select {
+    color: #666;
+}
+.register-btn {
+    width: 70%;
+    margin: 32px auto 0 auto;
+    display: block;
+    padding: 14px 0;
+    background: #b6f59c;
+    color: #35744c;
+    border: none;
+    border-radius: 24px;
+    font-size: 1.3rem;
+    font-family: 'Indie Flower', cursive;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.register-btn:hover {
+    background: #a2e88a;
+}
+@media (max-width: 600px) {
+    .container { max-width: 98vw; padding: 16px; }
+}
