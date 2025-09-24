@@ -1,105 +1,40 @@
-.content {
-  flex: 1;
-  padding: 2rem;
-  overflow-y: auto;
-  background: #f9f9f9;
+.layout {
+  display: flex;
 }
 
-/* Header */
+.content {
+  flex: 1;
+  padding: 1rem;
+}
+
 .inventory-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.inventory-header select {
-  padding: .4rem .6rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.header-icons {
-  margin-left: auto;
-  display: flex;
-  gap: .5rem;
+  justify-content: space-between;
 }
 
 .header-icons button {
-  background: #eee;
-  border: none;
-  padding: .4rem .6rem;
-  border-radius: 6px;
-  cursor: pointer;
+  margin-left: 0.5rem;
 }
 
-/* Filter panel */
 .filter-panel {
-  background: #ffffff;
+  border: 1px solid #ccc;
   padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,.1);
+  margin: 1rem 0;
 }
 
-.filter-panel h4 {
-  margin-top: .5rem;
-  margin-bottom: .25rem;
-  color: #225530;
-}
-
-/* Category sections */
 .category {
-  background: white;
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.category h3 {
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-}
-
-/* Fruit color theme */
-.category.fruit {
-  background: #fff8eb;
-}
-
-/* Vegetable color theme */
-.category.vegetable {
-  background: #f0f6ff;
+  margin-bottom: 2rem;
 }
 
 .item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: .6rem .8rem;
-  margin-bottom: .5rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  padding: 0.25rem 0;
 }
 
-.item-name {
-  font-weight: 600;
-}
-
-.quantity {
+.actions {
   display: flex;
-  align-items: center;
-  gap: .4rem;
-}
-
-.quantity button {
-  background: #e5e5e5;
-  border: none;
-  padding: .2rem .6rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
+  gap: 0.5rem;
 }

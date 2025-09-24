@@ -1,14 +1,20 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-inventory',
+  standalone: true,
   templateUrl: './browse-inventory.component.html',
-  styleUrls: ['./browse-inventory.component.css']
+  styleUrls: ['./browse-inventory.component.css'],
+  imports: [CommonModule, FormsModule, SidebarComponent]
 })
 export class InventoryComponent {
   locations = ['Fridge', 'Freezer', 'Shelf'];
   selectedLocation = 'Fridge';
   showFilter = false;
+  hoverItem: any = null;
 
   filter = {
     donation: false,
@@ -48,8 +54,34 @@ export class InventoryComponent {
     this.showFilter = !this.showFilter;
   }
 
+  toggleSource(source: 'donation' | 'inventory') {
+    if (source === 'donation') {
+      this.filter.donation = true;
+      this.filter.inventory = false;
+    } else {
+      this.filter.inventory = true;
+      this.filter.donation = false;
+    }
+  }
+
+  toggleCategory(category: 'all' | 'fruit' | 'vegetable' | 'meat'): void {
+    if (category === 'all') {
+      this.filter.categories = { all: true, fruit: false, vegetable: false, meat: false };
+      return;
+    }
+
+    this.filter.categories[category] = !this.filter.categories[category];
+    this.filter.categories.all = false;
+
+    const noneSelected = !this.filter.categories.fruit
+                      && !this.filter.categories.vegetable
+                      && !this.filter.categories.meat;
+    if (noneSelected) {
+      this.filter.categories.all = true;
+    }
+  }
+
   filteredCategories() {
-    // Filter logic
     if (this.filter.categories.all) return this.categories;
 
     return this.categories.filter(cat =>
