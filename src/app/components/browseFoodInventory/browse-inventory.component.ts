@@ -1,29 +1,20 @@
 import { Component } from '@angular/core';
-<<<<<<< Updated upstream
-import { CommonModule } from '@angular/common'; 
-import { FormsModule } from '@angular/forms';    
-=======
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../sidebar/sidebar.component';
->>>>>>> Stashed changes
 
 @Component({
   selector: 'app-inventory',
   standalone: true,
   templateUrl: './browse-inventory.component.html',
   styleUrls: ['./browse-inventory.component.css'],
-  imports: [CommonModule, FormsModule]  
+  imports: [CommonModule, FormsModule, SidebarComponent]
 })
-
 export class InventoryComponent {
   locations = ['Fridge', 'Freezer', 'Shelf'];
   selectedLocation = 'Fridge';
   showFilter = false;
-<<<<<<< Updated upstream
-=======
   hoverItem: any = null;
->>>>>>> Stashed changes
 
   filter = {
     donation: false,
@@ -63,8 +54,6 @@ export class InventoryComponent {
     this.showFilter = !this.showFilter;
   }
 
-<<<<<<< Updated upstream
-=======
   toggleSource(source: 'donation' | 'inventory') {
     if (source === 'donation') {
       this.filter.donation = true;
@@ -92,9 +81,7 @@ export class InventoryComponent {
     }
   }
 
->>>>>>> Stashed changes
   filteredCategories() {
-    // Filter logic
     if (this.filter.categories.all) return this.categories;
 
     return this.categories.filter(cat =>

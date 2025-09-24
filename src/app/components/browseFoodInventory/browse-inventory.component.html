@@ -1,58 +1,3 @@
-<<<<<<< Updated upstream
-<main class="content">
-  <!-- Header -->
-  <header class="inventory-header">
-    <label>Inventory:</label>
-    <select [(ngModel)]="selectedLocation">
-      <option *ngFor="let loc of locations">{{loc}}</option>
-    </select>
-    <div class="header-icons">
-      <button (click)="toggleFilterPanel()">
-        <i class="fa fa-search"></i>
-      </button>
-      <button (click)="toggleFilterPanel()">
-        <i class="fa fa-sliders-h"></i>
-      </button>
-    </div>
-  </header>
-
-  <!-- Filter Panel -->
-  <div *ngIf="showFilter" class="filter-panel">
-    <h4>Source</h4>
-    <label>
-      <input type="checkbox" [(ngModel)]="filter.donation" /> Donation Listing
-    </label>
-    <label>
-      <input type="checkbox" [(ngModel)]="filter.inventory" /> Inventory Only
-    </label>
-
-    <h4>Category</h4>
-    <label><input type="checkbox" [(ngModel)]="filter.categories.all" /> All</label>
-    <label><input type="checkbox" [(ngModel)]="filter.categories.fruit" /> Fruit</label>
-    <label><input type="checkbox" [(ngModel)]="filter.categories.vegetable" /> Vegetable</label>
-    <label><input type="checkbox" [(ngModel)]="filter.categories.meat" /> Meat</label>
-
-    <h4>Expired In</h4>
-    <input type="range" min="0" max="30" [(ngModel)]="filter.expiredIn" />
-    <span>{{filter.expiredIn}} days</span>
-  </div>
-
-  <!-- Categories -->
-  <section *ngFor="let category of filteredCategories()" 
-           class="category" [ngClass]="category.colorClass">
-    <h3>
-      <span class="emoji">{{category.icon}}</span>
-      {{category.name}}
-    </h3>
-
-    <div *ngFor="let item of category.items" class="item">
-      <span class="item-name">{{item.name}}</span>
-      <div class="quantity">
-        <button (click)="decreaseItem(item)">-</button>
-        <span>{{item.quantity}}</span>
-        <button (click)="increaseItem(item)">+</button>
-      </div>
-=======
 <div class="layout">
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>
@@ -107,7 +52,6 @@
       <h4>Expired In</h4>
       <input type="range" min="0" max="30" [(ngModel)]="filter.expiredIn" />
       <span>{{filter.expiredIn}} days</span>
->>>>>>> Stashed changes
     </div>
 
     <!-- Categories -->
