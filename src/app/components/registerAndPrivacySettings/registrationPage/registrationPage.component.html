@@ -7,26 +7,26 @@
   <form #registrationForm="ngForm" (ngSubmit)="onSubmit(registrationForm)">
     <div class="input-group">
       <label for="name">Name*:</label>
-      <input type="text" id="name" name="name" ngModel required placeholder="eg) Junhyeong Kim">
-      <span class="icon clear" (click)="clearInput(nameInput)" #nameInput>&#10006;</span>
+      <input type="text" id="name" name="name" ngModel required placeholder="eg) Junhyeong Kim" #nameInput>
+      <span class="icon clear" (click)="clearInput(nameInput)">&#10006;</span>
     </div>
 
     <div class="input-group">
       <label for="email">Email*:</label>
-      <input type="email" id="email" name="email" ngModel required placeholder="eg) example@gmail.com">
-      <span class="icon clear" (click)="clearInput(emailInput)" #emailInput>&#10006;</span>
+      <input type="email" id="email" name="email" ngModel required placeholder="eg) example@gmail.com" #emailInput>
+      <span class="icon clear" (click)="clearInput(emailInput)">&#10006;</span>
     </div>
 
     <div class="input-group">
       <label for="password">Password*:</label>
-      <input type="password" id="password" name="password" [(ngModel)]="password" required placeholder="eg) Junkaiyane230@">
-      <span class="icon clear" (click)="clearInput(passwordInput)" #passwordInput>&#10006;</span>
+      <input type="password" id="password" name="password" [(ngModel)]="password" required placeholder="eg) Junkaiyane230@" #passwordInput>
+      <span class="icon clear" (click)="clearInput(passwordInput)">&#10006;</span>
     </div>
 
     <div class="input-group">
       <label for="confirmPassword">Confirm Password*:</label>
-      <input type="password" id="confirmPassword" name="confirmPassword" [(ngModel)]="confirmPassword" required placeholder="eg) *************">
-      <span class="icon clear" (click)="clearInput(confirmPasswordInput)" #confirmPasswordInput>&#10006;</span>
+      <input type="password" id="confirmPassword" name="confirmPassword" [(ngModel)]="confirmPassword" required placeholder="eg) *************" #confirmPasswordInput>
+      <span class="icon clear" (click)="clearInput(confirmPasswordInput)">&#10006;</span>
     </div>
 
     <div class="input-group">
