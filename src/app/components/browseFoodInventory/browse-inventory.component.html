@@ -1,0 +1,78 @@
+<main class="content">
+  <!-- Header -->
+  <header class="inventory-header">
+    <label>Inventory:</label>
+    <select [(ngModel)]="selectedLocation">
+      <option *ngFor="let loc of locations">{{loc}}</option>
+    </select>
+    <div class="header-icons">
+      <!-- Search button -->
+      <button (click)="toggleSearchBar()">
+        <i class="fa fa-search"></i>
+      </button>
+      <!-- Filter button -->
+      <button (click)="toggleFilterPanel()">
+        <i class="fa fa-sliders-h"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Search Bar -->
+  <div *ngIf="showSearch" class="search-bar">
+    <input type="text" placeholder="Search item..."
+           [(ngModel)]="searchTerm" />
+  </div>
+
+  <!-- Filter Panel -->
+  <div *ngIf="showFilter" class="filter-panel">
+    <h4>Source</h4>
+    <label>
+      <input type="radio" name="source" [checked]="filter.source === 'donation'"
+             (change)="setSource('donation')" /> Donation Listing
+    </label>
+    <label>
+      <input type="radio" name="source" [checked]="filter.source === 'inventory'"
+             (change)="setSource('inventory')" /> Inventory Only
+    </label>
+
+    <h4>Category</h4>
+    <label>
+      <input type="checkbox" [checked]="filter.categories.all"
+             (change)="toggleAllCategories()" /> All
+    </label>
+    <label>
+      <input type="checkbox" [checked]="filter.categories.fruit"
+             (change)="toggleCategory('fruit')" /> Fruit
+    </label>
+    <label>
+      <input type="checkbox" [checked]="filter.categories.vegetable"
+             (change)="toggleCategory('vegetable')" /> Vegetable
+    </label>
+    <label>
+      <input type="checkbox" [checked]="filter.categories.meat"
+             (change)="toggleCategory('meat')" /> Meat
+    </label>
+
+    <h4>Expired In</h4>
+    <input type="range" min="0" max="30" [(ngModel)]="filter.expiredIn" />
+    <span>{{filter.expiredIn}} days</span>
+  </div>
+
+  <!-- Categories -->
+  <section *ngFor="let category of filteredCategories()" 
+           class="category" [ngClass]="category.colorClass">
+    <h3>
+      <span class="emoji">{{category.icon}}</span>
+      {{category.name}}
+    </h3>
+
+    <div *ngFor="let item of filteredItems(category.items)" class="item">
+      <span class="item-name">{{item.name}}</span>
+      <div class="quantity">
+        <button (click)="decreaseItem(item)">-</button>
+        <span>{{item.quantity}}</span>
+        <button (click)="increaseItem(item)">+</button>
+      </div>
+    </div>
+  </section>
+</main>
