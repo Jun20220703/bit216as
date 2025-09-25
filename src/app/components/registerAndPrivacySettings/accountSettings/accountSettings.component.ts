@@ -29,6 +29,12 @@ export class AccountSettingsComponent {
     dateOfBirth: '2003-04-05'
   };
 
+  // Password reset dialog states
+  showPasswordResetDialog: boolean = false;
+  showPasswordChangeForm: boolean = false;
+  newPassword: string = '';
+  confirmPassword: string = '';
+
   constructor(private router: Router) {}
 
   setActiveTab(tab: 'account' | 'privacy') {
@@ -58,5 +64,55 @@ export class AccountSettingsComponent {
     // Handle save logic here
     console.log('Saving user data:', this.userData);
     // You can add validation and API calls here
+  }
+
+  // Password reset methods
+  onPasswordClick() {
+    this.showPasswordResetDialog = true;
+  }
+
+  onPasswordReset() {
+    this.showPasswordResetDialog = true;
+  }
+
+  onPasswordResetCancel() {
+    this.showPasswordResetDialog = false;
+  }
+
+  onPasswordResetConfirm() {
+    this.showPasswordResetDialog = false;
+    this.showPasswordChangeForm = true;
+  }
+
+  clearNewPassword() {
+    this.newPassword = '';
+  }
+
+  clearConfirmPassword() {
+    this.confirmPassword = '';
+  }
+
+  onPasswordChange() {
+    if (this.newPassword && this.confirmPassword) {
+      if (this.newPassword === this.confirmPassword) {
+        // Update the password in userData
+        this.userData.password = this.newPassword;
+        console.log('Password changed successfully');
+        // Close the form
+        this.showPasswordChangeForm = false;
+        this.newPassword = '';
+        this.confirmPassword = '';
+      } else {
+        alert('Passwords do not match!');
+      }
+    } else {
+      alert('Please fill in both password fields!');
+    }
+  }
+
+  onPasswordChangeCancel() {
+    this.showPasswordChangeForm = false;
+    this.newPassword = '';
+    this.confirmPassword = '';
   }
 }
