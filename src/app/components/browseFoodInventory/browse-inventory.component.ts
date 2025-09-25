@@ -8,7 +8,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   standalone: true,
   templateUrl: './browse-inventory.component.html',
   styleUrls: ['./browse-inventory.component.css'],
-  imports: [CommonModule, FormsModule, SidebarComponent]
+  imports: [CommonModule, FormsModule, SidebarComponent],
 })
 export class InventoryComponent {
   locations = ['Fridge', 'Freezer', 'Shelf'];
@@ -25,9 +25,9 @@ export class InventoryComponent {
       all: true,
       fruit: true,
       vegetable: true,
-      meat: false
+      meat: false,
     },
-    expiredIn: 15
+    expiredIn: 15,
   };
 
   categories = [
@@ -38,8 +38,8 @@ export class InventoryComponent {
       items: [
         { name: 'Apple', quantity: 4 },
         { name: 'Avocado', quantity: 6 },
-        { name: 'Banana', quantity: 2 }
-      ]
+        { name: 'Banana', quantity: 2 },
+      ],
     },
     {
       name: 'Vegetable',
@@ -47,8 +47,8 @@ export class InventoryComponent {
       icon: '🥦',
       items: [
         { name: 'Broccoli', quantity: 3 },
-        { name: 'Onions', quantity: 2 }
-      ]
+        { name: 'Onions', quantity: 2 },
+      ],
     },
     {
       name: 'Meat',
@@ -56,9 +56,9 @@ export class InventoryComponent {
       icon: '🍖',
       items: [
         { name: 'Chicken Breast', quantity: 5 },
-        { name: 'Beef', quantity: 2 }
-      ]
-    }
+        { name: 'Beef', quantity: 2 },
+      ],
+    },
   ];
 
   toggleFilterPanel() {
@@ -67,9 +67,7 @@ export class InventoryComponent {
 
   toggleSearchBar() {
     this.showSearch = !this.showSearch;
-    if (!this.showSearch) {
-      this.searchQuery = ''; // clear search when closing
-    }
+    if (!this.showSearch) this.searchQuery = '';
   }
 
   toggleSource(source: 'donation' | 'inventory') {
@@ -88,11 +86,10 @@ export class InventoryComponent {
         all: true,
         fruit: false,
         vegetable: false,
-        meat: false
+        meat: false,
       };
       return;
     }
-
     this.filter.categories[category] = !this.filter.categories[category];
     this.filter.categories.all = false;
 
@@ -100,10 +97,7 @@ export class InventoryComponent {
       !this.filter.categories.fruit &&
       !this.filter.categories.vegetable &&
       !this.filter.categories.meat;
-
-    if (noneSelected) {
-      this.filter.categories.all = true;
-    }
+    if (noneSelected) this.filter.categories.all = true;
   }
 
   filteredCategories() {
@@ -116,7 +110,6 @@ export class InventoryComponent {
             (this.filter.categories.meat && cat.name === 'Meat')
         );
 
-    // Apply search filter
     if (this.searchQuery.trim() !== '') {
       const q = this.searchQuery.toLowerCase();
       cats = cats
@@ -124,7 +117,7 @@ export class InventoryComponent {
           ...cat,
           items: cat.items.filter((item) =>
             item.name.toLowerCase().includes(q)
-          )
+          ),
         }))
         .filter((cat) => cat.items.length > 0);
     }

@@ -8,21 +8,20 @@
     <header class="inventory-header">
       <div class="inventory-title">
         <label>Inventory</label>
-        <select [(ngModel)]="selectedLocation">
-          <option *ngFor="let loc of locations">{{ loc }}</option>
-        </select>
+        <div class="select-wrapper">
+          <select [(ngModel)]="selectedLocation">
+            <option *ngFor="let loc of locations">{{ loc }}</option>
+          </select>
+          <span class="custom-arrow">▼</span>
+        </div>
       </div>
 
       <div class="header-icons">
-        <!-- Search Button -->
-        <button (click)="toggleSearchBar()">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
+        <!-- Search Icon -->
+        <i class="fa-solid fa-magnifying-glass header-icon" (click)="toggleSearchBar()"></i>
 
-        <!-- Filter Button -->
-        <button (click)="toggleFilterPanel()">
-          <i class="fa-solid fa-sliders"></i>
-        </button>
+        <!-- Filter Icon -->
+        <i class="fa-solid fa-sliders header-icon" (click)="toggleFilterPanel()"></i>
       </div>
     </header>
 
@@ -37,69 +36,39 @@
 
     <!-- Filter panel -->
     <div *ngIf="showFilter" class="filter-panel">
-      <h3>Filter Options</h3>
-
-      <!-- Source toggle -->
-      <div class="source-toggle">
+      <!-- Source Section -->
+      <div class="filter-section">
+        <h3>Source</h3>
         <label>
-          <input
-            type="radio"
-            name="source"
-            [checked]="filter.inventory"
-            (change)="toggleSource('inventory')"
-          />
-          Inventory
+          <input type="radio" name="source" [checked]="filter.inventory" (change)="toggleSource('inventory')" />
+          Inventory only
         </label>
         <label>
-          <input
-            type="radio"
-            name="source"
-            [checked]="filter.donation"
-            (change)="toggleSource('donation')"
-          />
-          Donation
+          <input type="radio" name="source" [checked]="filter.donation" (change)="toggleSource('donation')" />
+          Donation List
         </label>
       </div>
 
-      <!-- Category filter -->
-      <div class="category-filter">
+      <!-- Category Section -->
+      <div class="filter-section">
+        <h3>Category</h3>
         <label>
-          <input
-            type="checkbox"
-            [checked]="filter.categories.all"
-            (change)="toggleCategory('all')"
-          />
-          All
+          <input type="checkbox" [checked]="filter.categories.all" (change)="toggleCategory('all')" /> All
         </label>
         <label>
-          <input
-            type="checkbox"
-            [checked]="filter.categories.fruit"
-            (change)="toggleCategory('fruit')"
-          />
-          Fruit
+          <input type="checkbox" [checked]="filter.categories.fruit" (change)="toggleCategory('fruit')" /> Fruit
         </label>
         <label>
-          <input
-            type="checkbox"
-            [checked]="filter.categories.vegetable"
-            (change)="toggleCategory('vegetable')"
-          />
-          Vegetable
+          <input type="checkbox" [checked]="filter.categories.vegetable" (change)="toggleCategory('vegetable')" /> Vegetable
         </label>
         <label>
-          <input
-            type="checkbox"
-            [checked]="filter.categories.meat"
-            (change)="toggleCategory('meat')"
-          />
-          Meat
+          <input type="checkbox" [checked]="filter.categories.meat" (change)="toggleCategory('meat')" /> Meal
         </label>
       </div>
 
-      <!-- Expired in filter -->
-      <div class="expired-filter">
-        <label>Expired in (days):</label>
+      <!-- Expired Section -->
+      <div class="filter-section">
+        <h3>Expired in</h3>
         <input type="number" [(ngModel)]="filter.expiredIn" />
       </div>
     </div>
@@ -112,26 +81,21 @@
     >
       <h2>{{ category.icon }} {{ category.name }}</h2>
 
-      <!-- Items inside category -->
       <div
         *ngFor="let item of category.items"
         class="item"
         (mouseenter)="hoverItem = item"
         (mouseleave)="hoverItem = null"
       >
-        <!-- Item name -->
         <span class="item-name">{{ item.name }}</span>
 
-        <!-- Right side: Quantity + Hover actions -->
         <div class="actions">
-          <!-- Quantity control -->
           <div class="quantity-control">
             <button (click)="decreaseItem(item)">-</button>
             <span>{{ item.quantity }}</span>
             <button (click)="increaseItem(item)">+</button>
           </div>
 
-          <!-- Hover-only actions -->
           <div class="hover-actions" *ngIf="hoverItem === item">
             <button class="used">Used</button>
             <button class="meal">Meal</button>

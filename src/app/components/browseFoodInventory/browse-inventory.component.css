@@ -1,4 +1,4 @@
-/* Layout background */
+/* Layout */
 .layout {
   display: flex;
   background-color: white;
@@ -9,10 +9,10 @@
   padding: 1rem;
 }
 
-/* ---------------- HEADER ---------------- */
+/* Header */
 .inventory-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
 }
@@ -24,23 +24,54 @@
   margin-bottom: 0.5rem;
 }
 
-.inventory-title select {
+/* Dropdown wrapper */
+.select-wrapper {
+  position: relative;
   width: 250px;
+}
+
+.select-wrapper select {
+  width: 100%;
   padding: 0.5rem 1rem;
+  padding-right: 2.5rem; /* space for arrow */
   border: none;
   border-radius: 60px;
   background-color: #f0f0f0;
   font-size: 1rem;
   outline: none;
-  cursor: pointer;
   appearance: none;
+  cursor: pointer;
 }
 
-.header-icons button {
-  margin-left: 0.5rem;
+.select-wrapper .custom-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 1rem;
+  color: #333;
 }
 
-/* ---------------- SEARCH BAR ---------------- */
+/* Header icons */
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-icon {
+  font-size: 1.8rem; /* bigger icon */
+  cursor: pointer;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.header-icon:hover {
+  color: #007bff;
+}
+
+/* Search bar */
 .search-bar {
   margin: 0.5rem 0 1rem 0;
 }
@@ -52,20 +83,30 @@
   border: 1px solid #ccc;
   border-radius: 30px;
   font-size: 1rem;
-  background-color: #f9f9f9;
   outline: none;
+  background-color: #f9f9f9;
 }
 
-/* ---------------- FILTER PANEL ---------------- */
+/* Filter panel */
 .filter-panel {
   border: 1px solid #ccc;
-  padding: 1rem;
+  padding: 2rem;
   margin: 1rem 0;
   background-color: #f9f9f9;
-  border-radius: 8px;
+  border-radius: 60px;
 }
 
-/* ---------------- CATEGORY STYLING ---------------- */
+.filter-section {
+  margin-bottom: 1.5rem;
+}
+
+.filter-section h3 {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.8rem;
+}
+
+/* Category styling */
 .category {
   margin-bottom: 2rem;
   padding: 1rem;
@@ -84,7 +125,7 @@
   background-color: #ffe0e7;
 }
 
-/* ---------------- ITEMS ---------------- */
+/* Items */
 .item {
   display: flex;
   align-items: center;
@@ -102,14 +143,12 @@
   font-weight: 500;
 }
 
-/* Actions container */
 .actions {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-/* Quantity control */
 .quantity-control {
   display: flex;
   align-items: center;
@@ -127,7 +166,6 @@
   font-size: 1rem;
 }
 
-/* Hover-only actions */
 .hover-actions {
   display: flex;
   gap: 0.5rem;
