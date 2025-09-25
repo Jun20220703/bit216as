@@ -262,6 +262,151 @@
   background: #45a049;
 }
 
+/* Readonly input styling */
+.readonly-input {
+  background-color: #f5f5f5;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Dialog Overlay */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Password Reset Confirmation Dialog */
+.dialog-container {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 90%;
+}
+
+.dialog-content h3 {
+  margin: 0 0 25px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.dialog-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.dialog-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+}
+
+.cancel-dialog-button {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.cancel-dialog-button:hover {
+  background: #d0d0d0;
+}
+
+.confirm-dialog-button {
+  background: #4CAF50;
+  color: white;
+}
+
+.confirm-dialog-button:hover {
+  background: #45a049;
+}
+
+/* Password Change Form */
+.password-change-container {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+}
+
+.password-change-content {
+  text-align: center;
+}
+
+.password-change-title {
+  margin: 0 0 30px 0;
+  color: #333;
+  font-size: 24px;
+  font-weight: 600;
+  font-family: 'Brush Script MT', cursive;
+}
+
+.password-form {
+  margin-bottom: 30px;
+}
+
+.password-form .form-field {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.password-change-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.cancel-password-button {
+  background: #e0e0e0;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-password-button:hover {
+  background: #d0d0d0;
+  border-color: #bbb;
+}
+
+.change-button {
+  background: #90EE90;
+  color: #333;
+  border: 1px solid #7ED47E;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.change-button:hover {
+  background: #7ED47E;
+  border-color: #6BC46B;
+}
+
 /* Toggle Switch */
 .toggle-switch {
   position: relative;
