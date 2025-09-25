@@ -1,84 +1,144 @@
 <div class="layout">
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>
-  
-  <main class="content">
+
+  <!-- Main content -->
+  <div class="content">
     <!-- Header -->
     <header class="inventory-header">
-      <label>Inventory:</label>
-      <select [(ngModel)]="selectedLocation">
-        <option *ngFor="let loc of locations">{{loc}}</option>
-      </select>
+      <div class="inventory-title">
+        <label>Inventory</label>
+        <select [(ngModel)]="selectedLocation">
+          <option *ngFor="let loc of locations">{{ loc }}</option>
+        </select>
+      </div>
+
       <div class="header-icons">
-        <button (click)="toggleFilterPanel()">
-          <i class="fa fa-search"></i>
+        <!-- Search Button -->
+        <button (click)="toggleSearchBar()">
+          <i class="fa-solid fa-magnifying-glass"></i>
         </button>
+
+        <!-- Filter Button -->
         <button (click)="toggleFilterPanel()">
-          <i class="fa fa-sliders-h"></i>
+          <i class="fa-solid fa-sliders"></i>
         </button>
       </div>
     </header>
 
-    <!-- Filter Panel -->
-    <div *ngIf="showFilter" class="filter-panel">
-      <h4>Source</h4>
-      <label>
-        <input type="checkbox" [checked]="filter.donation"
-               (change)="toggleSource('donation')" /> Donation Listing
-      </label>
-      <label>
-        <input type="checkbox" [checked]="filter.inventory"
-               (change)="toggleSource('inventory')" /> Inventory Only
-      </label>
-
-      <h4>Category</h4>
-      <label>
-        <input type="checkbox" [checked]="filter.categories.all"
-               (change)="toggleCategory('all')" /> All
-      </label>
-      <label>
-        <input type="checkbox" [checked]="filter.categories.fruit"
-               (change)="toggleCategory('fruit')" /> Fruit
-      </label>
-      <label>
-        <input type="checkbox" [checked]="filter.categories.vegetable"
-               (change)="toggleCategory('vegetable')" /> Vegetable
-      </label>
-      <label>
-        <input type="checkbox" [checked]="filter.categories.meat"
-               (change)="toggleCategory('meat')" /> Meat
-      </label>
-
-      <h4>Expired In</h4>
-      <input type="range" min="0" max="30" [(ngModel)]="filter.expiredIn" />
-      <span>{{filter.expiredIn}} days</span>
+    <!-- Search bar -->
+    <div *ngIf="showSearch" class="search-bar">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        placeholder="Search food items..."
+      />
     </div>
 
-    <!-- Categories -->
-    <section *ngFor="let category of filteredCategories()" 
-             class="category" [ngClass]="category.colorClass">
-      <h3>
-        <span class="emoji">{{category.icon}}</span>
-        {{category.name}}
-      </h3>
+    <!-- Filter panel -->
+    <div *ngIf="showFilter" class="filter-panel">
+      <h3>Filter Options</h3>
 
-      <div *ngFor="let item of category.items" class="item"
-           (mouseenter)="hoverItem = item" 
-           (mouseleave)="hoverItem = null">
-        <span class="item-name">{{item.name}}</span>
-        <div class="quantity">
-          <button (click)="decreaseItem(item)">-</button>
-          <span>{{item.quantity}}</span>
-          <button (click)="increaseItem(item)">+</button>
-        </div>
+      <!-- Source toggle -->
+      <div class="source-toggle">
+        <label>
+          <input
+            type="radio"
+            name="source"
+            [checked]="filter.inventory"
+            (change)="toggleSource('inventory')"
+          />
+          Inventory
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="source"
+            [checked]="filter.donation"
+            (change)="toggleSource('donation')"
+          />
+          Donation
+        </label>
+      </div>
 
-        <!-- Hover buttons -->
-        <div class="actions" *ngIf="hoverItem === item">
-          <button class="used">Used</button>
-          <button class="meal">Meal</button>
-          <button class="donate">Donate</button>
+      <!-- Category filter -->
+      <div class="category-filter">
+        <label>
+          <input
+            type="checkbox"
+            [checked]="filter.categories.all"
+            (change)="toggleCategory('all')"
+          />
+          All
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            [checked]="filter.categories.fruit"
+            (change)="toggleCategory('fruit')"
+          />
+          Fruit
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            [checked]="filter.categories.vegetable"
+            (change)="toggleCategory('vegetable')"
+          />
+          Vegetable
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            [checked]="filter.categories.meat"
+            (change)="toggleCategory('meat')"
+          />
+          Meat
+        </label>
+      </div>
+
+      <!-- Expired in filter -->
+      <div class="expired-filter">
+        <label>Expired in (days):</label>
+        <input type="number" [(ngModel)]="filter.expiredIn" />
+      </div>
+    </div>
+
+    <!-- Category list -->
+    <div
+      *ngFor="let category of filteredCategories()"
+      class="category"
+      [ngClass]="category.colorClass"
+    >
+      <h2>{{ category.icon }} {{ category.name }}</h2>
+
+      <!-- Items inside category -->
+      <div
+        *ngFor="let item of category.items"
+        class="item"
+        (mouseenter)="hoverItem = item"
+        (mouseleave)="hoverItem = null"
+      >
+        <!-- Item name -->
+        <span class="item-name">{{ item.name }}</span>
+
+        <!-- Right side: Quantity + Hover actions -->
+        <div class="actions">
+          <!-- Quantity control -->
+          <div class="quantity-control">
+            <button (click)="decreaseItem(item)">-</button>
+            <span>{{ item.quantity }}</span>
+            <button (click)="increaseItem(item)">+</button>
+          </div>
+
+          <!-- Hover-only actions -->
+          <div class="hover-actions" *ngIf="hoverItem === item">
+            <button class="used">Used</button>
+            <button class="meal">Meal</button>
+            <button class="donate">Donate</button>
+          </div>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </div>
 </div>

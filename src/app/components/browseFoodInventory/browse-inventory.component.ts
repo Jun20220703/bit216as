@@ -14,6 +14,8 @@ export class InventoryComponent {
   locations = ['Fridge', 'Freezer', 'Shelf'];
   selectedLocation = 'Fridge';
   showFilter = false;
+  showSearch = false;
+  searchQuery: string = '';
   hoverItem: any = null;
 
   filter = {
@@ -47,11 +49,27 @@ export class InventoryComponent {
         { name: 'Broccoli', quantity: 3 },
         { name: 'Onions', quantity: 2 }
       ]
+    },
+    {
+      name: 'Meat',
+      colorClass: 'meat',
+      icon: '🍖',
+      items: [
+        { name: 'Chicken Breast', quantity: 5 },
+        { name: 'Beef', quantity: 2 }
+      ]
     }
   ];
 
   toggleFilterPanel() {
     this.showFilter = !this.showFilter;
+  }
+
+  toggleSearchBar() {
+    this.showSearch = !this.showSearch;
+    if (!this.showSearch) {
+      this.searchQuery = ''; // clear search when closing
+    }
   }
 
   toggleSource(source: 'donation' | 'inventory') {
@@ -66,29 +84,52 @@ export class InventoryComponent {
 
   toggleCategory(category: 'all' | 'fruit' | 'vegetable' | 'meat'): void {
     if (category === 'all') {
-      this.filter.categories = { all: true, fruit: false, vegetable: false, meat: false };
+      this.filter.categories = {
+        all: true,
+        fruit: false,
+        vegetable: false,
+        meat: false
+      };
       return;
     }
 
     this.filter.categories[category] = !this.filter.categories[category];
     this.filter.categories.all = false;
 
-    const noneSelected = !this.filter.categories.fruit
-                      && !this.filter.categories.vegetable
-                      && !this.filter.categories.meat;
+    const noneSelected =
+      !this.filter.categories.fruit &&
+      !this.filter.categories.vegetable &&
+      !this.filter.categories.meat;
+
     if (noneSelected) {
       this.filter.categories.all = true;
     }
   }
 
   filteredCategories() {
-    if (this.filter.categories.all) return this.categories;
+    let cats = this.filter.categories.all
+      ? this.categories
+      : this.categories.filter(
+          (cat) =>
+            (this.filter.categories.fruit && cat.name === 'Fruit') ||
+            (this.filter.categories.vegetable && cat.name === 'Vegetable') ||
+            (this.filter.categories.meat && cat.name === 'Meat')
+        );
 
-    return this.categories.filter(cat =>
-      (this.filter.categories.fruit && cat.name === 'Fruit') ||
-      (this.filter.categories.vegetable && cat.name === 'Vegetable') ||
-      (this.filter.categories.meat && cat.name === 'Meat')
-    );
+    // Apply search filter
+    if (this.searchQuery.trim() !== '') {
+      const q = this.searchQuery.toLowerCase();
+      cats = cats
+        .map((cat) => ({
+          ...cat,
+          items: cat.items.filter((item) =>
+            item.name.toLowerCase().includes(q)
+          )
+        }))
+        .filter((cat) => cat.items.length > 0);
+    }
+
+    return cats;
   }
 
   increaseItem(item: any) {

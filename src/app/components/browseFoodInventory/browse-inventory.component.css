@@ -1,5 +1,7 @@
+/* Layout background */
 .layout {
   display: flex;
+  background-color: white;
 }
 
 .content {
@@ -7,34 +9,146 @@
   padding: 1rem;
 }
 
+/* ---------------- HEADER ---------------- */
 .inventory-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.inventory-title label {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.inventory-title select {
+  width: 250px;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 60px;
+  background-color: #f0f0f0;
+  font-size: 1rem;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
 }
 
 .header-icons button {
   margin-left: 0.5rem;
 }
 
+/* ---------------- SEARCH BAR ---------------- */
+.search-bar {
+  margin: 0.5rem 0 1rem 0;
+}
+
+.search-bar input {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  outline: none;
+}
+
+/* ---------------- FILTER PANEL ---------------- */
 .filter-panel {
   border: 1px solid #ccc;
   padding: 1rem;
   margin: 1rem 0;
+  background-color: #f9f9f9;
+  border-radius: 8px;
 }
 
+/* ---------------- CATEGORY STYLING ---------------- */
 .category {
   margin-bottom: 2rem;
+  padding: 1rem;
+  border-radius: 12px;
 }
 
+.category.fruit {
+  background-color: #fff7c2;
+}
+
+.category.vegetable {
+  background-color: #dbeeff;
+}
+
+.category.meat {
+  background-color: #ffe0e7;
+}
+
+/* ---------------- ITEMS ---------------- */
 .item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.25rem 0;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+.item:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Actions container */
 .actions {
   display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Quantity control */
+.quantity-control {
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
+}
+
+.quantity-control button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* Hover-only actions */
+.hover-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.hover-actions button {
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.hover-actions .used {
+  background-color: #cce5ff;
+}
+
+.hover-actions .meal {
+  background-color: #d4edda;
+}
+
+.hover-actions .donate {
+  background-color: #fff3cd;
 }
