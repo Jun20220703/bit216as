@@ -82,21 +82,13 @@ export class InventoryComponent {
 
   toggleCategory(category: 'all' | 'fruit' | 'vegetable' | 'meat'): void {
     if (category === 'all') {
-      this.filter.categories = {
-        all: true,
-        fruit: false,
-        vegetable: false,
-        meat: false,
-      };
+      this.filter.categories = { all: true, fruit: false, vegetable: false, meat: false };
       return;
     }
     this.filter.categories[category] = !this.filter.categories[category];
     this.filter.categories.all = false;
 
-    const noneSelected =
-      !this.filter.categories.fruit &&
-      !this.filter.categories.vegetable &&
-      !this.filter.categories.meat;
+    const noneSelected = !this.filter.categories.fruit && !this.filter.categories.vegetable && !this.filter.categories.meat;
     if (noneSelected) this.filter.categories.all = true;
   }
 
@@ -113,23 +105,13 @@ export class InventoryComponent {
     if (this.searchQuery.trim() !== '') {
       const q = this.searchQuery.toLowerCase();
       cats = cats
-        .map((cat) => ({
-          ...cat,
-          items: cat.items.filter((item) =>
-            item.name.toLowerCase().includes(q)
-          ),
-        }))
+        .map((cat) => ({ ...cat, items: cat.items.filter((item) => item.name.toLowerCase().includes(q)) }))
         .filter((cat) => cat.items.length > 0);
     }
 
     return cats;
   }
 
-  increaseItem(item: any) {
-    item.quantity++;
-  }
-
-  decreaseItem(item: any) {
-    if (item.quantity > 0) item.quantity--;
-  }
+  increaseItem(item: any) { item.quantity++; }
+  decreaseItem(item: any) { if (item.quantity > 0) item.quantity--; }
 }
