@@ -44,16 +44,15 @@
           <div class="form-field">
             <label class="field-label required" for="email">Email*:</label>
             <div class="input-container">
-              <input type="email" id="email" class="form-input" [(ngModel)]="userData.email" placeholder="B2301130@helplive.edu.my" title="Enter your email address">
-              <button class="clear-button" (click)="clearField('email')" title="Clear email">×</button>
+              <input type="email" id="email" class="form-input readonly-input" [value]="userData.email" readonly title="Email cannot be changed">
             </div>
           </div>
 
           <div class="form-field">
             <label class="field-label" for="password">Password*:</label>
             <div class="input-container">
-              <input type="password" id="password" class="form-input" [(ngModel)]="userData.password" placeholder="************" title="Enter your password">
-              <button class="clear-button" (click)="clearField('password')" title="Clear password">×</button>
+              <input type="password" id="password" class="form-input" [value]="userData.password" placeholder="************" title="Click to change password" (click)="onPasswordClick()" readonly>
+              <button class="clear-button" (click)="onPasswordReset()" title="Reset password">×</button>
             </div>
           </div>
 
@@ -86,6 +85,48 @@
         <div class="action-buttons">
           <button class="cancel-button" (click)="onCancel()">Cancel</button>
           <button class="save-button" (click)="onSave()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Password Reset Confirmation Dialog -->
+    <div *ngIf="showPasswordResetDialog" class="dialog-overlay">
+      <div class="dialog-container">
+        <div class="dialog-content">
+          <h3>Do you want to reset your password?</h3>
+          <div class="dialog-buttons">
+            <button class="dialog-button cancel-dialog-button" (click)="onPasswordResetCancel()">No</button>
+            <button class="dialog-button confirm-dialog-button" (click)="onPasswordResetConfirm()">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Password Change Form -->
+    <div *ngIf="showPasswordChangeForm" class="dialog-overlay">
+      <div class="password-change-container">
+        <div class="password-change-content">
+          <h2 class="password-change-title">Set a new password</h2>
+          <div class="password-form">
+            <div class="form-field">
+              <label class="field-label" for="new-password">Password*:</label>
+              <div class="input-container">
+                <input type="password" id="new-password" class="form-input" [(ngModel)]="newPassword" placeholder="Enter new password" title="Enter new password">
+                <button class="clear-button" (click)="clearNewPassword()" title="Clear password">×</button>
+              </div>
+            </div>
+            <div class="form-field">
+              <label class="field-label" for="confirm-password">Confirm Password*:</label>
+              <div class="input-container">
+                <input type="password" id="confirm-password" class="form-input" [(ngModel)]="confirmPassword" placeholder="Confirm new password" title="Confirm new password">
+                <button class="clear-button" (click)="clearConfirmPassword()" title="Clear confirm password">×</button>
+              </div>
+            </div>
+          </div>
+          <div class="password-change-buttons">
+            <button class="cancel-password-button" (click)="onPasswordChangeCancel()">Cancel</button>
+            <button class="change-button" (click)="onPasswordChange()">Change</button>
+          </div>
         </div>
       </div>
     </div>
