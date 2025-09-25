@@ -21,19 +21,71 @@
   <div class="content">
     <!-- Account Settings Tab -->
     <div *ngIf="activeTab === 'account'" class="tab-content">
-      <div class="settings-card">
-        <h3>Account Information</h3>
-        <div class="setting-item">
-          <span class="setting-label">Username</span>
-          <span class="setting-value">junkaiyane</span>
+      <div class="account-form-container">
+        <!-- Profile Photo Section -->
+        <div class="profile-photo-section">
+          <label class="profile-photo-label">Profile photo</label>
+          <div class="profile-photo-container">
+            <img src="assets/images/image1.png" alt="Profile Photo" class="profile-photo">
+            <button class="upload-button" (click)="onUploadPhoto()">Upload</button>
+          </div>
         </div>
-        <div class="setting-item">
-          <span class="setting-label">Email</span>
-          <span class="setting-value">junkaiyane@example.com</span>
+
+        <!-- Form Fields Section -->
+        <div class="form-fields-section">
+          <div class="form-field">
+            <label class="field-label" for="name">Name*:</label>
+            <div class="input-container">
+              <input type="text" id="name" class="form-input" [(ngModel)]="userData.name" placeholder="junkaiyane" title="Enter your name">
+              <button class="clear-button" (click)="clearField('name')" title="Clear name">×</button>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="field-label required" for="email">Email*:</label>
+            <div class="input-container">
+              <input type="email" id="email" class="form-input" [(ngModel)]="userData.email" placeholder="B2301130@helplive.edu.my" title="Enter your email address">
+              <button class="clear-button" (click)="clearField('email')" title="Clear email">×</button>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="field-label" for="password">Password*:</label>
+            <div class="input-container">
+              <input type="password" id="password" class="form-input" [(ngModel)]="userData.password" placeholder="************" title="Enter your password">
+              <button class="clear-button" (click)="clearField('password')" title="Clear password">×</button>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="field-label" for="household-size">Household Size:</label>
+            <div class="input-container">
+              <select id="household-size" class="form-input" [(ngModel)]="userData.householdSize" title="Select household size">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5" selected>5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="field-label" for="date-of-birth">Date of Birth*:</label>
+            <div class="input-container">
+              <input type="date" id="date-of-birth" class="form-input" [(ngModel)]="userData.dateOfBirth" title="Enter your date of birth">
+              <button class="clear-button" (click)="clearField('dateOfBirth')" title="Clear date of birth">×</button>
+            </div>
+          </div>
         </div>
-        <div class="setting-item">
-          <span class="setting-label">Member Since</span>
-          <span class="setting-value">January 2024</span>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button class="cancel-button" (click)="onCancel()">Cancel</button>
+          <button class="save-button" (click)="onSave()">Save</button>
         </div>
       </div>
     </div>
