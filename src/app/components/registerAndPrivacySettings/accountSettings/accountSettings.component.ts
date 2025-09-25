@@ -35,9 +35,6 @@ export class AccountSettingsComponent {
     this.activeTab = tab;
   }
 
-  onBack() {
-    this.router.navigate(['/home']);
-  }
 
   onUploadPhoto() {
     // Handle photo upload logic here
