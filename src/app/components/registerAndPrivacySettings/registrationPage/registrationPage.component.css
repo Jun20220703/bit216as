@@ -1,6 +1,7 @@
 .logo {
     text-align: center;
-    margin-top: 32px;
+    margin-top: -60px;
+    margin-bottom: -50x;
 }
 .logo-img {
     width: 320px;
@@ -11,7 +12,8 @@
 .container {
     background: #fff;
     max-width: 500px;
-    margin: 40px auto;
+    margin: -60px auto;
+    margin-bottom: 50px;
     border-radius: 36px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.12);
     padding: 40px 36px 32px 36px;
@@ -20,8 +22,9 @@ h2 {
     text-align: center;
     font-family: 'Indie Flower', cursive;
     color: #35744c;
-    font-size: 2rem;
-    margin-bottom: 32px;
+    font-size: 2.5rem;
+    margin-top: 3px;
+    margin-bottom: 3px;
 }
 form label {
     display: block;
