@@ -52,6 +52,21 @@ form label {
     -moz-appearance: none !important;
     appearance: none !important;
     background: #eaf3ec !important;
+    color: #666;
+}
+
+.input-group input[type="date"]:invalid {
+    color: transparent;
+}
+
+.input-group input[type="date"]:invalid::before {
+    content: 'dd/mm/yyyy';
+    color: #666;
+    position: absolute;
+    left: 16px;
+    top: 70%;
+    transform: translateY(-50%);
+    pointer-events: none;
 }
 
 .input-group input[type="date"]::-webkit-calendar-picker-indicator {
