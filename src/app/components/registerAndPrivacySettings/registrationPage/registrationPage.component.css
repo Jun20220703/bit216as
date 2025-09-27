@@ -43,21 +43,75 @@ form label {
     background: #eaf3ec;
     font-size: 1rem;
     outline: none;
+    box-sizing: border-box;
 }
 .input-group input[type="date"] {
+    padding-left: 40px;
     padding-right: 40px;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background: #eaf3ec !important;
+}
+
+.input-group input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.input-group input[type="date"]::-webkit-inner-spin-button,
+.input-group input[type="date"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.input-group input[type="date"]::-ms-clear {
+    display: none;
 }
 .input-group .icon {
     position: absolute;
-    right: 12px;
     top: 50%;
     transform: translateY(-50%);
     color: #a0a0a0;
     font-size: 1.2rem;
     cursor: pointer;
+    z-index: 1;
+    background: transparent;
+    border: none;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    line-height: 10;
 }
+
+.input-group .icon.clear {
+    right: 12px;
+    top: 70%;
+}
+
+.input-group .icon.calendar-icon {
+    left: 12px;
+    color: #333 !important;
+    font-size: 18px !important;
+    z-index: 10 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
 .input-group select {
     color: #666;
+    padding-right: 40px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 20px center;
+    background-size: 16px;
 }
 .register-btn {
     width: 70%;
