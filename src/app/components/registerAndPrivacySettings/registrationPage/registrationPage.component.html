@@ -49,7 +49,7 @@
     <div class="input-group">
       <label for="dob">Date of Birth*:</label>
       <input type="date" id="dob" name="dob" ngModel required #dobInput>
-      <span class="icon calendar-icon">📅</span>
+      <span class="icon calendar-icon" (click)="openDatePicker(dobInput)">📅</span>
       <span class="icon clear" (click)="clearInput(dobInput)">&#10006;</span>
     </div>
 
