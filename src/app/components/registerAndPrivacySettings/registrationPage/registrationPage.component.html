@@ -39,13 +39,14 @@
         <option value="4">4</option>
         <option value="5+">5+</option>
       </select>
-      <span class="icon">&#9660;</span>
+      
     </div>
 
     <div class="input-group">
       <label for="dob">Date of Birth*:</label>
-      <input type="date" id="dob" name="dob" ngModel required>
-      <span class="icon">&#128197;</span>
+      <input type="date" id="dob" name="dob" ngModel required #dobInput>
+      <span class="icon calendar-icon">📅</span>
+      <span class="icon clear" (click)="clearInput(dobInput)">&#10006;</span>
     </div>
 
     <button type="submit" class="register-btn">Register</button>
