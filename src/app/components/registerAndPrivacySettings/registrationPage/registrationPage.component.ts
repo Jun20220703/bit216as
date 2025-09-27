@@ -20,6 +20,10 @@ export class RegistrationPageComponent {
     inputRef.dispatchEvent(new Event('input'));
   }
 
+  openDatePicker(inputRef: HTMLInputElement) {
+    inputRef.showPicker();
+  }
+
   onSubmit(form: NgForm) {
     if (this.password !== this.confirmPassword) {
       alert('Passwords do not match!');
