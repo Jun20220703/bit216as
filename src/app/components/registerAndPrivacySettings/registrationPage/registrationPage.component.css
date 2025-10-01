@@ -1,0 +1,179 @@
+.logo {
+    text-align: center;
+    margin-top: -60px;
+    margin-bottom: -50x;
+}
+.logo-img {
+    width: 320px;
+    max-width: 90vw;
+    height: auto;
+    display: inline-block;
+}
+.container {
+    background: #fff;
+    max-width: 500px;
+    margin: -60px auto;
+    margin-bottom: 50px;
+    border-radius: 36px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+    padding: 40px 36px 32px 36px;
+}
+h2 {
+    text-align: center;
+    font-family: 'Indie Flower', cursive;
+    color: #35744c;
+    font-size: 2.5rem;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #222;
+    font-size: 1.08rem;
+}
+.input-group {
+    position: relative;
+    margin-bottom: 22px;
+}
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 12px 40px 12px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #eaf3ec;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
+}
+.input-group input[type="date"] {
+    padding-left: 40px;
+    padding-right: 40px;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background: #eaf3ec !important;
+    color: #666;
+}
+
+.input-group input[type="date"]:invalid {
+    color: transparent;
+}
+
+.input-group input[type="date"]:invalid::before {
+    content: 'dd/mm/yyyy';
+    color: #666;
+    position: absolute;
+    left: 16px;
+    top: 70%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.input-group input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.input-group input[type="date"]::-webkit-inner-spin-button,
+.input-group input[type="date"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.input-group input[type="date"]::-ms-clear {
+    display: none;
+}
+.input-group .icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a0a0a0;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 1;
+    background: transparent;
+    border: none;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    line-height: 10;
+}
+
+.input-group .icon.clear {
+    right: 12px;
+    top: 70%;
+}
+
+.input-group .icon.calendar-icon {
+    right: 40px;
+    top: -40%;
+    transform: translateY(-50%);
+    color: #333 !important;
+    font-size: 18px !important;
+    z-index: 10 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: absolute;
+}
+
+.input-group select {
+    color: #666;
+    padding-right: 40px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 20px center;
+    background-size: 16px;
+}
+.register-btn {
+    width: 70%;
+    margin: 32px auto 0 auto;
+    display: block;
+    padding: 14px 0;
+    background: #b6f59c;
+    color: #35744c;
+    border: none;
+    border-radius: 24px;
+    font-size: 1.3rem;
+    font-family: 'Indie Flower', cursive;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.register-btn:hover {
+    background: #a2e88a;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-link p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.login-link a {
+    color: #35744c;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .container { max-width: 98vw; padding: 16px; }
+}

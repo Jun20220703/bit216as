@@ -1,0 +1,61 @@
+<div class="login-container">
+  <!-- Header Section -->
+  <div class="header">
+    <div class="logo">
+      <img src="assets/images/image1.png" alt="Food Shield Logo" class="logo-img">
+  </div>
+    
+    <div class="slogan-section">
+      <div class="logo">
+        <img src="assets/images/image2.png" alt="login-page image" class="login-image-img">
+    </div>
+      <div class="slogan-text">
+        <p>Manage your food, reduce</p>
+        <p>waste, save money, and</p>
+        <p>care for the environment.</p>
+        <p class="highlight">We Make a Difference</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Section -->
+  <div class="form-section">
+    <!-- Register Box -->
+    <div class="register-box">
+      <h2>Welcome back</h2>
+      <p>Don't you have an account?</p>
+      <button class="register-btn" (click)="onRegister()">Register</button>
+    </div>
+
+    <!-- Login Box -->
+    <div class="login-box">
+      <h2>Log in</h2>
+      
+      <form (ngSubmit)="onLogin()">
+        <div class="input-group">
+          <input 
+            type="email" 
+            [(ngModel)]="email" 
+            name="email"
+            placeholder="Email" 
+            required>
+          <span class="input-icon">👤</span>
+        </div>
+
+        <div class="input-group">
+          <input 
+            type="password" 
+            [(ngModel)]="password" 
+            name="password"
+            placeholder="Password" 
+            required>
+          <span class="input-icon">🔒</span>
+        </div>
+
+        <a href="#" class="forgot-password" (click)="onForgotPassword()">Forgot password?</a>
+        
+        <button type="submit" class="login-btn">Log in</button>
+      </form>
+    </div>
+  </div>
+</div>
