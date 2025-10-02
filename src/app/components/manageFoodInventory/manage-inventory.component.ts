@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SidebarComponent } from '../../../sideBar/sidebar.component';  
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-food-inventory',
   templateUrl: './manage-inventory.component.html',
-  styleUrls: ['./manage-inventory.component.css'],
   imports:[SidebarComponent]
 })
 export class FoodInventoryComponent {
