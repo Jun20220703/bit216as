@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './manage-inventory.component.html',
   styleUrls: ['./manage-inventory.component.css']
 })
-export class FoodInventoryComponent {
+export class ManageFoodInventory {
   foodItems = [
     { name: 'Milk', qty: 2, expiry: '14 Sep 2025', category: 'Dairy', storage: 'Fridge' },
     { name: 'Rice', qty: '5kg', expiry: '30 Nov 2025', category: 'Grain', storage: 'Pantry' },
