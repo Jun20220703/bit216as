@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-inventory',
-  templateUrl: './inventory.component.html',
-  styleUrls: ['./inventory.component.css']
+  templateUrl: './browse-inventory.component.html',
+  styleUrls: ['./browse-inventory.component.css']
 })
 export class InventoryComponent {
   locations = ['Fridge', 'Freezer', 'Shelf'];
