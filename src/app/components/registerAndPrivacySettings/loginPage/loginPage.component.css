@@ -18,8 +18,33 @@
 .full-page-wrapper {
     height: 100vh;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     background-color: #2E6A4B;
+}
+
+/* Top Logo Section */
+.top-logo-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #2E6A4B;
+    flex-shrink: 0;
+    margin-top: -120px;
+    margin-bottom: -200px;
+}
+
+.top-logo-img {
+    width: 500px;
+    height: 500px;
+    object-fit: contain;
+}
+
+/* Main Content Area */
+.main-content {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
     justify-content: center;
     align-items: center;
 }
@@ -80,8 +105,8 @@
     flex: 0 0 50%;
     min-height: 600px;
     margin: 20px;
-    max-width: 950px;
-    margin-right: 200px;
+    max-width: 1000px;
+    margin-right: 300px;
 }
 
 .container p{
