@@ -6,7 +6,7 @@ import { SidebarComponent } from "../sidebar/sidebar.component";
   selector: 'app-food-inventory',
   templateUrl: './manage-inventory.component.html',
   styleUrls: ['./manage-inventory.component.css'],
-  imports: [SidebarComponent]
+  imports: [SidebarComponent, CommonModule]
 })
 export class ManageFoodInventory {
   foodItems = [
