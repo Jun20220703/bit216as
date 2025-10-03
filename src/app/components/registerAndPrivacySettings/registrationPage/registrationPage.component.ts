@@ -13,6 +13,10 @@ export class RegistrationPageComponent {
 
   password: string = '';
   confirmPassword: string = '';
+  
+  // 유효성 검사 메시지
+  passwordError: string = '';
+  emailError: string = '';
 
   clearInput(inputRef: HTMLInputElement) {
     inputRef.value = '';
@@ -31,17 +35,70 @@ export class RegistrationPageComponent {
     // 예: this.router.navigate(['/login']);
   }
 
+  // 비밀번호 유효성 검사
+  validatePassword(password: string): boolean {
+    if (password.length < 8) {
+      this.passwordError = 'Password must be at least 8 characters long';
+      return false;
+    }
+    
+    const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    if (!specialCharRegex.test(password)) {
+      this.passwordError = 'Password must contain at least one special character';
+      return false;
+    }
+    
+    this.passwordError = '';
+    return true;
+  }
+
+  // 이메일 유효성 검사
+  validateEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      this.emailError = 'Please enter a valid email address';
+      return false;
+    }
+    
+    this.emailError = '';
+    return true;
+  }
+
+  // 비밀번호 입력 시 실시간 검사
+  onPasswordChange(password: string) {
+    this.password = password;
+    this.validatePassword(password);
+  }
+
+  // 이메일 입력 시 실시간 검사
+  onEmailChange(email: string) {
+    this.validateEmail(email);
+  }
+
   onSubmit(form: NgForm) {
+    // 비밀번호 유효성 검사
+    if (!this.validatePassword(this.password)) {
+      return;
+    }
+
+    // 이메일 유효성 검사
+    const emailValue = form.value.email;
+    if (!this.validateEmail(emailValue)) {
+      return;
+    }
+
     if (this.password !== this.confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
 
-    if (form.valid) {
+    if (form.valid && this.passwordError === '' && this.emailError === '') {
       alert('Registration successful!');
       form.resetForm();
       this.password = '';
       this.confirmPassword = '';
+      this.passwordError = '';
+      this.emailError = '';
     } else {
       alert('Please fill in all required fields correctly.');
     }
