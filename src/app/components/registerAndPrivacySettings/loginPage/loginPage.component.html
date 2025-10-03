@@ -1,21 +1,26 @@
-
-
 <div class="full-page-wrapper">
-  <!-- Left Panel with Image and Text -->
-  <div class="left-slogan-panel">
-    <div class="globe-container">
-      <img src="assets/images/image2.png" alt="Globe with trees" class="globe-img">
-    </div>
-    <div class="slogan-text-container">
-      <p>Manage your food, reduce</p>
-      <p>waste, save money, and</p>
-      <p>care for the environment</p>
-      <p class="slogan-highlight">We Make a Difference</p>
-    </div>
+  <!-- Top Logo Section -->
+  <div class="top-logo-section">
+    <img src="assets/images/image1.png" alt="Food Shield Logo" class="top-logo-img">
   </div>
 
-  <!-- Right Panel with Login/Register Form -->
-  <div class="container" [class.active]="isRegisterMode" id="container">
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <!-- Left Panel with Image and Text -->
+    <div class="left-slogan-panel">
+      <div class="globe-container">
+        <img src="assets/images/image2.png" alt="Globe with trees" class="globe-img">
+      </div>
+      <div class="slogan-text-container">
+        <p>Manage your food, reduce</p>
+        <p>waste, save money, and</p>
+        <p>care for the environment</p>
+        <p class="slogan-highlight">We Make a Difference</p>
+      </div>
+    </div>
+
+    <!-- Right Panel with Login/Register Form -->
+    <div class="container" [class.active]="isRegisterMode" id="container">
   <div class="form-container sign-in">
     <form (ngSubmit)="onLogin()">
       <h1>Sign In</h1>
@@ -61,6 +66,7 @@
         <button class="hidden" (click)="toggleMode()">Sign Up</button>
       </div>
     </div>
+  </div>
   </div>
   </div>
 </div>
