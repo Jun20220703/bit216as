@@ -168,10 +168,20 @@ form label {
     text-decoration: none;
     font-weight: bold;
     cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .login-link a:hover {
     text-decoration: underline;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    margin-left: 4px;
+    font-weight: 500;
 }
 
 @media (max-width: 600px) {
