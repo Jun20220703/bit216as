@@ -23,14 +23,7 @@
     <div class="container" [class.active]="isRegisterMode" id="container">
   <div class="form-container sign-in">
     <form (ngSubmit)="onLogin()">
-      <h1>Sign In</h1>
-      <div class="social-icons">
-        <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
-        <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
-        <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
-      </div>
-      <span>or use your email password</span>
+      <h1>Log In</h1>
       <input type="email" placeholder="Email" [(ngModel)]="email" name="email">
       <input type="password" placeholder="Password" [(ngModel)]="password" name="password">
       <a href="#" (click)="onForgotPassword()" class="forgot-password">Forget Your Password?</a>
@@ -50,7 +43,7 @@
       <input type="text" placeholder="Name" [(ngModel)]="name" name="name">
       <input type="email" placeholder="Email" [(ngModel)]="email" name="email">
       <input type="password" placeholder="Password" [(ngModel)]="password" name="password">
-      <button type="submit">Sign Up</button>
+      <button type="submit">Register</button>
     </form>
   </div>
   <div class="toggle-container">
@@ -61,9 +54,9 @@
         <button class="hidden" (click)="toggleMode()">Sign In</button>
       </div>
       <div class="toggle-panel toggle-right">
-        <h1>Hello, Friend!</h1>
+        <h1>Welcom Back!</h1>
         <p>Register with your personal details to use all of site features</p>
-        <button class="hidden" (click)="toggleMode()">Sign Up</button>
+        <button class="hidden" (click)="toggleMode()">Register</button>
       </div>
     </div>
   </div>
