@@ -35,14 +35,8 @@ export class LoginPageComponent {
   }
 
   onRegister() {
-    if (this.name && this.email && this.password) {
-      // 등록 로직 구현
-      console.log('Register attempt:', { name: this.name, email: this.email, password: this.password });
-      alert('Registration successful!');
-      this.toggleMode(); // 로그인 모드로 전환
-    } else {
-      alert('Please fill in all fields.');
-    }
+    // Registration 페이지로 이동
+    this.router.navigate(['/registration']);
   }
 
   onForgotPassword() {
