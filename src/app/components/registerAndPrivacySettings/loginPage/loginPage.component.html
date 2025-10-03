@@ -1,22 +1,20 @@
+
+
 <div class="full-page-wrapper">
-  <!-- Header Section -->
-  <div class="header-content">
-    <div class="header-top-row">
-      <img src="assets/images/image1.png" alt="Food Shield Icon" class="food-shield-icon-img">
+  <!-- Left Panel with Image and Text -->
+  <div class="left-slogan-panel">
+    <div class="globe-container">
+      <img src="assets/images/image2.png" alt="Globe with trees" class="globe-img">
     </div>
-    <div class="header-bottom-row">
-      <div class="globe-container">
-        <img src="assets/images/image2.png" alt="Globe with trees" class="globe-img">
-      </div>
-      <div class="slogan-text-container">
-        <p>Manage your food, reduce</p>
-        <p>waste, save money, and</p>
-        <p>care for the environment.</p>
-        <p class="slogan-highlight">We Make a Difference</p>
-      </div>
+    <div class="slogan-text-container">
+      <p>Manage your food, reduce</p>
+      <p>waste, save money, and</p>
+      <p>care for the environment</p>
+      <p class="slogan-highlight">We Make a Difference</p>
     </div>
   </div>
 
+  <!-- Right Panel with Login/Register Form -->
   <div class="container" [class.active]="isRegisterMode" id="container">
   <div class="form-container sign-in">
     <form (ngSubmit)="onLogin()">
