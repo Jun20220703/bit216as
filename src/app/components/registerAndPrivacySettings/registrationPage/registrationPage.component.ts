@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration-page',
@@ -18,6 +19,8 @@ export class RegistrationPageComponent {
   passwordError: string = '';
   emailError: string = '';
 
+  constructor(private router: Router) {}
+
   clearInput(inputRef: HTMLInputElement) {
     inputRef.value = '';
     // Trigger change detection for ngModel
@@ -29,10 +32,7 @@ export class RegistrationPageComponent {
   }
 
   goToLogin() {
-    // 로그인 페이지로 이동하는 로직
-    // 실제 프로젝트에서는 Router를 사용하여 네비게이션
-    console.log('Navigate to login page');
-    // 예: this.router.navigate(['/login']);
+    this.router.navigate(['/login']);
   }
 
   // 비밀번호 유효성 검사
