@@ -35,8 +35,8 @@
 }
 
 .top-logo-img {
-    width: 500px;
-    height: 500px;
+    width: 450px;
+    height: 450px;
     object-fit: contain;
 }
 
@@ -117,12 +117,12 @@
 }
 
 .container span{
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .container a{
     color: #333;
-    font-size: 13px;
+    font-size: 15px;
     text-decoration: none;
     margin: 15px 0 10px;
 }
@@ -136,14 +136,14 @@
 .container button{
     background-color: #2E6A4B;
     color: #fff;
-    font-size: 12px;
-    padding: 10px 45px;
+    font-size: 16px;
+    padding: 15px 50px;
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: 10px;
     font-weight: 600;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    margin-top: 10px;
+    margin-top: 15px;
     cursor: pointer;
 }
 
@@ -165,15 +165,16 @@
 .container form h1 {
     margin-top: -40px;
     margin-bottom: 40px;
+    font-size: 2.5rem;
 }
 
 .container input{
     background-color: #eee;
     border: 1px solid #ddd;
-    margin: 8px 0;
-    padding: 10px 15px;
-    font-size: 13px;
-    border-radius: 8px;
+    margin: 12px 0;
+    padding: 15px 20px;
+    font-size: 16px;
+    border-radius: 10px;
     width: 100%;
     outline: none;
 }
