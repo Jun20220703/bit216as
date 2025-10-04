@@ -5,7 +5,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 @Component({
   selector: 'app-food-inventory',
   templateUrl: './manage-inventory.component.html',
-  imports:[SidebarComponent]
+  imports:[CommonModule, SidebarComponent]
 })
 export class FoodInventoryComponent {
   foodItems = [
