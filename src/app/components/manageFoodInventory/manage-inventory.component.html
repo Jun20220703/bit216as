@@ -32,7 +32,7 @@
           <td>
             <button type="button" (click)="editItem(item)">Edit</button>
             <button type="button" (click)="openDeleteModal(item)">Delete</button>
-            <button type="button" (click)="donateItem(item)">Donate</button>
+            <button type="button" (click)="openDonateModal(item)">Donate</button>
           </td>
         </tr>
       </tbody>
@@ -43,13 +43,51 @@
     <div class="modal">
 
     <div class="modal-content">
-      <p>Are you sure to delete "{{ selectedItem?.name }}" from inventory?</p>
+      <p>Are you sure to delete "{{ selectedDeleteItem?.name }}" from inventory?</p>
       <div class="modal-actions">
         <button type="button" class="btn-secondary" (click)="cancelDelete()">Cancel</button>
         <button type="button" class="btn-danger" (click)="confirmDelete()">Delete</button>
       </div>
     </div>
   </div>
+  }
+
+  @if (showDonateModal){
+    <!-- Donate Confirmation Modal -->
+    <div class="modal">
+      <div class="modal-content">
+        <p>
+          Do you want to donate “{{ selectedDonateItem?.name }}”?<br />
+          (Expiry: {{ selectedDonateItem?.expiry }})
+        </p>
+
+        <div class="form-group">
+          <label>Pickup Location *</label>
+          <input type="text" [(ngModel)]="donationDetails.location" placeholder="Enter pickup location" />
+        </div>
+
+        <div class="form-group">
+          <label>Availability *</label>
+          <input type="date" [(ngModel)]="donationDetails.availability" />
+        </div>
+
+        <div class="form-group">
+          <label>Notes (Optional)</label>
+          <textarea [(ngModel)]="donationDetails.notes" placeholder="Additional notes..."></textarea>
+        </div>
+
+        <!-- エラー表示 -->
+        <div class="error" *ngIf="donateError">{{ donateError }}</div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="cancelDonate()">Cancel</button>
+          <button type="button" class="btn-primary" (click)="confirmDonate()">Donate</button>
+        </div>
+      </div>
+    </div>
+
+
+
   }
   
 </div>

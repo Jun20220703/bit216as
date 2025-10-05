@@ -8,9 +8,12 @@
 /* メインコンテンツ */
 .content {
   flex-grow: 1;
-  padding: 30px;
+  padding: 1rem;
+  margin-left: 350px;
   background-color: #f9f9f9;
 }
+
+
 
 .content h1 {
   margin-bottom: 20px;
@@ -111,4 +114,14 @@ td button {
   background-color: #c9302c;
 }
 
+.form-group{
+  margin-bottom: 12px;
+}
+
+.error{
+  color: red;
+  font-size:0.9rem;
+  margin-bottom:10px;
+  text-align: center;
+}
 
