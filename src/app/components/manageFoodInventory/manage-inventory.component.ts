@@ -1,22 +1,23 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from "../sidebar/sidebar.component";
-
+import { Router } from '@angular/router';
+import { FoodService } from '../../services/food.service';
 @Component({
   selector: 'app-food-inventory',
   templateUrl: './manage-inventory.component.html',
   styleUrls: ['./manage-inventory.component.css'],
+  standalone: true,
   imports: [SidebarComponent, CommonModule]
 })
 export class ManageFoodInventory {
-  foodItems = [
-    { name: 'Milk', qty: 2, expiry: '14 Sep 2025', category: 'Dairy', storage: 'Fridge' },
-    { name: 'Rice', qty: '5kg', expiry: '30 Nov 2025', category: 'Grain', storage: 'Pantry' },
-    { name: 'Chicken', qty: '1kg', expiry: '12 Sep 2025', category: 'Meat', storage: 'Freezer' }
-  ];
+  foodItems: any[] = [];
 
+  constructor (private foodService: FoodService, private router: Router){
+    this.foodItems = this.foodService.getFoods();
+  }
   addFoodItem() {
-    console.log('Add food item clicked');
+    this.router.navigate(['/add-food']);
   }
 
   editItem(item: any) {
@@ -24,9 +25,30 @@ export class ManageFoodInventory {
   }
 
   deleteItem(item: any) {
-    console.log('Delete:', item);
+    this.foodService.deleteFood(item);
+    this.foodItems = this.foodService.getFoods();
   }
 
+  showDeleteModal = false;
+  selectedItem: any = null;
+
+  openDeleteModal(item: any){
+    this.selectedItem = item;
+    this.showDeleteModal = true;
+  }
+
+  cancelDelete(){
+    this.showDeleteModal = false;
+    this.selectedItem = null;
+  }
+
+  confirmDelete(){
+    if(this.selectedItem){
+      this.foodItems = this.foodItems.filter(i => i !== this.selectedItem);
+      console.log(`Deleted: ${this.selectedItem.name}`);
+      this.showDeleteModal = false;
+      this.selectedItem = null;    }
+  }
   donateItem(item: any) {
     console.log('Donate:', item);
   }
@@ -34,4 +56,6 @@ export class ManageFoodInventory {
   goToDonationList() {
     console.log('Navigate to Donation List');
   }
+
+
 }
