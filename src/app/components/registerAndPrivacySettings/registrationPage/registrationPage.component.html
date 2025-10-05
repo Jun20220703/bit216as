@@ -13,14 +13,16 @@
 
     <div class="input-group">
       <label for="email">Email*:</label>
-      <input type="email" id="email" name="email" ngModel required placeholder="eg) example@gmail.com" #emailInput>
+      <input type="email" id="email" name="email" ngModel required placeholder="eg) example@gmail.com" #emailInput (input)="onEmailChange(emailInput.value)">
       <span class="icon clear" (click)="clearInput(emailInput)">&#10006;</span>
+      <div class="error-message" *ngIf="emailError">{{ emailError }}</div>
     </div>
 
     <div class="input-group">
       <label for="password">Password*:</label>
-      <input type="password" id="password" name="password" [(ngModel)]="password" required placeholder="eg) Junkaiyane230@" #passwordInput>
+      <input type="password" id="password" name="password" [(ngModel)]="password" required placeholder="eg) Junkaiyane230@" #passwordInput (input)="onPasswordChange(passwordInput.value)">
       <span class="icon clear" (click)="clearInput(passwordInput)">&#10006;</span>
+      <div class="error-message" *ngIf="passwordError">{{ passwordError }}</div>
     </div>
 
     <div class="input-group">
@@ -33,7 +35,7 @@
       <label for="householdSize">Household Size(Optional):</label>
       <select id="householdSize" name="householdSize" ngModel required>
         <option value="" disabled selected>Size</option>
-        <option value="No">No</option>
+        <option value="No-Selection">No Selection</option>
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
@@ -57,6 +59,6 @@
   </form>
   
   <div class="login-link">
-    <p>Already have an account? <a href="#" (click)="goToLogin()">Go to log in</a></p>
+    <p>Already have an account? <a (click)="goToLogin()">Go to log in</a></p>
   </div>
 </div>

@@ -13,8 +13,14 @@ import { Router } from '@angular/router';
 export class LoginPageComponent {
   email: string = '';
   password: string = '';
+  name: string = '';
+  isRegisterMode: boolean = false;
 
   constructor(private router: Router) {}
+
+  toggleMode() {
+    this.isRegisterMode = !this.isRegisterMode;
+  }
 
   onLogin() {
     if (this.email && this.password) {
@@ -29,7 +35,7 @@ export class LoginPageComponent {
   }
 
   onRegister() {
-    // 등록 페이지로 이동
+    // Registration 페이지로 이동
     this.router.navigate(['/registration']);
   }
 
