@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { SidebarComponent } from '../../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
   templateUrl: './homePage.component.html',
   styleUrls: ['./homePage.component.css'],
-  imports: [CommonModule]
+  imports: [CommonModule, RouterModule, SidebarComponent]
 })
 export class HomePageComponent {
 
