@@ -31,7 +31,7 @@ router.post('/register', async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      householdSize: householdSize || 1,
+      householdSize: householdSize || undefined,
       dateOfBirth: new Date(dateOfBirth)
     });
 

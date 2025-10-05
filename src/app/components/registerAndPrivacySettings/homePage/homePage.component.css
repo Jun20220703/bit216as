@@ -2,6 +2,13 @@
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 240px; /* Sidebar width for fixed positioning */
 }
 
 .content-wrapper {
@@ -17,7 +24,15 @@
 /* Top Section - White Background */
 .top-section {
   background: white;
-  min-height: 400px;
+  min-height: 280px;
+}
+
+.top-section .slogan-text {
+  margin-top: 100px;
+}
+
+.top-section .main-message {
+  margin-top: 10px;
 }
 
 .left-content {
@@ -26,22 +41,23 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 30px;
-  margin-left: 140px;
+  margin-left: 50px;
 }
 
 .homepage-title {
-  font-size: 4rem;
+  font-size: 3.5rem;
   font-weight: bold;
   color: black;
   margin: 0;
   font-family: sans-serif;
+  margin-left: -50px;
 }
 
 .earth-hands {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 100px;
+  margin-left: 15px;
 }
 
 .earth-image {
@@ -53,7 +69,7 @@
 .right-content {
   flex: 1;
   text-align: left;
-  margin-right: 140px;
+  margin-right: 80px;
 }
 
 .slogan-text {
@@ -74,22 +90,22 @@
 /* Middle Section - Dark Green Background */
 .middle-section {
   background: #1B5E20;
-  min-height: 400px;
+  min-height: 280px;
 }
 
 .middle-section .slogan-text {
-  color: #81C784;
+  color: #e9efef;
 }
 
 .middle-section .main-message {
-  color: #A5D6A7;
+  color: #e9efef;
 }
 
 .refrigerator {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 100px;
+  margin-right: -300px;
 }
 
 .fridge-image {
@@ -102,14 +118,22 @@
 /* Bottom Section - White Background */
 .bottom-section {
   background: white;
-  min-height: 400px;
+  min-height: 280px;
+}
+
+.bottom-section .slogan-text {
+  margin-top: -15px;
+}
+
+.bottom-section .main-message {
+  margin-top: 10px;
 }
 
 .people-globe {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 100px;
+  margin-left: 15px;
 }
 
 .people-image {
@@ -129,12 +153,12 @@
 }
 
 .nav-btn {
-  background: #4CAF50;
+  background: #1B5E20;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  padding: 15px 25px;
+  border-radius: 60px;
+  font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
   transition: background 0.3s;
@@ -146,6 +170,20 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .homepage-container {
+    flex-direction: column;
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+  
   .content-wrapper {
     flex-direction: column;
     text-align: center;
