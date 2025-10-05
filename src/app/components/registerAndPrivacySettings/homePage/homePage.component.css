@@ -24,7 +24,15 @@
 /* Top Section - White Background */
 .top-section {
   background: white;
-  min-height: 400px;
+  min-height: 280px;
+}
+
+.top-section .slogan-text {
+  margin-top: 100px;
+}
+
+.top-section .main-message {
+  margin-top: 10px;
 }
 
 .left-content {
@@ -42,6 +50,7 @@
   color: black;
   margin: 0;
   font-family: sans-serif;
+  margin-left: -50px;
 }
 
 .earth-hands {
@@ -81,15 +90,15 @@
 /* Middle Section - Dark Green Background */
 .middle-section {
   background: #1B5E20;
-  min-height: 400px;
+  min-height: 280px;
 }
 
 .middle-section .slogan-text {
-  color: #81C784;
+  color: #e9efef;
 }
 
 .middle-section .main-message {
-  color: #A5D6A7;
+  color: #e9efef;
 }
 
 .refrigerator {
@@ -109,7 +118,15 @@
 /* Bottom Section - White Background */
 .bottom-section {
   background: white;
-  min-height: 400px;
+  min-height: 280px;
+}
+
+.bottom-section .slogan-text {
+  margin-top: -15px;
+}
+
+.bottom-section .main-message {
+  margin-top: 10px;
 }
 
 .people-globe {
