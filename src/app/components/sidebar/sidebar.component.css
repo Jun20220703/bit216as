@@ -1,6 +1,6 @@
 .sidebar {
   background: #225530;
-  width: 240px;
+  width: 350px;
   height: 100vh;
   padding: 1rem;
   box-sizing: border-box;
@@ -28,7 +28,7 @@
 }
 
 .menu-item {
-  padding: .5rem;
+  padding: 1.5rem;
   text-decoration: none;
   color: #ffffff;
   margin-bottom: .25rem;
