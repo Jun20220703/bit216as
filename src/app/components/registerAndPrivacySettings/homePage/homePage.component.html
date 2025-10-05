@@ -1,6 +1,11 @@
 <div class="homepage-container">
-  <!-- Top Section - White Background -->
-  <section class="top-section">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+  
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Section - White Background -->
+    <section class="top-section">
     <div class="content-wrapper">
       <div class="left-content">
         <h1 class="homepage-title">Homepage</h1>
@@ -45,11 +50,12 @@
     </div>
   </section>
 
-  <!-- Navigation Section -->
-  <nav class="navigation">
-    <button class="nav-btn" (click)="onLogin()">Login</button>
-    <button class="nav-btn" (click)="onRegister()">Register</button>
-    <button class="nav-btn" (click)="onInventory()">Inventory</button>
-    <button class="nav-btn" (click)="onAccountSettings()">Account Settings</button>
-  </nav>
+    <!-- Navigation Section -->
+    <nav class="navigation">
+      <button class="nav-btn" (click)="onLogin()">Login</button>
+      <button class="nav-btn" (click)="onRegister()">Register</button>
+      <button class="nav-btn" (click)="onInventory()">Inventory</button>
+      <button class="nav-btn" (click)="onAccountSettings()">Account Settings</button>
+    </nav>
+  </div>
 </div>
