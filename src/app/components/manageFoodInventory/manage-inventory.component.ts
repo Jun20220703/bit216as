@@ -47,7 +47,8 @@ export class ManageFoodInventory {
       this.foodItems = this.foodItems.filter(i => i !== this.selectedItem);
       console.log(`Deleted: ${this.selectedItem.name}`);
       this.showDeleteModal = false;
-      this.selectedItem = null;    }
+      this.selectedItem = null;    
+    }
   }
   donateItem(item: any) {
     console.log('Donate:', item);
