@@ -30,23 +30,26 @@
           <td>{{ item.category }}</td>
           <td>{{ item.storage }}</td>
           <td>
-            <button (click)="editItem(item)">Edit</button>
-            <button (click)="deleteItem(item)">Delete</button>
-            <button (click)="donateItem(item)">Donate</button>
+            <button type="button" (click)="editItem(item)">Edit</button>
+            <button type="button" (click)="openDeleteModal(item)">Delete</button>
+            <button type="button" (click)="donateItem(item)">Donate</button>
           </td>
         </tr>
       </tbody>
     </table>
   </main>
 
-  <div class="modal">
-    @if (showDeleteModal){}
+  @if (showDeleteModal){
+    <div class="modal">
+
     <div class="modal-content">
       <p>Are you sure to delete "{{ selectedItem?.name }}" from inventory?</p>
       <div class="modal-actions">
-        <button class="btn-secondary" (click)="cancelDelete()">Cancel</button>
-        <button class="btn-danger" (click)="confirmDelete()">Delete</button>
+        <button type="button" class="btn-secondary" (click)="cancelDelete()">Cancel</button>
+        <button type="button" class="btn-danger" (click)="confirmDelete()">Delete</button>
       </div>
     </div>
   </div>
+  }
+  
 </div>
