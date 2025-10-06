@@ -1,105 +1,145 @@
-.content {
-  flex: 1;
-  padding: 2rem;
-  overflow-y: auto;
-  background: #f9f9f9;
-}
+/* Layout */
+.layout { display: flex; background-color: white; }
+.content { flex: 1; padding: 1rem;margin-left:350px}
 
 /* Header */
-.inventory-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
+.inventory-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.inventory-title label { display: block; font-size: 1.8rem; font-weight: bold; margin-bottom: 0.5rem; }
 
-.inventory-header select {
-  padding: .4rem .6rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+/* Select */
+.select-wrapper { position: relative; width: 250px; }
+.select-wrapper select {
+  width: 100%; padding: 0.5rem 1rem; padding-right: 2.5rem;
+  border: none; border-radius: 60px; background-color: #f0f0f0; font-size: 1rem; outline: none; appearance: none; cursor: pointer;
 }
+.select-wrapper .custom-arrow { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); pointer-events: none; font-size: 1rem; color: #333; }
 
-.header-icons {
-  margin-left: auto;
-  display: flex;
-  gap: .5rem;
-}
+/* Header icons */
+.header-icons { display: flex; align-items: center; gap: 1rem; }
+.header-icon { font-size: 1.8rem; cursor: pointer; color: #333; transition: color 0.2s; }
+.header-icon:hover { color: #007bff; }
 
-.header-icons button {
-  background: #eee;
-  border: none;
-  padding: .4rem .6rem;
-  border-radius: 6px;
-  cursor: pointer;
-}
+/* Search */
+.search-bar { margin: 0.5rem 0 1rem 0; }
+.search-bar input { width: 100%; max-width: 400px; padding: 0.5rem 1rem; border: 1px solid #ccc; border-radius: 30px; font-size: 1rem; outline: none; background-color: #f9f9f9; }
 
-/* Filter panel */
-.filter-panel {
-  background: #ffffff;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,.1);
-}
+/* Filter */
+.filter-panel { border: 1px solid #ccc; padding: 2rem; margin: 1rem 0; background-color: #f9f9f9; border-radius: 60px; }
+.filter-section { margin-bottom: 1.5rem; }
+.filter-section h3 { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.8rem; }
 
-.filter-panel h4 {
-  margin-top: .5rem;
-  margin-bottom: .25rem;
-  color: #225530;
-}
+/* Category */
+.category { margin-bottom: 2rem; padding: 1rem; border-radius: 12px; }
+.category.fruit { background-color: #fff7c2; }
+.category.vegetable { background-color: #dbeeff; }
+.category.meat { background-color: #ffe0e7; }
 
-/* Category sections */
-.category {
-  background: white;
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.category h3 {
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-}
-
-/* Fruit color theme */
-.category.fruit {
-  background: #fff8eb;
-}
-
-/* Vegetable color theme */
-.category.vegetable {
-  background: #f0f6ff;
-}
-
+/* ---------- Item 行：三栏布局（name | quantity(center) | hover actions） ---------- */
 .item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr minmax(120px, 180px) minmax(160px, 320px);
+  gap: 12px;
   align-items: center;
-  justify-content: space-between;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: .6rem .8rem;
-  margin-bottom: .5rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
+/* 去掉最后一行下边线 */
+.item:last-child { border-bottom: none; }
+
+/* 左：名称靠左 */
 .item-name {
+  font-size: 1rem;
+  font-weight: 500;
+  justify-self: start;
+  padding-left: 6px;
+}
+
+/* 中：数量栏居中 */
+.quantity-slot {
+  justify-self: center; /* 把 - qty + 放在中间列正中 */
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.quantity-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.quantity-control button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background-color: #e8e8e8;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-control .qty {
+  min-width: 26px;
+  text-align: center;
   font-weight: 600;
 }
 
-.quantity {
+/* 右：hover slot 靠右 */
+.hover-slot { justify-self: end; display: flex; align-items: center; justify-content: flex-end; }
+
+/* hover 按钮：在 DOM 内，但默认隐藏（opacity），显示用 class.visible 或 .item:hover */
+.hover-actions {
   display: flex;
+  gap: 1.5rem;               /* 按钮间距 */
   align-items: center;
-  gap: .4rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(8px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
-.quantity button {
-  background: #e5e5e5;
+/* 显示条件：支持 CSS hover 或 Angular binding .visible */
+.item:hover .hover-actions,
+.hover-actions.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+/* hover 按钮风格（放大版） */
+.hover-actions button {
   border: none;
-  padding: .2rem .6rem;
-  border-radius: 6px;
-  font-size: 1rem;
+  /* padding 决定“格子”大小，可以适当调大 */
+  padding: 0.8rem 1.4rem;  /* ← 原来是0.3rem 0.6rem */
+  border-radius: 8px;      /* 稍微圆一点 */
   cursor: pointer;
+  font-size: 1rem;         /* ← 原来是0.85rem */
+  font-weight: 600;        /* 字重一点 */
+}
+
+/* 颜色 */
+.hover-actions .used   { background-color: #cce5ff; }
+.hover-actions .meal   { background-color: #d4edda; }
+.hover-actions .donate { background-color: #fff3cd; }
+
+/* ---------- Responsive: 小屏把中间/右侧合并到下一行显示 ---------- */
+@media (max-width: 640px) {
+  .item {
+    grid-template-columns: 1fr; /* 单列 */
+    grid-template-rows: auto auto; /* 名称一行，控制一行 */
+    gap: 8px;
+  }
+
+  .quantity-slot, .hover-slot {
+    justify-self: start;
+  }
+
+  .hover-slot {
+    margin-left: 6px;
+  }
 }

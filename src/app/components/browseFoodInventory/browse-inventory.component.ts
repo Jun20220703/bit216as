@@ -11,8 +11,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   imports: [CommonModule, FormsModule, SidebarComponent],
 })
 export class InventoryComponent {
-  locations = ['Fridge', 'Freezer', 'Shelf'];
-  selectedLocation = 'Fridge';
+  locations = ['All', 'Fridge', 'Freezer', 'Shelf'];
+  selectedLocation = 'All';
   showFilter = false;
   showSearch = false;
   searchQuery: string = '';

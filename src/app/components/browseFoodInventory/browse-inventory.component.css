@@ -1,6 +1,6 @@
 /* Layout */
 .layout { display: flex; background-color: white; }
-.content { flex: 1; padding: 1rem; }
+.content { flex: 1; padding: 1rem;margin-left:350px}
 
 /* Header */
 .inventory-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
@@ -27,6 +27,8 @@
 .filter-panel { border: 1px solid #ccc; padding: 2rem; margin: 1rem 0; background-color: #f9f9f9; border-radius: 60px; }
 .filter-section { margin-bottom: 1.5rem; }
 .filter-section h3 { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.8rem; }
+
+
 
 /* Category */
 .category { margin-bottom: 2rem; padding: 1rem; border-radius: 12px; }

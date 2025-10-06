@@ -10,8 +10,9 @@
         <label>Inventory</label>
         <div class="select-wrapper">
           <select [(ngModel)]="selectedLocation">
-            <option *ngFor="let loc of locations">{{ loc }}</option>
+            <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
           </select>
+
           <span class="custom-arrow">▼</span>
         </div>
       </div>
@@ -52,6 +53,7 @@
       <div class="filter-section">
         <h3>Expired in</h3>
         <input type="number" [(ngModel)]="filter.expiredIn" />
+        <span>     day(s)</span>
       </div>
     </div>
 
