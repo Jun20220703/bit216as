@@ -21,7 +21,10 @@
   <div class="content">
     <!-- Account Settings Tab -->
     <div *ngIf="activeTab === 'account'" class="tab-content">
-      <div class="account-form-container">
+      <div *ngIf="isLoadingUserData" class="loading-message">
+        <p>Loading user data...</p>
+      </div>
+      <div *ngIf="!isLoadingUserData" class="account-form-container">
         <!-- Profile Photo Section -->
         <div class="profile-photo-section">
           <label class="profile-photo-label">Profile photo</label>
@@ -36,7 +39,7 @@
           <div class="form-field">
             <label class="field-label" for="name">Name*:</label>
             <div class="input-container">
-              <input type="text" id="name" class="form-input" [(ngModel)]="userData.name" placeholder="junkaiyane" title="Enter your name">
+              <input type="text" id="name" class="form-input" [(ngModel)]="userData.name" placeholder="Enter your name" title="Enter your name">
               <button class="clear-button" (click)="clearField('name')" title="Clear name">×</button>
             </div>
           </div>
@@ -84,8 +87,11 @@
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-          <button class="cancel-button" (click)="onCancel()">Cancel</button>
-          <button class="save-button" (click)="onSave()">Save</button>
+          <button class="cancel-button" (click)="onCancel()" [disabled]="isSaving">Cancel</button>
+          <button class="save-button" (click)="onSave()" [disabled]="isSaving">
+            <span *ngIf="!isSaving">Save</span>
+            <span *ngIf="isSaving">Saving...</span>
+          </button>
         </div>
       </div>
     </div>
