@@ -1,7 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+// ⚠️ 根据你 sidebar 的位置选择正确路径：
+// 如果在 src/app/components/sidebar/sidebar.component.ts
+// import { SidebarComponent } from '../sidebar/sidebar.component';
+// 如果在 src/app/sidebar/sidebar.component.ts
+// import { SidebarComponent } from '../../sidebar/sidebar.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+
+type CategoryKey = 'all' | 'fruit' | 'vegetable' | 'meat' | 'carb';
 
 @Component({
   selector: 'app-inventory',
@@ -11,8 +19,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   imports: [CommonModule, FormsModule, SidebarComponent],
 })
 export class InventoryComponent {
-  locations = ['Fridge', 'Freezer', 'Shelf'];
-  selectedLocation = 'Fridge';
+  locations = ['All', 'Fridge', 'Freezer', 'Shelf'];
+  selectedLocation = 'All';
   showFilter = false;
   showSearch = false;
   searchQuery: string = '';
@@ -25,50 +33,68 @@ export class InventoryComponent {
       all: true,
       fruit: true,
       vegetable: true,
-      meat: false,
+      meat: true,
+      carb: true
     },
-    expiredIn: 15,
+    expiredIn: 0
   };
 
-  categories = [
+  data = [
     {
-      name: 'Fruit',
-      colorClass: 'fruit',
-      icon: '🍎',
-      items: [
-        { name: 'Apple', quantity: 4 },
-        { name: 'Avocado', quantity: 6 },
-        { name: 'Banana', quantity: 2 },
-      ],
+      name: 'Fridge',
+      categories: [
+        {
+          name: 'Carbohydrates',
+          key: 'carb' as CategoryKey,
+          colorClass: 'carb',
+          icon: '🍞',
+          items: [{ name: 'Rice', quantity: 5 }]
+        },
+        {
+          name: 'Fruit',
+          key: 'fruit' as CategoryKey,
+          colorClass: 'fruit',
+          icon: '🍎',
+          items: [{ name: 'Apple', quantity: 4 }, { name: 'Grape', quantity: 1 }]
+        },
+        {
+          name: 'Meat',
+          key: 'meat' as CategoryKey,
+          colorClass: 'meat',
+          icon: '🍖',
+          items: [{ name: 'Chicken', quantity: 3 }]
+        }
+      ]
     },
     {
-      name: 'Vegetable',
-      colorClass: 'vegetable',
-      icon: '🥦',
-      items: [
-        { name: 'Broccoli', quantity: 3 },
-        { name: 'Onions', quantity: 2 },
-      ],
+      name: 'Freezer',
+      categories: [
+        {
+          name: 'Meat',
+          key: 'meat' as CategoryKey,
+          colorClass: 'meat',
+          icon: '🍖',
+          items: [{ name: 'Fish', quantity: 2 }]
+        }
+      ]
     },
     {
-      name: 'Meat',
-      colorClass: 'meat',
-      icon: '🍖',
-      items: [
-        { name: 'Chicken Breast', quantity: 5 },
-        { name: 'Beef', quantity: 2 },
-      ],
-    },
+      name: 'Shelf',
+      categories: [
+        {
+          name: 'Carbohydrates',
+          key: 'carb' as CategoryKey,
+          colorClass: 'carb',
+          icon: '🍞',
+          items: [{ name: 'Pasta', quantity: 3 }]
+        }
+      ]
+    }
   ];
 
-  toggleFilterPanel() {
-    this.showFilter = !this.showFilter;
-  }
-
-  toggleSearchBar() {
-    this.showSearch = !this.showSearch;
-    if (!this.showSearch) this.searchQuery = '';
-  }
+  // --- UI 控制 ---
+  toggleFilterPanel() { this.showFilter = !this.showFilter; }
+  toggleSearchBar() { this.showSearch = !this.showSearch; if (!this.showSearch) this.searchQuery = ''; }
 
   toggleSource(source: 'donation' | 'inventory') {
     if (source === 'donation') {
@@ -80,38 +106,44 @@ export class InventoryComponent {
     }
   }
 
-  toggleCategory(category: 'all' | 'fruit' | 'vegetable' | 'meat'): void {
+  toggleCategory(category: CategoryKey) {
     if (category === 'all') {
-      this.filter.categories = { all: true, fruit: false, vegetable: false, meat: false };
+      const enabled = !this.filter.categories.all;
+      this.filter.categories = { all: enabled, fruit: enabled, vegetable: enabled, meat: enabled, carb: enabled };
       return;
     }
     this.filter.categories[category] = !this.filter.categories[category];
     this.filter.categories.all = false;
-
-    const noneSelected = !this.filter.categories.fruit && !this.filter.categories.vegetable && !this.filter.categories.meat;
-    if (noneSelected) this.filter.categories.all = true;
   }
 
-  filteredCategories() {
-    let cats = this.filter.categories.all
-      ? this.categories
-      : this.categories.filter(
-          (cat) =>
-            (this.filter.categories.fruit && cat.name === 'Fruit') ||
-            (this.filter.categories.vegetable && cat.name === 'Vegetable') ||
-            (this.filter.categories.meat && cat.name === 'Meat')
-        );
+  // --- 数据过滤 ---
+  filteredLocations() {
+    let locs = this.selectedLocation === 'All'
+      ? this.data
+      : this.data.filter(loc => loc.name === this.selectedLocation);
 
+    // 过滤 category
+    locs = locs.map(loc => ({
+      ...loc,
+      categories: loc.categories.filter(cat => this.filter.categories.all || this.filter.categories[cat.key])
+    }));
+
+    // 搜索
     if (this.searchQuery.trim() !== '') {
       const q = this.searchQuery.toLowerCase();
-      cats = cats
-        .map((cat) => ({ ...cat, items: cat.items.filter((item) => item.name.toLowerCase().includes(q)) }))
-        .filter((cat) => cat.items.length > 0);
+      locs = locs.map(loc => ({
+        ...loc,
+        categories: loc.categories.map(cat => ({
+          ...cat,
+          items: cat.items.filter(item => item.name.toLowerCase().includes(q))
+        })).filter(cat => cat.items.length > 0)
+      })).filter(loc => loc.categories.length > 0);
     }
 
-    return cats;
+    return locs;
   }
 
+  // --- Item 修改 ---
   increaseItem(item: any) { item.quantity++; }
   decreaseItem(item: any) { if (item.quantity > 0) item.quantity--; }
 }
