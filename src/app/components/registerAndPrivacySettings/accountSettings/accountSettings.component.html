@@ -54,7 +54,19 @@
           <div class="form-field">
             <label class="field-label" for="password">Password*:</label>
             <div class="input-container">
-              <input type="password" id="password" class="form-input" [value]="userData.password" placeholder="************" title="Click to change password" (click)="onPasswordClick()" readonly>
+              <input 
+                [type]="showPassword ? 'text' : 'password'" 
+                id="password" 
+                class="form-input" 
+                [value]="showPassword ? actualPassword : '************'" 
+                placeholder="************" 
+                title="Click to change password" 
+                (click)="onPasswordClick()" 
+                readonly>
+              <button class="password-toggle-button" (click)="togglePasswordVisibility()" title="Toggle password visibility">
+                <span *ngIf="!showPassword">Show</span>
+                <span *ngIf="showPassword">Hide</span>
+              </button>
               <button class="clear-button" (click)="onPasswordReset()" title="Reset password">×</button>
             </div>
           </div>
@@ -118,14 +130,34 @@
             <div class="form-field">
               <label class="field-label" for="new-password">Password*:</label>
               <div class="input-container">
-                <input type="password" id="new-password" class="form-input" [(ngModel)]="newPassword" placeholder="Enter new password" title="Enter new password">
+                <input 
+                  [type]="showNewPassword ? 'text' : 'password'" 
+                  id="new-password" 
+                  class="form-input" 
+                  [(ngModel)]="newPassword" 
+                  placeholder="Enter new password" 
+                  title="Enter new password">
+                <button class="password-toggle-button" (click)="toggleNewPasswordVisibility()" title="Toggle password visibility">
+                  <span *ngIf="!showNewPassword">Show</span>
+                  <span *ngIf="showNewPassword">Hide</span>
+                </button>
                 <button class="clear-button" (click)="clearNewPassword()" title="Clear password">×</button>
               </div>
             </div>
             <div class="form-field">
               <label class="field-label" for="confirm-password">Confirm Password*:</label>
               <div class="input-container">
-                <input type="password" id="confirm-password" class="form-input" [(ngModel)]="confirmPassword" placeholder="Confirm new password" title="Confirm new password">
+                <input 
+                  [type]="showConfirmPassword ? 'text' : 'password'" 
+                  id="confirm-password" 
+                  class="form-input" 
+                  [(ngModel)]="confirmPassword" 
+                  placeholder="Confirm new password" 
+                  title="Confirm new password">
+                <button class="password-toggle-button" (click)="toggleConfirmPasswordVisibility()" title="Toggle password visibility">
+                  <span *ngIf="!showConfirmPassword">Show</span>
+                  <span *ngIf="showConfirmPassword">Hide</span>
+                </button>
                 <button class="clear-button" (click)="clearConfirmPassword()" title="Clear confirm password">×</button>
               </div>
             </div>
