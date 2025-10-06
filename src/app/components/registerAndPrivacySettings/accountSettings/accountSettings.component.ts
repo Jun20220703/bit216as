@@ -271,14 +271,19 @@ export class AccountSettingsComponent {
           next: (response: any) => {
             console.log('Password changed successfully');
             this.userData.password = '************';
-            this.actualPassword = this.newPassword; // Update the actual password
-            localStorage.setItem('userPassword', this.newPassword); // Update localStorage
+            this.actualPassword = this.newPassword;
+            // For security, clear auth state and force re-login with the new password
             this.showPasswordChangeForm = false;
             this.newPassword = '';
             this.confirmPassword = '';
             this.showNewPassword = false;
             this.showConfirmPassword = false;
-            alert('Password changed successfully!');
+            alert('Password changed successfully! Please log in again with your new password.');
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userPassword');
+            this.router.navigate(['/login']);
           },
           error: (error) => {
             console.error('Password change failed:', error);
