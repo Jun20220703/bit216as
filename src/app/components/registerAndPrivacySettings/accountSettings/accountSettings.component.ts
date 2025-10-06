@@ -157,6 +157,12 @@ export class AccountSettingsComponent {
       return;
     }
 
+    // Confirm before saving
+    const confirmed = confirm('Are you sure to save?');
+    if (!confirmed) {
+      return;
+    }
+
     this.isSaving = true;
     this.saveError = '';
 
