@@ -30,6 +30,10 @@ export class AccountSettingsComponent {
     dateOfBirth: ''
   };
 
+  // Store actual password for display
+  actualPassword: string = '';
+
+
   // Password reset dialog states
   showPasswordResetDialog: boolean = false;
   showPasswordChangeForm: boolean = false;
@@ -40,6 +44,11 @@ export class AccountSettingsComponent {
   isSaving: boolean = false;
   saveError: string = '';
   isLoadingUserData: boolean = true;
+  
+  // Password visibility state
+  showPassword: boolean = false;
+  showNewPassword: boolean = false;
+  showConfirmPassword: boolean = false;
 
   constructor(private router: Router, private http: HttpClient) {
     this.loadUserData();
@@ -58,6 +67,10 @@ export class AccountSettingsComponent {
           householdSize: user.householdSize || 1,
           dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : ''
         };
+        
+        // Load actual password from localStorage
+        this.actualPassword = localStorage.getItem('userPassword') || '';
+        
         this.isLoadingUserData = false;
         console.log('Loaded user data from localStorage:', this.userData);
         return;
@@ -85,6 +98,10 @@ export class AccountSettingsComponent {
             householdSize: response.householdSize || 1,
             dateOfBirth: response.dateOfBirth ? new Date(response.dateOfBirth).toISOString().split('T')[0] : ''
           };
+          
+          // Load actual password from localStorage
+          this.actualPassword = localStorage.getItem('userPassword') || '';
+          
           this.isLoadingUserData = false;
           console.log('Loaded user data from API:', this.userData);
           
@@ -185,6 +202,18 @@ export class AccountSettingsComponent {
     this.showPasswordResetDialog = true;
   }
 
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleNewPasswordVisibility() {
+    this.showNewPassword = !this.showNewPassword;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
   onPasswordReset() {
     this.showPasswordResetDialog = true;
   }
@@ -236,9 +265,13 @@ export class AccountSettingsComponent {
           next: (response: any) => {
             console.log('Password changed successfully');
             this.userData.password = '************';
+            this.actualPassword = this.newPassword; // Update the actual password
+            localStorage.setItem('userPassword', this.newPassword); // Update localStorage
             this.showPasswordChangeForm = false;
             this.newPassword = '';
             this.confirmPassword = '';
+            this.showNewPassword = false;
+            this.showConfirmPassword = false;
             alert('Password changed successfully!');
           },
           error: (error) => {
@@ -258,5 +291,7 @@ export class AccountSettingsComponent {
     this.showPasswordChangeForm = false;
     this.newPassword = '';
     this.confirmPassword = '';
+    this.showNewPassword = false;
+    this.showConfirmPassword = false;
   }
 }
