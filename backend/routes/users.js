@@ -119,11 +119,25 @@ router.get('/profile/:userId', async (req, res) => {
 // 사용자 정보 업데이트
 router.put('/profile/:userId', async (req, res) => {
   try {
-    const { name, householdSize, dateOfBirth, preferences } = req.body;
+    const { name, householdSize, dateOfBirth, preferences, password } = req.body;
+    
+    // 업데이트할 데이터 준비
+    const updateData = {};
+    
+    if (name !== undefined) updateData.name = name;
+    if (householdSize !== undefined) updateData.householdSize = householdSize;
+    if (dateOfBirth !== undefined) updateData.dateOfBirth = new Date(dateOfBirth);
+    if (preferences !== undefined) updateData.preferences = preferences;
+    
+    // 비밀번호가 제공된 경우 해싱
+    if (password) {
+      const saltRounds = 10;
+      updateData.password = await bcrypt.hash(password, saltRounds);
+    }
     
     const user = await User.findByIdAndUpdate(
       req.params.userId,
-      { name, householdSize, dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined, preferences },
+      updateData,
       { new: true, runValidators: true }
     ).select('-password');
 
