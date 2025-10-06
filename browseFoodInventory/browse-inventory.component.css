@@ -1,40 +1,148 @@
 /* Layout */
 .layout { display: flex; background-color: white; }
-.content { flex: 1; padding: 1rem;margin-left:350px}
+.content {
+  flex: 1;
+  padding: 1rem;
+  margin-left: 350px;
+  background-color: white;  /* ✅ 确保内容区域是白色 */
+  min-height: 100vh;        /* ✅ 让它覆盖整个页面高度 */
+}
 
 /* Header */
 .inventory-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
-.inventory-title label { display: block; font-size: 1.8rem; font-weight: bold; margin-bottom: 0.5rem; }
+.inventory-title label { font-size: 1.8rem; font-weight: bold; }
 
 /* Select */
 .select-wrapper { position: relative; width: 250px; }
 .select-wrapper select {
   width: 100%; padding: 0.5rem 1rem; padding-right: 2.5rem;
-  border: none; border-radius: 60px; background-color: #f0f0f0; font-size: 1rem; outline: none; appearance: none; cursor: pointer;
+  border: none; border-radius: 60px; background: #f0f0f0;
+  font-size: 1rem; outline: none; appearance: none; cursor: pointer;
 }
-.select-wrapper .custom-arrow { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); pointer-events: none; font-size: 1rem; color: #333; }
+.select-wrapper .custom-arrow { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); }
 
 /* Header icons */
-.header-icons { display: flex; align-items: center; gap: 1rem; }
-.header-icon { font-size: 1.8rem; cursor: pointer; color: #333; transition: color 0.2s; }
-.header-icon:hover { color: #007bff; }
+.header-icons { display: flex; gap: 1rem; }
+.header-icon { font-size: 1.8rem; cursor: pointer; }
 
 /* Search */
 .search-bar { margin: 0.5rem 0 1rem 0; }
-.search-bar input { width: 100%; max-width: 400px; padding: 0.5rem 1rem; border: 1px solid #ccc; border-radius: 30px; font-size: 1rem; outline: none; background-color: #f9f9f9; }
+.search-bar input { width: 100%; max-width: 400px; padding: 0.5rem 1rem; border-radius: 30px; border: 1px solid #ccc; }
 
-/* Filter */
-.filter-panel { border: 1px solid #ccc; padding: 2rem; margin: 1rem 0; background-color: #f9f9f9; border-radius: 60px; }
-.filter-section { margin-bottom: 1.5rem; }
-.filter-section h3 { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.8rem; }
+/* Drawer 样式 */
+.filter-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 350px;          /* Drawer 宽度 */
+  height: 100%;
+  background: #fff;
+  border-radius: 20px 0 0 20px;
+    /* ✅ 换边框线颜色 */
+  border-left: 5px solid #4caf4fb5;
+  /* 阴影 */
+  box-shadow: -2px 0 12px rgba(0,0,0,0.1);
+  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease-in-out;
+  padding: 1rem;
+  z-index: 1000;
+  overflow-y: auto;
+  /* 默认隐藏：整体往右平移 100%（即完全移出屏幕） */
+  transform: translateX(100%);
+}
+
+.filter-drawer.open {
+  /* 打开时复位 */
+  transform: translateX(0);
+}
+
+/* 背景遮罩层 */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 900;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.filter-header h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Filter sections */
+.filter-section {
+  margin-bottom: 1.5rem;
+}
+
+/* 让 category 里的 checkbox 一行一个 */
+.filter-section label {
+  display: block;        /* ✅ 每个 label 独占一行 */
+  margin-bottom: 0.5rem; /* ✅ 行间距 */
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.filter-section h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+
+.filter-panel {
+  border: 1px solid #ccc;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+}
+
+.filter-section {
+  margin-bottom: 1rem;
+}
+
+
+
+/* Location Block */
+.location-block {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  background: #fafafa;
+}
+.location-title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
+}
 
 /* Category */
-.category { margin-bottom: 2rem; padding: 1rem; border-radius: 12px; }
-.category.fruit { background-color: #fff7c2; }
-.category.vegetable { background-color: #dbeeff; }
-.category.meat { background-color: #ffe0e7; }
+.category { margin-bottom: 1rem; padding: 1rem; border-radius: 12px; }
+.category.carb { background: #dbeeff; }
+.category.fruit { background: #fff7c2; }
+.category.meat { background: #ffe0e7; }
 
-/* ---------- Item 行：三栏布局（name | quantity(center) | hover actions） ---------- */
+/* Item 行布局 */
 .item {
   display: grid;
   grid-template-columns: 1fr minmax(120px, 180px) minmax(160px, 320px);
@@ -43,103 +151,28 @@
   padding: 0.75rem 0;
   border-bottom: 1px solid rgba(0,0,0,0.05);
 }
-
-/* 去掉最后一行下边线 */
 .item:last-child { border-bottom: none; }
 
-/* 左：名称靠左 */
-.item-name {
-  font-size: 1rem;
-  font-weight: 500;
-  justify-self: start;
-  padding-left: 6px;
-}
+.item-name { font-size: 1rem; font-weight: 500; padding-left: 6px; }
 
-/* 中：数量栏居中 */
-.quantity-slot {
-  justify-self: center; /* 把 - qty + 放在中间列正中 */
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.quantity-control {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
+/* 数量 */
+.quantity-slot { display: flex; justify-content: center; }
+.quantity-control { display: inline-flex; align-items: center; gap: 0.5rem; }
 .quantity-control button {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 50%;
-  background-color: #e8e8e8;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 1rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  width: 36px; height: 36px; border: none; border-radius: 50%;
+  background: #e8e8e8; cursor: pointer; font-size: 1rem; font-weight: bold;
 }
+.quantity-control .qty { min-width: 26px; text-align: center; font-weight: 600; }
 
-.quantity-control .qty {
-  min-width: 26px;
-  text-align: center;
-  font-weight: 600;
-}
+/* Hover Actions */
+.hover-slot { justify-self: end; }
+.hover-actions { display: flex; gap: 1rem; opacity: 0; transition: 0.2s; }
+.item:hover .hover-actions, .hover-actions.visible { opacity: 1; }
 
-/* 右：hover slot 靠右 */
-.hover-slot { justify-self: end; display: flex; align-items: center; justify-content: flex-end; }
-
-/* hover 按钮：在 DOM 内，但默认隐藏（opacity），显示用 class.visible 或 .item:hover */
-.hover-actions {
-  display: flex;
-  gap: 1.5rem;               /* 按钮间距 */
-  align-items: center;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(8px);
-  transition: opacity 0.18s ease, transform 0.18s ease;
-}
-
-/* 显示条件：支持 CSS hover 或 Angular binding .visible */
-.item:hover .hover-actions,
-.hover-actions.visible {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(0);
-}
-
-/* hover 按钮风格（放大版） */
 .hover-actions button {
-  border: none;
-  /* padding 决定“格子”大小，可以适当调大 */
-  padding: 0.8rem 1.4rem;  /* ← 原来是0.3rem 0.6rem */
-  border-radius: 8px;      /* 稍微圆一点 */
-  cursor: pointer;
-  font-size: 1rem;         /* ← 原来是0.85rem */
-  font-weight: 600;        /* 字重一点 */
+  border: none; padding: 0.6rem 1.2rem; border-radius: 8px;
+  font-size: 1rem; font-weight: 600; cursor: pointer;
 }
-
-/* 颜色 */
-.hover-actions .used   { background-color: #cce5ff; }
-.hover-actions .meal   { background-color: #d4edda; }
-.hover-actions .donate { background-color: #fff3cd; }
-
-/* ---------- Responsive: 小屏把中间/右侧合并到下一行显示 ---------- */
-@media (max-width: 640px) {
-  .item {
-    grid-template-columns: 1fr; /* 单列 */
-    grid-template-rows: auto auto; /* 名称一行，控制一行 */
-    gap: 8px;
-  }
-
-  .quantity-slot, .hover-slot {
-    justify-self: start;
-  }
-
-  .hover-slot {
-    margin-left: 6px;
-  }
-}
+.hover-actions .used   { background: #cce5ff; }
+.hover-actions .meal   { background: #d4edda; }
+.hover-actions .donate { background: #fff3cd; }

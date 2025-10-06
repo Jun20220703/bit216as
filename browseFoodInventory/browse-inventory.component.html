@@ -10,7 +10,7 @@
         <label>Inventory</label>
         <div class="select-wrapper">
           <select [(ngModel)]="selectedLocation">
-            <option *ngFor="let loc of locations">{{ loc }}</option>
+            <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
           </select>
           <span class="custom-arrow">▼</span>
         </div>
@@ -27,8 +27,13 @@
       <input type="text" [(ngModel)]="searchQuery" placeholder="Search food items..." />
     </div>
 
-    <!-- Filter panel -->
-    <div *ngIf="showFilter" class="filter-panel">
+    <!-- Filter Drawer -->
+    <div class="filter-drawer" [class.open]="showFilter">
+      <div class="filter-header">
+        <h2>Filters</h2>
+        <button class="close-btn" (click)="toggleFilterPanel()">×</button>
+      </div>
+
       <div class="filter-section">
         <h3>Source</h3>
         <label>
@@ -46,43 +51,52 @@
         <label><input type="checkbox" [checked]="filter.categories.all" (change)="toggleCategory('all')" /> All</label>
         <label><input type="checkbox" [checked]="filter.categories.fruit" (change)="toggleCategory('fruit')" /> Fruit</label>
         <label><input type="checkbox" [checked]="filter.categories.vegetable" (change)="toggleCategory('vegetable')" /> Vegetable</label>
-        <label><input type="checkbox" [checked]="filter.categories.meat" (change)="toggleCategory('meat')" /> Meal</label>
+        <label><input type="checkbox" [checked]="filter.categories.meat" (change)="toggleCategory('meat')" /> Meat</label>
+        <label><input type="checkbox" [checked]="filter.categories.carb" (change)="toggleCategory('carb')" /> Carbohydrates</label>
       </div>
 
       <div class="filter-section">
         <h3>Expired in</h3>
         <input type="number" [(ngModel)]="filter.expiredIn" />
+        <span> day(s)</span>
       </div>
     </div>
 
-    <!-- Category list -->
-    <div *ngFor="let category of filteredCategories()" class="category" [ngClass]="category.colorClass">
-      <h2>{{ category.icon }} {{ category.name }}</h2>
 
-      <!-- 每行改为三栏 grid（名称 | 中间数量 | 右侧 hover 动作） -->
-      <div *ngFor="let item of category.items"
-           class="item"
-           (mouseenter)="hoverItem = item"
-           (mouseleave)="hoverItem = null"
-      >
-        <!-- 左：名称 -->
-        <div class="item-name">{{ item.name }}</div>
+    <!-- Location & Category List -->
+    <div *ngFor="let loc of filteredLocations()" class="location-block">
+      <!-- 只有 All 才显示 Location 大标题 -->
+      <h1 *ngIf="selectedLocation === 'All'" class="location-title">{{ loc.name }}</h1>
 
-        <!-- 中：数量（居中） -->
-        <div class="quantity-slot">
-          <div class="quantity-control" role="group" aria-label="quantity controls">
-            <button (click)="decreaseItem(item)" aria-label="decrease">-</button>
-            <span class="qty">{{ item.quantity }}</span>
-            <button (click)="increaseItem(item)" aria-label="increase">+</button>
+      <!-- Category -->
+      <div *ngFor="let category of loc.categories" class="category" [ngClass]="category.colorClass">
+        <h2>{{ category.icon }} {{ category.name }}</h2>
+
+        <!-- Item -->
+        <div *ngFor="let item of category.items"
+             class="item"
+             (mouseenter)="hoverItem = item"
+             (mouseleave)="hoverItem = null">
+          
+          <!-- 左：名称 -->
+          <div class="item-name">{{ item.name }}</div>
+
+          <!-- 中：数量 -->
+          <div class="quantity-slot">
+            <div class="quantity-control" role="group">
+              <button (click)="decreaseItem(item)">-</button>
+              <span class="qty">{{ item.quantity }}</span>
+              <button (click)="increaseItem(item)">+</button>
+            </div>
           </div>
-        </div>
 
-        <!-- 右：hover 按钮（始终在 DOM，通过 class.visible 控制可见性） -->
-        <div class="hover-slot">
-          <div class="hover-actions" [class.visible]="hoverItem === item">
-            <button class="used">Used</button>
-            <button class="meal">Meal</button>
-            <button class="donate">Donate</button>
+          <!-- 右：hover 动作 -->
+          <div class="hover-slot">
+            <div class="hover-actions" [class.visible]="hoverItem === item">
+              <button class="used">Used</button>
+              <button class="meal">Meal</button>
+              <button class="donate">Donate</button>
+            </div>
           </div>
         </div>
       </div>
