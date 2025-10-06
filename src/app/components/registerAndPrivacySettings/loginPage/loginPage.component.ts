@@ -44,6 +44,7 @@ export class LoginPageComponent {
         localStorage.setItem('token', response.token);
         localStorage.setItem('userId', response.user.id);
         localStorage.setItem('user', JSON.stringify(response.user));
+        localStorage.setItem('userPassword', this.password); // Store the actual password
         
         this.isLoading = false;
         alert('Login successful!');
