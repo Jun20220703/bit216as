@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class FoodService {
-  private apiUrl = 'http://localhost:5000/api/foods';
+  private apiUrl = 'http://localhost:5000/api/foods'; // Node.js サーバーのURL
 
   constructor(private http: HttpClient) {}
 
@@ -15,8 +15,7 @@ export class FoodService {
   }
 
   addFood(food: any): Observable<any> {
-    console.log('Sending to backend:', food);
-    return this.http.post<any>(this.apiUrl, food);
+    return this.http.post(this.apiUrl, food);
   }
 
   deleteFood(id: string): Observable<any> {

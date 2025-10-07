@@ -14,8 +14,21 @@ import { FormsModule } from '@angular/forms';
 export class ManageFoodInventory {
   foodItems: any[] = [];
 
-  constructor (private foodService: FoodService, private router: Router){
-    this.foodItems = this.foodService.getFoods();
+  constructor (private foodService: FoodService, private router: Router){}
+
+  ngOnInit(){
+    this.loadFoods();
+  }
+
+  loadFoods(){
+    this.foodService.getFoods().subscribe({
+      next: (data) => {
+        this.foodItems = data;
+      },
+      error: (err) => {
+        console.error('Error loading foods:', err);
+      }
+    });
   }
   addFoodItem() {
     this.router.navigate(['/add-food']);
@@ -25,19 +38,12 @@ export class ManageFoodInventory {
     console.log('Edit:', item);
   }
 
-  deleteItem(item: any) {
-    this.foodService.deleteFood(item);
-    this.foodItems = this.foodService.getFoods();
-  }
-
   showDeleteModal = false;
   selectedDeleteItem: any = null;
-
   openDeleteModal(item: any){
     this.selectedDeleteItem = item;
     this.showDeleteModal = true;
   }
-
   cancelDelete(){
     this.showDeleteModal = false;
     this.selectedDeleteItem = null;
@@ -47,12 +53,10 @@ export class ManageFoodInventory {
     if(this.selectedDeleteItem){
       this.foodItems = this.foodItems.filter(i => i !== this.selectedDeleteItem);
       console.log(`Deleted: ${this.selectedDeleteItem.name}`);
+      this.loadFoods();
       this.showDeleteModal = false;
       this.selectedDeleteItem = null;    
     }
-  }
-  donateItem(item: any) {
-    console.log('Donate:', item);
   }
 
   showDonateModal = false;
@@ -60,7 +64,7 @@ export class ManageFoodInventory {
   donationDetails = { location: '', availability: '', notes: '' };
   donateError ='';
 
-openDonateModal(item: any) {
+  openDonateModal(item: any) {
   this.selectedDonateItem = item;
   this.showDonateModal = true;
   this.donationDetails = { location: '', availability: '', notes: '' };
@@ -96,12 +100,9 @@ confirmDonate() {
   this.donateError = '';
 }
 
-
-
-
-  goToDonationList() {
-    console.log('Navigate to Donation List');
-  }
+goToDonationList() {
+  console.log('Navigate to Donation List');
+}
 
 
 }

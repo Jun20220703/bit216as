@@ -41,8 +41,16 @@ export class AddFoodItemComponent {
       return;
     }
 
-    this.foodService.addFood(this.foodForm.value);
-    this.router.navigate(['/manage-inventory']);
+    this.foodService.addFood(this.foodForm.value).subscribe({
+      next: (res) =>{
+        console.log('Food saved Successfully:', res);
+        this.router.navigate(['/manage-inventory']);
+      },
+      error: (err) =>{
+        console.log('Error saving food:', err);
+        alert('Failed to save item. Check backend connection.');
+      }
+    });
   }
 
   cancel() {
