@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const app = express();
+const browseFoodRoutes = require('./routes/browseFood');
 
 // Connect to MongoDB Atlas
 mongoose.connect("mongodb+srv://kkjhhyu0405:kjh030407@cluster0.chogk.mongodb.net/foodShield?retryWrites=true&w=majority", {
@@ -33,6 +34,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/users', require('./routes/users'));
+app.use('/api/browse', browseFoodRoutes);
+
 
 // Basic route
 app.get('/', (req, res) => {
