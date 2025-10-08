@@ -266,6 +266,12 @@ export class AccountSettingsComponent implements OnInit {
   onPasswordChange() {
     if (this.newPassword && this.confirmPassword) {
       if (this.newPassword === this.confirmPassword) {
+        // Check if new password is different from current password
+        if (this.newPassword === this.actualPassword) {
+          alert('New password must be different from your current password');
+          return;
+        }
+
         // Validate password strength
         if (this.newPassword.length < 8) {
           alert('Password must be at least 8 characters long');
