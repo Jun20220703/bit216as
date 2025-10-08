@@ -29,8 +29,17 @@
         <div class="profile-photo-section">
           <label class="profile-photo-label">Profile photo</label>
           <div class="profile-photo-container">
-            <img src="assets/images/image1.png" alt="Profile Photo" class="profile-photo">
-            <button class="upload-button" (click)="onUploadPhoto()">Upload</button>
+            <img 
+              [src]="profilePhotoPreview || userData.profilePhoto || 'assets/images/image1.png'" 
+              alt="Profile Photo" 
+              class="profile-photo">
+            <div class="photo-buttons">
+              <button class="upload-button" (click)="onUploadPhoto()">Upload</button>
+              <button 
+                *ngIf="profilePhotoPreview || userData.profilePhoto" 
+                class="remove-button" 
+                (click)="removeProfilePhoto()">Remove</button>
+            </div>
           </div>
         </div>
 
