@@ -10,6 +10,7 @@ interface UserData {
   password: string;
   householdSize: number | string;
   dateOfBirth: string;
+  profilePhoto?: string;
 }
 
 @Component({
@@ -27,11 +28,16 @@ export class AccountSettingsComponent {
     email: '',
     password: '************',
     householdSize: 1,
-    dateOfBirth: ''
+    dateOfBirth: '',
+    profilePhoto: ''
   };
 
   // Store actual password for display
   actualPassword: string = '';
+
+  // Profile photo properties
+  selectedFile: File | null = null;
+  profilePhotoPreview: string = '';
 
 
   // Password reset dialog states
@@ -65,7 +71,8 @@ export class AccountSettingsComponent {
           email: user.email || '',
           password: '************',
           householdSize: user.householdSize || 1,
-          dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : ''
+          dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : '',
+          profilePhoto: user.profilePhoto || ''
         };
         
         // Load actual password from localStorage
@@ -73,6 +80,7 @@ export class AccountSettingsComponent {
         
         this.isLoadingUserData = false;
         console.log('Loaded user data from localStorage:', this.userData);
+        console.log('Raw user data from localStorage:', user);
         return;
       } catch (error) {
         console.error('Error parsing stored user data:', error);
@@ -96,7 +104,8 @@ export class AccountSettingsComponent {
             email: response.email || '',
             password: '************',
             householdSize: response.householdSize || 1,
-            dateOfBirth: response.dateOfBirth ? new Date(response.dateOfBirth).toISOString().split('T')[0] : ''
+            dateOfBirth: response.dateOfBirth ? new Date(response.dateOfBirth).toISOString().split('T')[0] : '',
+            profilePhoto: response.profilePhoto || ''
           };
           
           // Load actual password from localStorage
@@ -121,11 +130,6 @@ export class AccountSettingsComponent {
   }
 
 
-  onUploadPhoto() {
-    // Handle photo upload logic here
-    console.log('Upload photo clicked');
-  }
-
   clearField(fieldName: keyof UserData) {
     if (fieldName === 'householdSize') {
       this.userData[fieldName] = 1;
@@ -145,7 +149,10 @@ export class AccountSettingsComponent {
   onSave() {
     // Validate required fields
     if (!this.userData.name || !this.userData.dateOfBirth) {
-      alert('Please fill in all required fields (Name and Date of Birth)');
+      const missingFields = [];
+      if (!this.userData.name) missingFields.push('Name');
+      if (!this.userData.dateOfBirth) missingFields.push('Date of Birth');
+      alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
       return;
     }
 
@@ -178,8 +185,12 @@ export class AccountSettingsComponent {
     const updateData = {
       name: this.userData.name,
       householdSize: (this.userData.householdSize === 'No-Selection' || this.userData.householdSize === null || this.userData.householdSize === undefined) ? null : Number(this.userData.householdSize),
-      dateOfBirth: this.userData.dateOfBirth
+      dateOfBirth: this.userData.dateOfBirth,
+      profilePhoto: this.profilePhotoPreview || this.userData.profilePhoto
     };
+
+    console.log('Sending update data:', updateData);
+    console.log('User ID:', userId);
 
     // Call the API
     this.http.put(`http://localhost:5000/api/users/profile/${userId}`, updateData)
@@ -196,9 +207,30 @@ export class AccountSettingsComponent {
         },
         error: (error) => {
           console.error('Profile update failed:', error);
+          console.error('Error details:', {
+            status: error.status,
+            statusText: error.statusText,
+            message: error.message,
+            error: error.error
+          });
           this.isSaving = false;
-          this.saveError = error.error?.message || 'Failed to update profile';
-          alert(`Failed to update profile: ${this.saveError}`);
+          
+          let errorMessage = 'Failed to update profile';
+          
+          if (error.status === 0) {
+            errorMessage = 'Cannot connect to server. Please check if the backend server is running.';
+          } else if (error.status === 404) {
+            errorMessage = 'User not found. Please log in again.';
+          } else if (error.status === 500) {
+            errorMessage = 'Server error. Please try again later.';
+          } else if (error.error?.message) {
+            errorMessage = error.error.message;
+          } else if (error.message) {
+            errorMessage = error.message;
+          }
+          
+          this.saveError = errorMessage;
+          alert(`Failed to update profile: ${errorMessage}`);
         }
       });
   }
@@ -304,5 +336,90 @@ export class AccountSettingsComponent {
     this.confirmPassword = '';
     this.showNewPassword = false;
     this.showConfirmPassword = false;
+  }
+
+  // Profile photo upload methods
+  onUploadPhoto() {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.onchange = (event: any) => {
+      const file = event.target.files[0];
+      if (file) {
+        this.handleFileSelect(file);
+      }
+    };
+    fileInput.click();
+  }
+
+  handleFileSelect(file: File) {
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file.');
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File size must be less than 10MB.');
+      return;
+    }
+
+    this.selectedFile = file;
+
+    // Compress and create preview
+    this.compressImage(file);
+  }
+
+  compressImage(file: File) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+
+    img.onload = () => {
+      // Set maximum dimensions
+      const maxWidth = 800;
+      const maxHeight = 800;
+      
+      let { width, height } = img;
+      
+      // Calculate new dimensions
+      if (width > height) {
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+      } else {
+        if (height > maxHeight) {
+          width = (width * maxHeight) / height;
+          height = maxHeight;
+        }
+      }
+      
+      // Set canvas dimensions
+      canvas.width = width;
+      canvas.height = height;
+      
+      // Draw and compress
+      ctx?.drawImage(img, 0, 0, width, height);
+      
+      // Convert to base64 with compression (quality: 0.8)
+      const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      this.profilePhotoPreview = compressedDataUrl;
+      
+      console.log(`Image compressed from ${file.size} bytes to ${compressedDataUrl.length} characters`);
+    };
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeProfilePhoto() {
+    this.selectedFile = null;
+    this.profilePhotoPreview = '';
+    this.userData.profilePhoto = '';
   }
 }
