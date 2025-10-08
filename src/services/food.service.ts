@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class FoodService {
-  private apiUrl = 'http://localhost:5000/api/foods'; // Node.js サーバーのURL
+  private apiUrl = 'http://localhost:5001/api/foods'; // Node.js サーバーのURL
 
   constructor(private http: HttpClient) {}
 

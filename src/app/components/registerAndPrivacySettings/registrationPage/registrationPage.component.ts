@@ -105,7 +105,7 @@ export class RegistrationPageComponent {
 
       // 백엔드 API 호출
       console.log('Sending registration data:', registrationData);
-      this.http.post('http://localhost:5000/api/users/register', registrationData)
+      this.http.post('http://localhost:5001/api/users/register', registrationData)
         .subscribe({
           next: (response: any) => {
             console.log('Registration successful:', response);
