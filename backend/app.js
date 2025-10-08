@@ -76,6 +76,22 @@ app.get('/api/foods', async(req, res) => {
   }
 });
 
+// delete food item from manage-inventory
+app.delete('/api/foods/:id', async (req, res) => {
+  try {
+    const deletedFood = await Food.findByIdAndDelete(req.params.id);
+    if (!deletedFood) {
+      return res.status(404).json({ message: 'Food not found' });
+    }
+    res.json({ message: 'Deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting food:', error);
+    res.status(500).json({ message: 'Server error while deleting food' });
+  }
+});
+
+
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -30,7 +30,7 @@ export class FoodService {
     return this.http.post<any>(this.apiUrl, food);
   }
 
-  deleteFood(id: string): Observable<any> {
+  deleteFood(id: string) {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }
