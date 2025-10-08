@@ -7,11 +7,13 @@
     <!-- Header -->
     <header class="inventory-header">
       <div class="inventory-title">
-        <label>Inventory</label>
+        <label>{{ viewTitle }}</label>
         <div class="select-wrapper">
           <select [(ngModel)]="selectedLocation" (ngModelChange)="refreshView()">
-            <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
+            <option value="All">All</option>
+            <option *ngFor="let loc of availableLocations" [value]="loc">{{ loc }}</option>
           </select>
+
           <span class="custom-arrow">▼</span>
         </div>
       </div>
@@ -40,22 +42,34 @@
       <div class="filter-section">
         <h3>Source</h3>
         <label>
-          <input type="radio" name="source" [checked]="filter.inventory" (change)="toggleSource('inventory')" />
+          <input type="radio" name="source" value="inventory"
+                [(ngModel)]="selectedSource"
+                (ngModelChange)="toggleSource($event)" />
           Inventory only
         </label>
         <label>
-          <input type="radio" name="source" [checked]="filter.donation" (change)="toggleSource('donation')" />
+          <input type="radio" name="source" value="donation"
+                [(ngModel)]="selectedSource"
+                (ngModelChange)="toggleSource($event)" />
           Donation List
         </label>
       </div>
 
       <div class="filter-section">
         <h3>Category</h3>
-        <label><input type="checkbox" [checked]="filter.categories.all" (change)="toggleCategory('all')" /> All</label>
-        <label><input type="checkbox" [checked]="filter.categories.fruit" (change)="toggleCategory('fruit')" /> Fruit</label>
-        <label><input type="checkbox" [checked]="filter.categories.vegetable" (change)="toggleCategory('vegetable')" /> Vegetable</label>
-        <label><input type="checkbox" [checked]="filter.categories.meat" (change)="toggleCategory('meat')" /> Meat</label>
-        <label><input type="checkbox" [checked]="filter.categories.carb" (change)="toggleCategory('carb')" /> Carbohydrates</label>
+        <label>
+          <input type="checkbox"
+                [checked]="filter.categories.all"
+                (change)="toggleCategory('all')" />
+          All
+        </label>
+
+        <label *ngFor="let cat of availableCategories">
+          <input type="checkbox"
+                [checked]="filter.categories[cat.key]"
+                (change)="toggleCategory(cat.key)" />
+          {{ cat.name }}
+        </label>
       </div>
 
       <!-- Expired in -->
