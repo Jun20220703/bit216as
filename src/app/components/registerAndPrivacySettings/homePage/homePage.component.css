@@ -1,11 +1,3 @@
-.homepage-container {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  min-height: 100vh;
-}
-
 .main-content {
   flex: 1;
   margin-left: 240px; /* Sidebar width for fixed positioning */
@@ -28,7 +20,7 @@
 }
 
 .top-section .slogan-text {
-  margin-top: 100px;
+  margin-top: 30px;
 }
 
 .top-section .main-message {
@@ -44,15 +36,6 @@
   margin-left: 50px;
 }
 
-.homepage-title {
-  font-size: 3.5rem;
-  font-weight: bold;
-  color: black;
-  margin: 0;
-  font-family: sans-serif;
-  margin-left: -50px;
-}
-
 .earth-hands {
   display: flex;
   align-items: center;
@@ -64,6 +47,7 @@
   max-width: 700px;
   height: auto;
   border-radius: 15px;
+  margin-top: 30px;
 }
 
 .right-content {
