@@ -119,7 +119,12 @@ router.get('/profile/:userId', async (req, res) => {
 // 사용자 정보 업데이트
 router.put('/profile/:userId', async (req, res) => {
   try {
-    const { name, householdSize, dateOfBirth, preferences, password } = req.body;
+    console.log('Profile update request received:', {
+      userId: req.params.userId,
+      body: req.body
+    });
+    
+    const { name, householdSize, dateOfBirth, preferences, password, profilePhoto } = req.body;
     
     // 업데이트할 데이터 준비
     const updateData = {};
@@ -128,6 +133,9 @@ router.put('/profile/:userId', async (req, res) => {
     if (householdSize !== undefined) updateData.householdSize = householdSize;
     if (dateOfBirth !== undefined) updateData.dateOfBirth = new Date(dateOfBirth);
     if (preferences !== undefined) updateData.preferences = preferences;
+    if (profilePhoto !== undefined) updateData.profilePhoto = profilePhoto;
+    
+    console.log('Update data prepared:', updateData);
     
     // 비밀번호가 제공된 경우 해싱
     if (password) {
@@ -150,6 +158,11 @@ router.put('/profile/:userId', async (req, res) => {
     console.error('Profile update error:', error);
     res.status(500).json({ message: 'Profile update failed', error: error.message });
   }
+});
+
+// 테스트 라우트
+router.get('/test', (req, res) => {
+  res.json({ message: 'Users API is working!', timestamp: new Date().toISOString() });
 });
 
 module.exports = router;
