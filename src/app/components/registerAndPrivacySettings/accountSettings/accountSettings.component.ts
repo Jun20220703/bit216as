@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -20,7 +20,7 @@ interface UserData {
   styleUrls: ['./accountSettings.component.css'],
   imports: [CommonModule, FormsModule, HttpClientModule]
 })
-export class AccountSettingsComponent {
+export class AccountSettingsComponent implements OnInit {
   activeTab: 'account' | 'privacy' = 'account';
   
   userData: UserData = {
@@ -56,8 +56,13 @@ export class AccountSettingsComponent {
   showNewPassword: boolean = false;
   showConfirmPassword: boolean = false;
 
-  constructor(private router: Router, private http: HttpClient) {
-    this.loadUserData();
+  constructor(private router: Router, private http: HttpClient, private cdr: ChangeDetectorRef) {}
+
+  ngOnInit() {
+    // Use setTimeout to ensure component is fully initialized
+    setTimeout(() => {
+      this.loadUserData();
+    }, 100);
   }
 
   loadUserData() {
@@ -96,6 +101,9 @@ export class AccountSettingsComponent {
           
           // Update localStorage with fresh data
           localStorage.setItem('user', JSON.stringify(response));
+          
+          // Force UI update
+          this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Failed to load user data from database:', error);
@@ -107,6 +115,8 @@ export class AccountSettingsComponent {
 
   setActiveTab(tab: 'account' | 'privacy') {
     this.activeTab = tab;
+    // Force UI update when switching tabs
+    this.cdr.detectChanges();
   }
 
 
