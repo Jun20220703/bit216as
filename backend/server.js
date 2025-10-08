@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/database');
 const foodRoutes = require('./routes/foodRoutes');
+const browseFoodRoutes = require('./routes/browseFood');
 
 dotenv.config();
 
@@ -24,7 +25,7 @@ mongoose
 
 // 라우트
 app.use('/api/users', require('./routes/users'));
-
+app.use('/api/browse', browseFoodRoutes);
 app.use('/api/foods', foodRoutes);
 
 // 기본 라우트

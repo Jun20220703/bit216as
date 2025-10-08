@@ -95,6 +95,22 @@
   font-size: 14px;
 }
 
+/* Loading Message */
+.loading-message {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e0e0e0;
+}
+
+.loading-message p {
+  color: #666;
+  font-size: 16px;
+  margin: 0;
+}
+
 /* Account Form Container */
 .account-form-container {
   background: white;
@@ -138,6 +154,13 @@
   border: 3px solid #e0e0e0;
 }
 
+.photo-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
 .upload-button {
   background: #4CAF50;
   color: white;
@@ -148,10 +171,28 @@
   font-weight: 500;
   cursor: pointer;
   transition: background 0.3s ease;
+  min-width: 80px;
 }
 
 .upload-button:hover {
   background: #45a049;
+}
+
+.remove-button {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  min-width: 80px;
+}
+
+.remove-button:hover {
+  background: #da190b;
 }
 
 /* Form Fields Section */
@@ -194,6 +235,23 @@
   transition: border-color 0.3s ease;
 }
 
+/* Custom select to match input style and arrow color/position */
+.select-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 16px;
+  padding-right: 40px; /* space for arrow */
+}
+
+.select-input:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
 .form-input:focus {
   outline: none;
   border-color: #4CAF50;
@@ -221,6 +279,36 @@
 .clear-button:hover {
   background: #f0f0f0;
   color: #666;
+}
+
+.password-toggle-button {
+  position: absolute;
+  right: 40px; /* Position it before the clear button */
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  color: #666;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 8px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  min-width: 40px;
+}
+
+.password-toggle-button:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+  color: #495057;
+}
+
+.password-toggle-button:active {
+  background: #dee2e6;
+  transform: translateY(1px);
 }
 
 /* Action Buttons */
@@ -258,8 +346,16 @@
   color: white;
 }
 
-.save-button:hover {
+.save-button:hover:not(:disabled) {
   background: #45a049;
+}
+
+.save-button:disabled,
+.cancel-button:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* Readonly input styling */

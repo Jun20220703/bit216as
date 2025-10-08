@@ -21,13 +21,27 @@
   <div class="content">
     <!-- Account Settings Tab -->
     <div *ngIf="activeTab === 'account'" class="tab-content">
-      <div class="account-form-container">
+      <div *ngIf="isLoadingUserData" class="loading-message">
+        <p>Loading user data...</p>
+      </div>
+      <div *ngIf="!isLoadingUserData" class="account-form-container">
         <!-- Profile Photo Section -->
         <div class="profile-photo-section">
           <label class="profile-photo-label">Profile photo</label>
-          <div class="profile-photo-container">
-            <img src="assets/images/image1.png" alt="Profile Photo" class="profile-photo">
-            <button class="upload-button" (click)="onUploadPhoto()">Upload</button>
+        <div class="profile-photo-container">
+          <img 
+            [src]="profilePhotoPreview || userData.profilePhoto || 'assets/images/image1.png'" 
+            alt="Profile Photo" 
+            class="profile-photo"
+            (error)="onImageError($event)"
+            (load)="onImageLoad($event)">
+            <div class="photo-buttons">
+              <button class="upload-button" (click)="onUploadPhoto()">Upload</button>
+              <button 
+                *ngIf="profilePhotoPreview || userData.profilePhoto" 
+                class="remove-button" 
+                (click)="removeProfilePhoto()">Remove</button>
+            </div>
           </div>
         </div>
 
@@ -36,7 +50,7 @@
           <div class="form-field">
             <label class="field-label" for="name">Name*:</label>
             <div class="input-container">
-              <input type="text" id="name" class="form-input" [(ngModel)]="userData.name" placeholder="junkaiyane" title="Enter your name">
+              <input type="text" id="name" class="form-input" [(ngModel)]="userData.name" placeholder="Enter your name" title="Enter your name">
               <button class="clear-button" (click)="clearField('name')" title="Clear name">×</button>
             </div>
           </div>
@@ -51,7 +65,19 @@
           <div class="form-field">
             <label class="field-label" for="password">Password*:</label>
             <div class="input-container">
-              <input type="password" id="password" class="form-input" [value]="userData.password" placeholder="************" title="Click to change password" (click)="onPasswordClick()" readonly>
+              <input 
+                [type]="showPassword ? 'text' : 'password'" 
+                id="password" 
+                class="form-input" 
+                [value]="showPassword ? actualPassword : '************'" 
+                placeholder="************" 
+                title="Click to change password" 
+                (click)="onPasswordClick()" 
+                readonly>
+              <button class="password-toggle-button" (click)="togglePasswordVisibility()" title="Toggle password visibility">
+                <span *ngIf="!showPassword">Show</span>
+                <span *ngIf="showPassword">Hide</span>
+              </button>
               <button class="clear-button" (click)="onPasswordReset()" title="Reset password">×</button>
             </div>
           </div>
@@ -59,7 +85,7 @@
           <div class="form-field">
             <label class="field-label" for="household-size">Household Size:</label>
             <div class="input-container">
-              <select id="household-size" class="form-input" [(ngModel)]="userData.householdSize" title="Select household size">
+              <select id="household-size" class="form-input select-input" [(ngModel)]="userData.householdSize" title="Select household size">
                 <option value="No-Selection">No Selection</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -84,8 +110,11 @@
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-          <button class="cancel-button" (click)="onCancel()">Cancel</button>
-          <button class="save-button" (click)="onSave()">Save</button>
+          <button class="cancel-button" (click)="onCancel()" [disabled]="isSaving">Cancel</button>
+          <button class="save-button" (click)="onSave()" [disabled]="isSaving">
+            <span *ngIf="!isSaving">Save</span>
+            <span *ngIf="isSaving">Saving...</span>
+          </button>
         </div>
       </div>
     </div>
@@ -112,14 +141,34 @@
             <div class="form-field">
               <label class="field-label" for="new-password">Password*:</label>
               <div class="input-container">
-                <input type="password" id="new-password" class="form-input" [(ngModel)]="newPassword" placeholder="Enter new password" title="Enter new password">
+                <input 
+                  [type]="showNewPassword ? 'text' : 'password'" 
+                  id="new-password" 
+                  class="form-input" 
+                  [(ngModel)]="newPassword" 
+                  placeholder="Enter new password" 
+                  title="Enter new password">
+                <button class="password-toggle-button" (click)="toggleNewPasswordVisibility()" title="Toggle password visibility">
+                  <span *ngIf="!showNewPassword">Show</span>
+                  <span *ngIf="showNewPassword">Hide</span>
+                </button>
                 <button class="clear-button" (click)="clearNewPassword()" title="Clear password">×</button>
               </div>
             </div>
             <div class="form-field">
               <label class="field-label" for="confirm-password">Confirm Password*:</label>
               <div class="input-container">
-                <input type="password" id="confirm-password" class="form-input" [(ngModel)]="confirmPassword" placeholder="Confirm new password" title="Confirm new password">
+                <input 
+                  [type]="showConfirmPassword ? 'text' : 'password'" 
+                  id="confirm-password" 
+                  class="form-input" 
+                  [(ngModel)]="confirmPassword" 
+                  placeholder="Confirm new password" 
+                  title="Confirm new password">
+                <button class="password-toggle-button" (click)="toggleConfirmPasswordVisibility()" title="Toggle password visibility">
+                  <span *ngIf="!showConfirmPassword">Show</span>
+                  <span *ngIf="showConfirmPassword">Hide</span>
+                </button>
                 <button class="clear-button" (click)="clearConfirmPassword()" title="Clear confirm password">×</button>
               </div>
             </div>
@@ -135,39 +184,6 @@
     <!-- Privacy & Security Settings Tab -->
     <div *ngIf="activeTab === 'privacy'" class="tab-content">
       <div class="settings-card">
-        <div class="setting-item">
-          <span class="setting-label">Profile Visibility</span>
-          <div class="toggle-switch">
-            <input type="checkbox" id="profile-visibility" class="toggle-input">
-            <label for="profile-visibility" class="toggle-label">
-              <span class="toggle-slider"></span>
-              <span class="toggle-text">OFF</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="setting-item">
-          <span class="setting-label">Email Visibility</span>
-          <div class="toggle-switch">
-            <input type="checkbox" id="email-visibility" class="toggle-input">
-            <label for="email-visibility" class="toggle-label">
-              <span class="toggle-slider"></span>
-              <span class="toggle-text">OFF</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="setting-item">
-          <span class="setting-label">Food Listing Visibility</span>
-          <div class="toggle-switch">
-            <input type="checkbox" id="food-listing-visibility" class="toggle-input">
-            <label for="food-listing-visibility" class="toggle-label">
-              <span class="toggle-slider"></span>
-              <span class="toggle-text">OFF</span>
-            </label>
-          </div>
-        </div>
-
         <div class="setting-item">
           <span class="setting-label">Two-Factor Authentication</span>
           <div class="toggle-switch">

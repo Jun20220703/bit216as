@@ -9,11 +9,12 @@
       <div class="inventory-title">
         <label>{{ viewTitle }}</label>
         <div class="select-wrapper">
+          <!-- 🔹 下拉列表现在根据数据库动态显示 Storage -->
           <select [(ngModel)]="selectedLocation" (ngModelChange)="refreshView()">
             <option value="All">All</option>
+            <!-- 🔹 使用 availableLocations (动态生成) -->
             <option *ngFor="let loc of availableLocations" [value]="loc">{{ loc }}</option>
           </select>
-
           <span class="custom-arrow">▼</span>
         </div>
       </div>
@@ -42,6 +43,7 @@
       <div class="filter-section">
         <h3>Source</h3>
         <label>
+          <!-- 🔹 使用双向绑定 selectedSource -->
           <input type="radio" name="source" value="inventory"
                 [(ngModel)]="selectedSource"
                 (ngModelChange)="toggleSource($event)" />
@@ -64,6 +66,7 @@
           All
         </label>
 
+        <!-- 🔹 使用 availableCategories (动态生成) -->
         <label *ngFor="let cat of availableCategories">
           <input type="checkbox"
                 [checked]="filter.categories[cat.key]"
@@ -80,7 +83,7 @@
       </div>
     </div>
 
-    <!-- Location & Category 列表 -->
+    <!-- 🔹 动态渲染数据库中的 Storage → Category → Item -->
     <div *ngFor="let loc of viewLocs" class="location-block">
       <h1 *ngIf="selectedLocation === 'All'" class="location-title">{{ loc.name }}</h1>
 
@@ -108,13 +111,20 @@
           </div>
 
           <!-- 右：操作按钮 -->
-          <div class="hover-slot">
+          <!-- 🔹 如果是 Inventory，显示 Used/Meal/Donate -->
+          <div class="hover-slot" *ngIf="selectedSource === 'inventory'">
             <div class="hover-actions" [class.visible]="hoverItem === item">
               <button class="used" (click)="openConfirm(item, 'used')">Used</button>
               <button class="meal" (click)="openConfirm(item, 'meal')">Meal</button>
               <button class="donate" (click)="openConfirm(item, 'donate')">Donate</button>
             </div>
           </div>
+
+          <!-- 🔹 如果是 Donation，显示 Edit 按钮 -->
+          <div class="edit-slot" *ngIf="selectedSource === 'donation'">
+            <button class="edit-btn">Edit</button>
+          </div>
+
         </div>
       </div>
     </div>
