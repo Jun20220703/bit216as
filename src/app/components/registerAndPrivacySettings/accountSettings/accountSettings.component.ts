@@ -188,7 +188,7 @@ export class AccountSettingsComponent implements OnInit {
         next: (response: any) => {
           console.log('Profile updated successfully:', response);
           this.isSaving = false;
-          alert('Profile updated successfully!');
+          alert('Updates have been saved successfully');
           
           // Update local storage with new user data
           if (response.user) {
