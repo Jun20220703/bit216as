@@ -27,7 +27,7 @@ export class AccountSettingsComponent implements OnInit {
     name: '',
     email: '',
     password: '************',
-    householdSize: 1,
+    householdSize: 'No-Selection',
     dateOfBirth: '',
     profilePhoto: ''
   };
@@ -87,7 +87,7 @@ export class AccountSettingsComponent implements OnInit {
             name: response.name || '',
             email: response.email || '',
             password: '************',
-            householdSize: response.householdSize || 1,
+            householdSize: response.householdSize || 'No-Selection',
             dateOfBirth: response.dateOfBirth ? new Date(response.dateOfBirth).toISOString().split('T')[0] : '',
             profilePhoto: response.profilePhoto || ''
           };
@@ -122,7 +122,7 @@ export class AccountSettingsComponent implements OnInit {
 
   clearField(fieldName: keyof UserData) {
     if (fieldName === 'householdSize') {
-      this.userData[fieldName] = 1;
+      this.userData[fieldName] = 'No-Selection';
     } else if (fieldName === 'password') {
       // Password field should not be cleared, just reset to masked value
       this.userData[fieldName] = '************';
