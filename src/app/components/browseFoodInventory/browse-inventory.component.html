@@ -8,13 +8,12 @@
     <header class="inventory-header">
       <div class="inventory-title">
         <label>{{ viewTitle }}</label>
-
-        <!-- Storage Location (动态可选) -->
         <div class="select-wrapper">
           <select [(ngModel)]="selectedLocation" (ngModelChange)="refreshView()">
             <option value="All">All</option>
             <option *ngFor="let loc of availableLocations" [value]="loc">{{ loc }}</option>
           </select>
+
           <span class="custom-arrow">▼</span>
         </div>
       </div>
@@ -40,42 +39,40 @@
         <button class="close-btn" (click)="toggleFilterPanel()">×</button>
       </div>
 
-      <!-- Source 单选 -->
       <div class="filter-section">
         <h3>Source</h3>
         <label>
           <input type="radio" name="source" value="inventory"
-                 [(ngModel)]="selectedSource"
-                 (ngModelChange)="toggleSource($event)" />
+                [(ngModel)]="selectedSource"
+                (ngModelChange)="toggleSource($event)" />
           Inventory only
         </label>
         <label>
           <input type="radio" name="source" value="donation"
-                 [(ngModel)]="selectedSource"
-                 (ngModelChange)="toggleSource($event)" />
+                [(ngModel)]="selectedSource"
+                (ngModelChange)="toggleSource($event)" />
           Donation List
         </label>
       </div>
 
-      <!-- Category 动态 -->
       <div class="filter-section">
         <h3>Category</h3>
         <label>
           <input type="checkbox"
-                 [checked]="filter.categories.all"
-                 (change)="toggleCategory('all')" />
+                [checked]="filter.categories.all"
+                (change)="toggleCategory('all')" />
           All
         </label>
 
         <label *ngFor="let cat of availableCategories">
           <input type="checkbox"
-                 [checked]="filter.categories[cat.key] ?? true"
-                 (change)="toggleCategory(cat.key)" />
+                [checked]="filter.categories[cat.key]"
+                (change)="toggleCategory(cat.key)" />
           {{ cat.name }}
         </label>
       </div>
 
-      <!-- Expired in（预留：目前 demo 数据无到期日） -->
+      <!-- Expired in -->
       <div class="filter-section">
         <h3>Expired in</h3>
         <input type="number" [(ngModel)]="filter.expiredIn" (ngModelChange)="refreshView()" />
