@@ -40,9 +40,7 @@
     </table>
   </main>
 
-  @if (showDeleteModal){
-    <div class="modal">
-
+  <div class="modal" *ngIf="showDeleteModal">
     <div class="modal-content">
       <p>Are you sure to delete "{{ selectedDeleteItem?.name }}" from inventory?</p>
       <div class="modal-actions">
@@ -51,11 +49,8 @@
       </div>
     </div>
   </div>
-  }
-
-  @if (showDonateModal){
-    <!-- Donate Confirmation Modal -->
-    <div class="modal">
+  
+  <div class="modal" *ngIf="showDonateModal">
       <div class="modal-content">
         <p>
           Do you want to donate “{{ selectedDonateItem?.name }}”?<br />
@@ -88,7 +83,5 @@
     </div>
 
 
-
-  }
   
 </div>

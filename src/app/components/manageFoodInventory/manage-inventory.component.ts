@@ -40,6 +40,7 @@ export class ManageFoodInventory {
 
   showDeleteModal = false;
   selectedDeleteItem: any = null;
+
   openDeleteModal(item: any){
     this.selectedDeleteItem = item;
     this.showDeleteModal = true;
@@ -49,15 +50,28 @@ export class ManageFoodInventory {
     this.selectedDeleteItem = null;
   }
 
-  confirmDelete(){
-    if(this.selectedDeleteItem){
-      this.foodItems = this.foodItems.filter(i => i !== this.selectedDeleteItem);
-      console.log(`Deleted: ${this.selectedDeleteItem.name}`);
-      this.loadFoods();
-      this.showDeleteModal = false;
-      this.selectedDeleteItem = null;    
-    }
+  confirmDelete() {
+  if (this.selectedDeleteItem) {
+    this.foodService.deleteFood(this.selectedDeleteItem._id).subscribe({
+      next: () => {
+        console.log(`✅ Deleted: ${this.selectedDeleteItem.name}`);
+        // データを再読み込み
+        this.loadFoods();
+
+        // モーダルを閉じる処理はここで行う
+        this.showDeleteModal = false;
+        this.selectedDeleteItem = null;
+      },
+      error: (err) => {
+        console.error('❌ Error deleting item:', err);
+        alert('Failed to delete the item. Please try again.');
+      }
+    });
   }
+}
+
+
+
 
   showDonateModal = false;
   selectedDonateItem: any = null;
