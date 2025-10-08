@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -56,7 +56,7 @@ export class AccountSettingsComponent implements OnInit {
   showNewPassword: boolean = false;
   showConfirmPassword: boolean = false;
 
-  constructor(private router: Router, private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(private router: Router, private http: HttpClient, private cdr: ChangeDetectorRef, private ngZone: NgZone) {}
 
   ngOnInit() {
     // Use setTimeout to ensure component is fully initialized
@@ -356,8 +356,20 @@ export class AccountSettingsComponent implements OnInit {
     }
 
     this.selectedFile = file;
+    console.log('File selected:', file.name, 'Size:', file.size);
 
-    // Compress and create preview
+    // Show immediate preview first
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.profilePhotoPreview = e.target.result;
+      console.log('Immediate preview set:', this.profilePhotoPreview);
+      this.ngZone.run(() => {
+        this.cdr.detectChanges();
+      });
+    };
+    reader.readAsDataURL(file);
+
+    // Then compress for better quality
     this.compressImage(file);
   }
 
@@ -398,6 +410,12 @@ export class AccountSettingsComponent implements OnInit {
       this.profilePhotoPreview = compressedDataUrl;
       
       console.log(`Image compressed from ${file.size} bytes to ${compressedDataUrl.length} characters`);
+      console.log('Profile photo preview set:', this.profilePhotoPreview);
+      
+      // Force UI update to show the preview immediately
+      this.ngZone.run(() => {
+        this.cdr.detectChanges();
+      });
     };
 
     const reader = new FileReader();
