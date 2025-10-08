@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  profilePhoto: {
+    type: String,
+    default: ''
+  },
   preferences: {
     notifications: {
       email: { type: Boolean, default: true },
