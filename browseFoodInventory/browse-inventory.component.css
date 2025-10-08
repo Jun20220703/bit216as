@@ -176,3 +176,116 @@
 .hover-actions .used   { background: #cce5ff; }
 .hover-actions .meal   { background: #d4edda; }
 .hover-actions .donate { background: #fff3cd; }
+
+/* Modal 背景遮罩 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+/* 🔵 Used 弹窗 */
+.modal-used {
+  background: #e6f2ff;
+  border: 3px solid #3399ff;
+}
+
+/* 🟢 Meal 弹窗 */
+.modal-meal {
+  background: #e8ffe8;
+  border: 3px solid #4caf50;
+}
+
+/* 🟡 Donate 弹窗 */
+.modal-donate {
+  background: #fff9e6;
+  border: 3px solid #ffcc00;
+}
+
+/* 统一按钮 */
+.action-btn {
+  flex: 1;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+}
+
+/* 默认弹窗 */
+.modal {
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  width: 400px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+
+/* 弹窗文字 */
+.modal h2 {
+  font-size: 1.6rem;        /* ✅ 放大字体 */
+  margin-bottom: 2rem;      /* ✅ 文字和按钮之间多留一些空间 */
+  line-height: 1.6;         /* ✅ 行间距更舒适 */
+  color: #333;
+}
+
+
+/* 🔵 Used 按钮 */
+.btn-used {
+  background: #3399ff;
+  color: white;
+}
+
+/* 🟢 Meal 按钮 */
+.btn-meal {
+  background: #4caf50;
+  color: white;
+}
+
+/* 🟡 Donate 按钮 */
+.btn-donate {
+  background: #ffcc00;
+  color: black;
+}
+
+/* 按钮 */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cancel-btn, .used-btn {
+  flex: 1;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border: none;
+}
+
+.cancel-btn {
+  background: #ddd;
+}
+
+.used-btn {
+  background: #4caf50;
+  color: white;
+}
+
+/* 默认 Remaining 的样式 */
+.remaining {
+  font-weight: bold;
+  color: #ba0000;   /* 蓝色 */
+  margin-left: 8px;
+}
+
