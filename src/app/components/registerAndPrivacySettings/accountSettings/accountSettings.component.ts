@@ -61,44 +61,23 @@ export class AccountSettingsComponent {
   }
 
   loadUserData() {
-    // First try to get user data from localStorage (from login)
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        const user = JSON.parse(storedUser);
-        this.userData = {
-          name: user.name || '',
-          email: user.email || '',
-          password: '************',
-          householdSize: user.householdSize || 1,
-          dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : '',
-          profilePhoto: user.profilePhoto || ''
-        };
-        
-        // Load actual password from localStorage
-        this.actualPassword = localStorage.getItem('userPassword') || '';
-        
-        this.isLoadingUserData = false;
-        console.log('Loaded user data from localStorage:', this.userData);
-        console.log('Raw user data from localStorage:', user);
-        return;
-      } catch (error) {
-        console.error('Error parsing stored user data:', error);
-      }
-    }
-
-    // If no stored user data, try to get from API
+    this.isLoadingUserData = true;
+    
     const userId = localStorage.getItem('userId');
     if (!userId) {
       alert('User not authenticated. Please log in again.');
       this.router.navigate(['/login']);
+      this.isLoadingUserData = false;
       return;
     }
 
-    // Load user data from API
+    // Always load fresh data from database to get latest profile photo
+    console.log('Loading fresh user data from database...');
     this.http.get(`http://localhost:5000/api/users/profile/${userId}`)
       .subscribe({
         next: (response: any) => {
+          console.log('Raw response from API:', response);
+          
           this.userData = {
             name: response.name || '',
             email: response.email || '',
@@ -112,15 +91,16 @@ export class AccountSettingsComponent {
           this.actualPassword = localStorage.getItem('userPassword') || '';
           
           this.isLoadingUserData = false;
-          console.log('Loaded user data from API:', this.userData);
+          console.log('Loaded fresh user data from database:', this.userData);
+          console.log('Profile photo from database:', response.profilePhoto);
           
           // Update localStorage with fresh data
           localStorage.setItem('user', JSON.stringify(response));
         },
         error: (error) => {
-          console.error('Failed to load user data:', error);
-          alert('Failed to load user data. Please try again.');
-          this.router.navigate(['/login']);
+          console.error('Failed to load user data from database:', error);
+          alert('Failed to load user data from database. Please check your connection and try again.');
+          this.isLoadingUserData = false;
         }
       });
   }
@@ -421,5 +401,17 @@ export class AccountSettingsComponent {
     this.selectedFile = null;
     this.profilePhotoPreview = '';
     this.userData.profilePhoto = '';
+  }
+
+  // Debug methods for image loading
+  onImageError(event: any) {
+    console.error('Image failed to load:', event);
+    console.log('Current image src:', event.target.src);
+    console.log('Profile photo data:', this.userData.profilePhoto);
+    console.log('Profile photo preview:', this.profilePhotoPreview);
+  }
+
+  onImageLoad(event: any) {
+    console.log('Image loaded successfully:', event.target.src);
   }
 }
