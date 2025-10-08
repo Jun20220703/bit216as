@@ -1,0 +1,111 @@
+/* ====== レイアウト全体 ====== */
+.container {
+  display: flex;
+  height: 100vh;
+  background-color: #fff;
+  font-family: 'Comic Neue', sans-serif;
+}
+
+/* ====== メインコンテンツ ====== */
+.content {
+  flex: 1;
+  padding: 40px;
+  background-color: #fafafa;
+  overflow-y: auto;
+}
+
+/* ====== 見出し ====== */
+h1 {
+  font-size: 2rem;
+  color: #222;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* ====== テーブル ====== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+  background-color: #2b5c3b;
+  color: white;
+  text-align: left;
+}
+
+thead th {
+  padding: 12px 15px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+tbody td {
+  padding: 10px 15px;
+  border-bottom: 1px solid #ddd;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+/* ====== ボタン ====== */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+/* Editボタン */
+.btn-edit {
+  background-color: white;
+  border: 1px solid #2b5c3b;
+  color: #2b5c3b;
+}
+
+.btn-edit:hover {
+  background-color: #e8f3eb;
+}
+
+/* Deleteボタン */
+.btn-delete {
+  background-color: white;
+  border: 1px solid #c0392b;
+  color: #c0392b;
+}
+
+.btn-delete:hover {
+  background-color: #fceaea;
+}
+
+/* ====== 空データ用メッセージ ====== */
+.empty-message {
+  margin-top: 30px;
+  text-align: center;
+  color: #666;
+  font-size: 1rem;
+}
+
+/* ====== レスポンシブ対応 ====== */
+@media (max-width: 768px) {
+  .content {
+    padding: 20px;
+  }
+
+  table {
+    font-size: 0.85rem;
+  }
+
+  thead th, tbody td {
+    padding: 8px 10px;
+  }
+
+  button {
+    padding: 4px 10px;
+  }
+}

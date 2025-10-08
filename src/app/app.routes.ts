@@ -4,12 +4,15 @@ import { RegistrationPageComponent } from './components/registerAndPrivacySettin
 import { LoginPageComponent } from './components/registerAndPrivacySettings/loginPage/loginPage.component';
 import { HomePageComponent } from './components/registerAndPrivacySettings/homePage/homePage.component';
 import { AccountSettingsComponent } from './components/registerAndPrivacySettings/accountSettings/accountSettings.component';
-
+import { ManageFoodInventory } from './components/manageFoodInventory/manage-inventory.component';
+import { AddFoodItemComponent } from './components/addFoodItem/add-food-item.component';
 export const routes: Routes = [
   { path: 'home', component: HomePageComponent },
   { path: 'inventory', component: InventoryComponent },
   { path: 'registration', component: RegistrationPageComponent },
   { path: 'login', component: LoginPageComponent },
   { path: 'account-settings', component: AccountSettingsComponent },
+  { path: 'manage-inventory', component: ManageFoodInventory},
+  { path: 'add-food', component: AddFoodItemComponent},
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
