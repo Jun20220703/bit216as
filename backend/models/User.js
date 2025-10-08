@@ -23,7 +23,8 @@ const userSchema = new mongoose.Schema({
   householdSize: {
     type: Number,
     min: 1,
-    max: 20
+    max: 20,
+    default: null
   },
   dateOfBirth: {
     type: Date,
