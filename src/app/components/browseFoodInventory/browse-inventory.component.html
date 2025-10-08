@@ -1,108 +1,153 @@
 <div class="layout">
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>
-  
-<main class="content">
-  <!-- Header -->
-  <header class="inventory-header">
-    <label>Inventory:</label>
-    <select [(ngModel)]="selectedLocation">
-      <option *ngFor="let loc of locations">{{loc}}</option>
-    </select>
-    <div class="header-icons">
-      <!-- Search button -->
-      <button (click)="toggleSearchBar()">
-        <i class="fa fa-search"></i>
-      </button>
-      <!-- Filter button -->
-      <button (click)="toggleFilterPanel()">
-        <i class="fa fa-sliders-h"></i>
-      </button>
-    </div>
-  </header>
 
-  <!-- Search Bar -->
-  <div *ngIf="showSearch" class="search-bar">
-    <input type="text" placeholder="Search item..."
-           [(ngModel)]="searchTerm" />
-  </div>
+  <!-- Main content -->
+  <div class="content">
+    <!-- Header -->
+    <header class="inventory-header">
+      <div class="inventory-title">
+        <label>{{ viewTitle }}</label>
 
-  <!-- Filter Panel -->
-  <div *ngIf="showFilter" class="filter-panel">
-    <h4>Source</h4>
-    <label>
-<<<<<<< Updated upstream
-      <input type="radio" name="source" [checked]="filter.source === 'donation'"
-             (change)="setSource('donation')" /> Donation Listing
-    </label>
-    <label>
-      <input type="radio" name="source" [checked]="filter.source === 'inventory'"
-             (change)="setSource('inventory')" /> Inventory Only
-=======
-      <input type="checkbox" [checked]="filter.donation"
-             (change)="toggleSource('donation')" /> Donation Listing
-    </label>
-    <label>
-      <input type="checkbox" [checked]="filter.inventory"
-             (change)="toggleSource('inventory')" /> Inventory Only
->>>>>>> Stashed changes
-    </label>
-
-    <h4>Category</h4>
-    <label>
-      <input type="checkbox" [checked]="filter.categories.all"
-<<<<<<< Updated upstream
-             (change)="toggleAllCategories()" /> All
-=======
-             (change)="toggleCategory('all')" /> All
->>>>>>> Stashed changes
-    </label>
-    <label>
-      <input type="checkbox" [checked]="filter.categories.fruit"
-             (change)="toggleCategory('fruit')" /> Fruit
-    </label>
-    <label>
-      <input type="checkbox" [checked]="filter.categories.vegetable"
-             (change)="toggleCategory('vegetable')" /> Vegetable
-    </label>
-    <label>
-      <input type="checkbox" [checked]="filter.categories.meat"
-             (change)="toggleCategory('meat')" /> Meat
-    </label>
-
-    <h4>Expired In</h4>
-    <input type="range" min="0" max="30" [(ngModel)]="filter.expiredIn" />
-    <span>{{filter.expiredIn}} days</span>
-  </div>
-
-  <!-- Categories -->
-  <section *ngFor="let category of filteredCategories()" 
-           class="category" [ngClass]="category.colorClass">
-    <h3>
-      <span class="emoji">{{category.icon}}</span>
-      {{category.name}}
-    </h3>
-
-<<<<<<< Updated upstream
-    <div *ngFor="let item of filteredItems(category.items)" class="item">
-=======
-    <div *ngFor="let item of category.items" class="item"
-         (mouseenter)="hoverItem = item" 
-         (mouseleave)="hoverItem = null">
->>>>>>> Stashed changes
-      <span class="item-name">{{item.name}}</span>
-      <div class="quantity">
-        <button (click)="decreaseItem(item)">-</button>
-        <span>{{item.quantity}}</span>
-        <button (click)="increaseItem(item)">+</button>
+        <!-- Storage Location (动态可选) -->
+        <div class="select-wrapper">
+          <select [(ngModel)]="selectedLocation" (ngModelChange)="refreshView()">
+            <option value="All">All</option>
+            <option *ngFor="let loc of availableLocations" [value]="loc">{{ loc }}</option>
+          </select>
+          <span class="custom-arrow">▼</span>
+        </div>
       </div>
 
-      <!-- Hover buttons -->
-      <div class="actions" *ngIf="hoverItem === item">
-        <button class="used">Used</button>
-        <button class="meal">Meal</button>
-        <button class="donate">Donate</button>
+      <div class="header-icons">
+        <i class="fa-solid fa-magnifying-glass header-icon" (click)="toggleSearchBar()"></i>
+        <i class="fa-solid fa-sliders header-icon" (click)="toggleFilterPanel()"></i>
+      </div>
+    </header>
+
+    <!-- Search bar -->
+    <div *ngIf="showSearch" class="search-bar">
+      <input type="text"
+             [(ngModel)]="searchQuery"
+             (ngModelChange)="refreshView()"
+             placeholder="Search food items..." />
+    </div>
+
+    <!-- Filter Drawer -->
+    <div class="filter-drawer" [class.open]="showFilter">
+      <div class="filter-header">
+        <h2>Filters</h2>
+        <button class="close-btn" (click)="toggleFilterPanel()">×</button>
+      </div>
+
+      <!-- Source 单选 -->
+      <div class="filter-section">
+        <h3>Source</h3>
+        <label>
+          <input type="radio" name="source" value="inventory"
+                 [(ngModel)]="selectedSource"
+                 (ngModelChange)="toggleSource($event)" />
+          Inventory only
+        </label>
+        <label>
+          <input type="radio" name="source" value="donation"
+                 [(ngModel)]="selectedSource"
+                 (ngModelChange)="toggleSource($event)" />
+          Donation List
+        </label>
+      </div>
+
+      <!-- Category 动态 -->
+      <div class="filter-section">
+        <h3>Category</h3>
+        <label>
+          <input type="checkbox"
+                 [checked]="filter.categories.all"
+                 (change)="toggleCategory('all')" />
+          All
+        </label>
+
+        <label *ngFor="let cat of availableCategories">
+          <input type="checkbox"
+                 [checked]="filter.categories[cat.key] ?? true"
+                 (change)="toggleCategory(cat.key)" />
+          {{ cat.name }}
+        </label>
+      </div>
+
+      <!-- Expired in（预留：目前 demo 数据无到期日） -->
+      <div class="filter-section">
+        <h3>Expired in</h3>
+        <input type="number" [(ngModel)]="filter.expiredIn" (ngModelChange)="refreshView()" />
+        <span> day(s)</span>
       </div>
     </div>
-  </section>
-</main>
+
+    <!-- Location & Category 列表 -->
+    <div *ngFor="let loc of viewLocs" class="location-block">
+      <h1 *ngIf="selectedLocation === 'All'" class="location-title">{{ loc.name }}</h1>
+
+      <div *ngFor="let category of loc.categories" class="category" [ngClass]="category.colorClass">
+        <h2>{{ category.icon }} {{ category.name }}</h2>
+
+        <div *ngFor="let item of category.items"
+             class="item"
+             (mouseenter)="hoverItem = item"
+             (mouseleave)="hoverItem = null">
+
+          <!-- 左：名称 + Remaining -->
+          <div class="item-name">
+            {{ item.name }}
+            <span class="remaining">[ Remaining: {{ item.remaining }} ]</span>
+          </div>
+
+          <!-- 中：数量选择 -->
+          <div class="quantity-slot">
+            <div class="quantity-control">
+              <button type="button" (click)="decreaseSelected(item)">-</button>
+              <span class="qty">{{ item.selectedQty }}</span>
+              <button type="button" (click)="increaseSelected(item)">+</button>
+            </div>
+          </div>
+
+          <!-- 右：操作按钮 -->
+          <div class="hover-slot">
+            <div class="hover-actions" [class.visible]="hoverItem === item">
+              <button class="used" (click)="openConfirm(item, 'used')">Used</button>
+              <button class="meal" (click)="openConfirm(item, 'meal')">Meal</button>
+              <button class="donate" (click)="openConfirm(item, 'donate')">Donate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 确认弹窗 -->
+<div class="modal-overlay" *ngIf="showConfirm && confirmAction" (click)="closeConfirm()">
+  <div class="modal"
+       [ngClass]="{
+         'modal-used': confirmAction === 'used',
+         'modal-meal': confirmAction === 'meal',
+         'modal-donate': confirmAction === 'donate'
+       }"
+       (click)="$event.stopPropagation()">
+    <h2>
+      Do you want to mark {{ confirmItem?.selectedQty }}
+      {{ confirmItem?.name }}(s) as {{ confirmAction }}?
+    </h2>
+    <div class="modal-buttons">
+      <button class="cancel-btn" (click)="closeConfirm()">Cancel</button>
+      <button class="action-btn"
+              [ngClass]="{
+                'btn-used': confirmAction === 'used',
+                'btn-meal': confirmAction === 'meal',
+                'btn-donate': confirmAction === 'donate'
+              }"
+              (click)="confirmActionProceed()">
+        {{ confirmAction | titlecase }}
+      </button>
+    </div>
+  </div>
+</div>

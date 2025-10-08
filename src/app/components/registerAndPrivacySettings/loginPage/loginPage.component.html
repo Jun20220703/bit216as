@@ -1,0 +1,56 @@
+<div class="full-page-wrapper">
+  <!-- Top Logo Section -->
+  <div class="top-logo-section">
+    <img src="assets/images/image1.png" alt="Food Shield Logo" class="top-logo-img">
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <!-- Left Panel with Image and Text -->
+    <div class="left-slogan-panel">
+      <div class="globe-container">
+        <img src="assets/images/image2.png" alt="Globe with trees" class="globe-img">
+      </div>
+      <div class="slogan-text-container">
+        <p>Manage your food, reduce</p>
+        <p>waste, save money, and</p>
+        <p>care for the environment</p>
+        <p class="slogan-highlight">We Make a Difference</p>
+      </div>
+    </div>
+
+    <!-- Right Panel with Login/Register Form -->
+    <div class="container" [class.active]="isRegisterMode" id="container">
+  <div class="form-container log-in">
+    <form (ngSubmit)="onLogin()">
+      <h1>Log In</h1>
+      <input type="email" placeholder="Email" [(ngModel)]="email" name="email">
+      <input type="password" placeholder="Password" [(ngModel)]="password" name="password">
+      <a href="#" (click)="onForgotPassword()" class="forgot-password">Forget Your Password?</a>
+      <button type="submit">Log In</button>
+    </form>
+  </div>
+  <div class="form-container register">
+    <form (ngSubmit)="onRegister()">
+      <h1>Go to Registration</h1>
+      <span>Click the register button to go to the registration page</span>
+      <button type="submit">Register</button>
+    </form>
+  </div>
+  <div class="toggle-container">
+    <div class="toggle">
+      <div class="toggle-panel toggle-left">
+        <h1>Welcome Back!</h1>
+        <p>Enter your personal details to use all of site features</p>
+        <button class="hidden" (click)="toggleMode()">Log In</button>
+      </div>
+      <div class="toggle-panel toggle-right">
+        <h1>Welcom Back!</h1>
+        <p>Register with your personal details to use all of site features</p>
+        <button class="hidden" (click)="toggleMode()">Register</button>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+</div>

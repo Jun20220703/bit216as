@@ -1,105 +1,291 @@
+/* Layout */
+.layout { display: flex; background-color: white; }
 .content {
   flex: 1;
-  padding: 2rem;
-  overflow-y: auto;
-  background: #f9f9f9;
+  padding: 1rem;
+  margin-left: 350px;
+  background-color: white;  /* ✅ 确保内容区域是白色 */
+  min-height: 100vh;        /* ✅ 让它覆盖整个页面高度 */
 }
 
 /* Header */
-.inventory-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
+.inventory-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.inventory-title label { font-size: 1.8rem; font-weight: bold; }
 
-.inventory-header select {
-  padding: .4rem .6rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+/* Select */
+.select-wrapper { position: relative; width: 250px; }
+.select-wrapper select {
+  width: 100%; padding: 0.5rem 1rem; padding-right: 2.5rem;
+  border: none; border-radius: 60px; background: #f0f0f0;
+  font-size: 1rem; outline: none; appearance: none; cursor: pointer;
 }
+.select-wrapper .custom-arrow { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); }
 
-.header-icons {
-  margin-left: auto;
-  display: flex;
-  gap: .5rem;
-}
+/* Header icons */
+.header-icons { display: flex; gap: 1rem; }
+.header-icon { font-size: 1.8rem; cursor: pointer; }
 
-.header-icons button {
-  background: #eee;
-  border: none;
-  padding: .4rem .6rem;
-  border-radius: 6px;
-  cursor: pointer;
-}
+/* Search */
+.search-bar { margin: 0.5rem 0 1rem 0; }
+.search-bar input { width: 100%; max-width: 400px; padding: 0.5rem 1rem; border-radius: 30px; border: 1px solid #ccc; }
 
-/* Filter panel */
-.filter-panel {
-  background: #ffffff;
+/* Drawer 样式 */
+.filter-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 350px;          /* Drawer 宽度 */
+  height: 100%;
+  background: #fff;
+  border-radius: 20px 0 0 20px;
+    /* ✅ 换边框线颜色 */
+  border-left: 5px solid #4caf4fb5;
+  /* 阴影 */
+  box-shadow: -2px 0 12px rgba(0,0,0,0.1);
+  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease-in-out;
   padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,.1);
+  z-index: 1000;
+  overflow-y: auto;
+  /* 默认隐藏：整体往右平移 100%（即完全移出屏幕） */
+  transform: translateX(100%);
 }
 
-.filter-panel h4 {
-  margin-top: .5rem;
-  margin-bottom: .25rem;
-  color: #225530;
+.filter-drawer.open {
+  /* 打开时复位 */
+  transform: translateX(0);
 }
 
-/* Category sections */
-.category {
-  background: white;
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+/* 背景遮罩层 */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 900;
 }
 
-.category h3 {
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
+.filter-header {
   display: flex;
-  align-items: center;
-  gap: .5rem;
-}
-
-/* Fruit color theme */
-.category.fruit {
-  background: #fff8eb;
-}
-
-/* Vegetable color theme */
-.category.vegetable {
-  background: #f0f6ff;
-}
-
-.item {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: .6rem .8rem;
-  margin-bottom: .5rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,.05);
-}
-
-.item-name {
-  font-weight: 600;
-}
-
-.quantity {
-  display: flex;
   align-items: center;
-  gap: .4rem;
+  margin-bottom: 1rem;
 }
 
-.quantity button {
-  background: #e5e5e5;
+.filter-header h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.close-btn {
+  background: transparent;
   border: none;
-  padding: .2rem .6rem;
-  border-radius: 6px;
-  font-size: 1rem;
+  font-size: 1.5rem;
   cursor: pointer;
 }
+
+/* Filter sections */
+.filter-section {
+  margin-bottom: 1.5rem;
+}
+
+/* 让 category 里的 checkbox 一行一个 */
+.filter-section label {
+  display: block;        /* ✅ 每个 label 独占一行 */
+  margin-bottom: 0.5rem; /* ✅ 行间距 */
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.filter-section h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+
+.filter-panel {
+  border: 1px solid #ccc;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+}
+
+.filter-section {
+  margin-bottom: 1rem;
+}
+
+
+
+/* Location Block */
+.location-block {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  background: #fafafa;
+}
+.location-title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+/* Category */
+.category { margin-bottom: 1rem; padding: 1rem; border-radius: 12px; }
+.category.carb { background: #dbeeff; }
+.category.fruit { background: #fff7c2; }
+.category.meat { background: #ffe0e7; }
+
+/* Item 行布局 */
+.item {
+  display: grid;
+  grid-template-columns: 1fr minmax(120px, 180px) minmax(160px, 320px);
+  gap: 12px;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.item:last-child { border-bottom: none; }
+
+.item-name { font-size: 1rem; font-weight: 500; padding-left: 6px; }
+
+/* 数量 */
+.quantity-slot { display: flex; justify-content: center; }
+.quantity-control { display: inline-flex; align-items: center; gap: 0.5rem; }
+.quantity-control button {
+  width: 36px; height: 36px; border: none; border-radius: 50%;
+  background: #e8e8e8; cursor: pointer; font-size: 1rem; font-weight: bold;
+}
+.quantity-control .qty { min-width: 26px; text-align: center; font-weight: 600; }
+
+/* Hover Actions */
+.hover-slot { justify-self: end; }
+.hover-actions { display: flex; gap: 1rem; opacity: 0; transition: 0.2s; }
+.item:hover .hover-actions, .hover-actions.visible { opacity: 1; }
+
+.hover-actions button {
+  border: none; padding: 0.6rem 1.2rem; border-radius: 8px;
+  font-size: 1rem; font-weight: 600; cursor: pointer;
+}
+.hover-actions .used   { background: #cce5ff; }
+.hover-actions .meal   { background: #d4edda; }
+.hover-actions .donate { background: #fff3cd; }
+
+/* Modal 背景遮罩 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+/* 🔵 Used 弹窗 */
+.modal-used {
+  background: #e6f2ff;
+  border: 3px solid #3399ff;
+}
+
+/* 🟢 Meal 弹窗 */
+.modal-meal {
+  background: #e8ffe8;
+  border: 3px solid #4caf50;
+}
+
+/* 🟡 Donate 弹窗 */
+.modal-donate {
+  background: #fff9e6;
+  border: 3px solid #ffcc00;
+}
+
+/* 统一按钮 */
+.action-btn {
+  flex: 1;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+}
+
+/* 默认弹窗 */
+.modal {
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  width: 400px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+
+/* 弹窗文字 */
+.modal h2 {
+  font-size: 1.6rem;        /* ✅ 放大字体 */
+  margin-bottom: 2rem;      /* ✅ 文字和按钮之间多留一些空间 */
+  line-height: 1.6;         /* ✅ 行间距更舒适 */
+  color: #333;
+}
+
+
+/* 🔵 Used 按钮 */
+.btn-used {
+  background: #3399ff;
+  color: white;
+}
+
+/* 🟢 Meal 按钮 */
+.btn-meal {
+  background: #4caf50;
+  color: white;
+}
+
+/* 🟡 Donate 按钮 */
+.btn-donate {
+  background: #ffcc00;
+  color: black;
+}
+
+/* 按钮 */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cancel-btn, .used-btn {
+  flex: 1;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border: none;
+}
+
+.cancel-btn {
+  background: #ddd;
+}
+
+.used-btn {
+  background: #4caf50;
+  color: white;
+}
+
+/* 默认 Remaining 的样式 */
+.remaining {
+  font-weight: bold;
+  color: #ba0000;   /* 蓝色 */
+  margin-left: 8px;
+}
+

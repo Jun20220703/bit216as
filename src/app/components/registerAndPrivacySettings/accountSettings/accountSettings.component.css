@@ -1,0 +1,520 @@
+.account-settings-container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+/* Header with Tabs */
+.header {
+  max-width: 800px;
+  margin: 0 auto 30px auto;
+}
+
+.tabs {
+  display: flex;
+  background: #e0e0e0;
+  border-radius: 8px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.tab.active {
+  background: white;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.tab:hover:not(.active) {
+  background: #f0f0f0;
+  color: #333;
+}
+
+/* Content Area */
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.tab-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.settings-card {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.settings-card h3 {
+  margin: 0 0 25px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-label {
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.setting-value {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Account Form Container */
+.account-form-container {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  display: flex;
+  gap: 30px;
+  min-height: 400px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e0e0e0;
+}
+
+/* Profile Photo Section */
+.profile-photo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 200px;
+}
+
+.profile-photo-label {
+  color: #4CAF50;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  align-self: flex-start;
+}
+
+.profile-photo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.profile-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e0e0e0;
+}
+
+.upload-button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.upload-button:hover {
+  background: #45a049;
+}
+
+/* Form Fields Section */
+.form-fields-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.field-label.required {
+  color: #e74c3c;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 40px 12px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+.clear-button {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.clear-button:hover {
+  background: #f0f0f0;
+  color: #666;
+}
+
+/* Action Buttons */
+.action-buttons {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 30px;
+}
+
+.cancel-button,
+.save-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-button {
+  background: #4CAF50;
+  color: white;
+}
+
+.cancel-button:hover {
+  background: #45a049;
+}
+
+.save-button {
+  background: #4CAF50;
+  color: white;
+}
+
+.save-button:hover {
+  background: #45a049;
+}
+
+/* Readonly input styling */
+.readonly-input {
+  background-color: #f5f5f5;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Dialog Overlay */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Password Reset Confirmation Dialog */
+.dialog-container {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 90%;
+}
+
+.dialog-content h3 {
+  margin: 0 0 25px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.dialog-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.dialog-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+}
+
+.cancel-dialog-button {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.cancel-dialog-button:hover {
+  background: #d0d0d0;
+}
+
+.confirm-dialog-button {
+  background: #4CAF50;
+  color: white;
+}
+
+.confirm-dialog-button:hover {
+  background: #45a049;
+}
+
+/* Password Change Form */
+.password-change-container {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+}
+
+.password-change-content {
+  text-align: center;
+}
+
+.password-change-title {
+  margin: 0 0 30px 0;
+  color: #333;
+  font-size: 24px;
+  font-weight: 600;
+  font-family: 'Brush Script MT', cursive;
+}
+
+.password-form {
+  margin-bottom: 30px;
+}
+
+.password-form .form-field {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.password-change-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.cancel-password-button {
+  background: #e0e0e0;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-password-button:hover {
+  background: #d0d0d0;
+  border-color: #bbb;
+}
+
+.change-button {
+  background: #90EE90;
+  color: #333;
+  border: 1px solid #7ED47E;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.change-button:hover {
+  background: #7ED47E;
+  border-color: #6BC46B;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+}
+
+.toggle-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.toggle-slider {
+  width: 50px;
+  height: 24px;
+  background: #333;
+  border-radius: 12px;
+  position: relative;
+  transition: all 0.3s ease;
+  margin-right: 8px;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s ease;
+}
+
+.toggle-input:checked + .toggle-label .toggle-slider {
+  background: #4CAF50;
+}
+
+.toggle-input:checked + .toggle-label .toggle-slider::before {
+  transform: translateX(26px);
+}
+
+.toggle-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  min-width: 30px;
+  text-align: center;
+}
+
+.toggle-input:checked + .toggle-label .toggle-text {
+  color: #4CAF50;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .account-settings-container {
+    padding: 15px;
+  }
+  
+  .tabs {
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .tab {
+    padding: 15px 20px;
+    font-size: 16px;
+  }
+  
+  .settings-card {
+    padding: 20px;
+  }
+  
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .toggle-switch {
+    align-self: flex-end;
+  }
+  
+}
+
+@media (max-width: 480px) {
+  .settings-card {
+    padding: 15px;
+  }
+  
+  .setting-item {
+    padding: 12px 0;
+  }
+  
+  .setting-label {
+    font-size: 13px;
+  }
+  
+  .setting-value {
+    font-size: 13px;
+  }
+}
