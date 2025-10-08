@@ -1,3 +1,4 @@
+
 <div class="layout">
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>
@@ -39,6 +40,10 @@
         <h2>Filters</h2>
         <button class="close-btn" (click)="toggleFilterPanel()">×</button>
       </div>
+
+      <h2>Debug 数据：</h2>
+<pre>{{ rawFoods | json }}</pre>
+
 
       <div class="filter-section">
         <h3>Source</h3>

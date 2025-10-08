@@ -2,7 +2,9 @@ import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../sidebar/sidebar.component';
-import { FoodService, Food } from '../../services/food.service';  // 这里引入 FoodService
+import { BrowseFoodService, Food } from '../../services/browse-food.service';
+
+
 
 interface Item {
   name: string;
@@ -31,7 +33,12 @@ interface Location {
   imports: [CommonModule, FormsModule, SidebarComponent],
 })
 export class InventoryComponent implements OnInit {
-  constructor(private cdr: ChangeDetectorRef, private foodService: FoodService) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private browseService: BrowseFoodService
+  ) {}
+
+
 
   /** 标题 & Source 选择 */
   viewTitle: string = 'Inventory';
@@ -71,12 +78,14 @@ export class InventoryComponent implements OnInit {
 
   /** 🔹 从 API 获取数据 */
   loadFoods() {
-    this.foodService.getFoods().subscribe(data => {
-      console.log("📦 从数据库拿到的数据:", data);
-      this.rawFoods = data;
-      this.refreshView();
-    });
+    this.browseService.getFoods().subscribe((data: Food[]) => {
+    console.log("📦 拿到的数据:", data);   // <-- 看 console
+    this.rawFoods = data;
+    this.refreshView();
+  });
+
   }
+
 
   /** 可用 Storage Locations（随 Source 动态） */
   get availableLocations(): string[] {

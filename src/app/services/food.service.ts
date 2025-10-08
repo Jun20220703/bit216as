@@ -18,16 +18,17 @@ export interface Food {
 export class FoodService {
   private apiUrl = 'http://localhost:5001/api/foods';
 
+
   constructor(private http: HttpClient) {}
 
-  getFoods(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  getFoods(): Observable<Food[]> {
+    return this.http.get<Food[]>(this.apiUrl);
   }
 
-  addFood(food: any): Observable<any> {
+  addFood(food: Food): Observable<Food> {
     console.log('Sending to backend:', food);
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<any>(this.apiUrl, food);
+    return this.http.post<Food>(this.apiUrl, food, { headers });
   }
 
   deleteFood(id: string) {
