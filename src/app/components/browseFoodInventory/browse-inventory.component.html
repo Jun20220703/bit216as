@@ -108,13 +108,18 @@
           </div>
 
           <!-- 右：操作按钮 -->
-          <div class="hover-slot">
-            <div class="hover-actions" [class.visible]="hoverItem === item">
-              <button class="used" (click)="openConfirm(item, 'used')">Used</button>
-              <button class="meal" (click)="openConfirm(item, 'meal')">Meal</button>
-              <button class="donate" (click)="openConfirm(item, 'donate')">Donate</button>
+            <div class="hover-slot" *ngIf="selectedSource === 'inventory'">
+              <div class="hover-actions" [class.visible]="hoverItem === item">
+                <button class="used" (click)="openConfirm(item, 'used')">Used</button>
+                <button class="meal" (click)="openConfirm(item, 'meal')">Meal</button>
+                <button class="donate" (click)="openConfirm(item, 'donate')">Donate</button>
+              </div>
             </div>
-          </div>
+
+            <div class="edit-slot" *ngIf="selectedSource === 'donation'">
+              <button class="edit-btn">Edit</button>
+            </div>
+
         </div>
       </div>
     </div>
