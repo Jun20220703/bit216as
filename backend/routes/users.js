@@ -131,7 +131,9 @@ router.put('/profile/:userId', async (req, res) => {
     const updateData = {};
     
     if (name !== undefined) updateData.name = name;
-    if (householdSize !== undefined) updateData.householdSize = householdSize;
+    if (householdSize !== undefined) {
+      updateData.householdSize = householdSize === null ? null : householdSize;
+    }
     if (dateOfBirth !== undefined) updateData.dateOfBirth = new Date(dateOfBirth);
     if (preferences !== undefined) updateData.preferences = preferences;
     if (profilePhoto !== undefined) updateData.profilePhoto = profilePhoto;
