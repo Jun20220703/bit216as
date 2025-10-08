@@ -1,14 +1,8 @@
-import mongoose from 'mongoose';
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import Food from "./models/Food.js";
-
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/database');
 const foodRoutes = require('./routes/foodRoutes');
-require('dotenv').config();
 
 dotenv.config();
 
