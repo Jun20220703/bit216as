@@ -93,7 +93,8 @@ router.post('/login', async (req, res) => {
         name: user.name,
         email: user.email,
         householdSize: user.householdSize,
-        dateOfBirth: user.dateOfBirth
+        dateOfBirth: user.dateOfBirth,
+        profilePhoto: user.profilePhoto
       }
     });
   } catch (error) {
