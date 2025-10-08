@@ -7,7 +7,7 @@ interface Item {
   name: string;
   remaining: number;
   selectedQty: number;
-  source: 'inventory' | 'donation';   // 👈 新增
+  source: 'inventory' | 'donation';
 }
 type CategoryKey = 'all' | 'fruit' | 'vegetable' | 'meat' | 'carb';
 interface Category {
@@ -32,22 +32,25 @@ interface Location {
 export class InventoryComponent implements OnInit {
   constructor(private cdr: ChangeDetectorRef) {}
 
+  /** 标题 & Source 选择 */
   viewTitle: string = 'Inventory';
   selectedSource: 'inventory' | 'donation' = 'inventory';
 
+  /** Storage Location（下拉当前值） */
+  selectedLocation: string = 'All';
 
-  locations = ['All', 'Fridge', 'Freezer', 'Shelf'];
-  selectedLocation = 'All';
+  /** UI 状态 */
   showFilter = false;
   showSearch = false;
   searchQuery: string = '';
   hoverItem: Item | null = null;
 
-  // 弹窗状态
+  /** 弹窗状态 */
   showConfirm = false;
   confirmItem: Item | null = null;
   confirmAction: 'used' | 'meal' | 'donate' | null = null;
 
+  /** 过滤状态（categories 为动态使用，all=true 表示不过滤） */
   filter = {
     donation: false,
     inventory: true,
@@ -55,8 +58,10 @@ export class InventoryComponent implements OnInit {
     expiredIn: 0
   };
 
+  /** 视图数据 */
   viewLocs: Location[] = [];
 
+  /** Demo 数据 */
   data: Location[] = [
     {
       name: 'Fridge',
@@ -81,83 +86,105 @@ export class InventoryComponent implements OnInit {
           ]
         }
       ]
+    },
+    {
+      name: 'Freezer',
+      categories: [
+        {
+          name: 'Vegetable', key: 'vegetable', colorClass: 'fruit', icon: '🥦',
+          items: [
+            { name: 'Broccoli', remaining: 3, selectedQty: 0, source: 'inventory' }
+          ]
+        }
+      ]
+    },
+    {
+      name: 'Shelf',
+      categories: [
+        {
+          name: 'Carbohydrates', key: 'carb', colorClass: 'carb', icon: '🍞',
+          items: [
+            { name: 'Pasta', remaining: 6, selectedQty: 0, source: 'donation' }
+          ]
+        }
+      ]
     }
   ];
 
   ngOnInit() { this.refreshView(); }
 
-  refreshView() {
-    this.viewLocs = this.computeFilteredLocations();
-    this.cdr.detectChanges();
+  /** 可用 Storage Locations（随 Source 动态） */
+  get availableLocations(): string[] {
+    const set = new Set<string>();
+    this.data.forEach(loc => {
+      const has = loc.categories.some(cat =>
+        cat.items.some(i => this.matchSource(i.source))
+      );
+      if (has) set.add(loc.name);
+    });
+    return Array.from(set);
   }
 
+  /** 可用 Categories（随 Source 动态） */
   get availableCategories() {
-    const categories: { key: CategoryKey, name: string }[] = [];
+    const list: { key: CategoryKey, name: string }[] = [];
+    const exists = new Set<CategoryKey>();
 
     this.data.forEach(loc => {
       loc.categories.forEach(cat => {
-        // 先检查每个 item 的来源是否符合当前 filter
-        const hasMatchingItem = cat.items.some(i => {
-          if (this.filter.inventory && !this.filter.donation) return i.source === 'inventory';
-          if (this.filter.donation && !this.filter.inventory) return i.source === 'donation';
-          return true; // 如果两个都勾选，就全显示
-        });
-
-        // 如果这个分类在当前模式下有 item 才显示
-        if (hasMatchingItem && !categories.some(c => c.key === cat.key)) {
-          categories.push({ key: cat.key, name: cat.name });
+        const hasMatchingItem = cat.items.some(i => this.matchSource(i.source));
+        if (hasMatchingItem && !exists.has(cat.key)) {
+          exists.add(cat.key);
+          list.push({ key: cat.key, name: cat.name });
         }
       });
     });
-
-    return categories;
+    return list;
   }
 
-  get availableLocations(): string[] {
-    const locations: string[] = [];
+  /** 根据当前 Source 判断 item 是否可见 */
+  private matchSource(source: Item['source']) {
+    if (this.filter.inventory && !this.filter.donation) return source === 'inventory';
+    if (this.filter.donation && !this.filter.inventory) return source === 'donation';
+    return true; // 都选或未限定 → 全部
+  }
 
-    this.data.forEach(loc => {
-      // 检查 location 里面是否有符合当前 source 的 item
-      const hasMatchingItem = loc.categories.some(cat =>
-        cat.items.some(i => {
-          if (this.filter.inventory && !this.filter.donation) return i.source === 'inventory';
-          if (this.filter.donation && !this.filter.inventory) return i.source === 'donation';
-          return true; // 如果两个都勾选，就全显示
-        })
-      );
+  refreshView() {
+    this.viewLocs = this.computeFilteredLocations();
 
-      if (hasMatchingItem && !locations.includes(loc.name)) {
-        locations.push(loc.name);
-      }
-    });
+    // 如果当前选中的 Location 在可用列表里不存在，自动回退到 All
+    if (this.selectedLocation !== 'All' && !this.availableLocations.includes(this.selectedLocation)) {
+      this.selectedLocation = 'All';
+      this.viewLocs = this.computeFilteredLocations();
+    }
 
-    return locations;
+    this.cdr.detectChanges();
   }
 
   private computeFilteredLocations(): Location[] {
+    // 先按 Location 过滤（All = 不过滤）
     let locs = this.selectedLocation === 'All'
       ? this.data
       : this.data.filter(l => l.name === this.selectedLocation);
 
+    // 按 Category 复选过滤（All = 不过滤）
     locs = locs.map(loc => ({
       ...loc,
-      categories: loc.categories.filter(cat => this.filter.categories.all || this.filter.categories[cat.key])
+      categories: loc.categories.filter(cat =>
+        this.filter.categories.all || (this.filter.categories as any)[cat.key] === true
+      )
     }));
 
-    // ✅ 根据 inventory/donation 过滤
+    // 按 Source 过滤 + 清空空分类
     locs = locs.map(loc => ({
       ...loc,
       categories: loc.categories.map(cat => ({
         ...cat,
-        items: cat.items.filter(i => {
-          if (this.filter.inventory && !this.filter.donation) return i.source === 'inventory';
-          if (this.filter.donation && !this.filter.inventory) return i.source === 'donation';
-          return true; // 如果两个都勾选，就显示全部
-        })
+        items: cat.items.filter(i => this.matchSource(i.source))
       })).filter(cat => cat.items.length > 0)
     })).filter(loc => loc.categories.length > 0);
 
-    // ✅ 搜索功能
+    // 搜索（按名称）
     if (this.searchQuery.trim() !== '') {
       const q = this.searchQuery.toLowerCase();
       locs = locs.map(loc => ({
@@ -169,50 +196,71 @@ export class InventoryComponent implements OnInit {
       })).filter(loc => loc.categories.length > 0);
     }
 
+    // （可选）ExpiredIn：示例数据没有到期日，若你加了字段，可在此处补充过滤
+
     return locs;
   }
 
+  /** UI 切换 */
   toggleFilterPanel() { this.showFilter = !this.showFilter; }
-  toggleSearchBar() { this.showSearch = !this.showSearch; if (!this.showSearch) { this.searchQuery = ''; this.refreshView(); } }
+  toggleSearchBar() {
+    this.showSearch = !this.showSearch;
+    if (!this.showSearch) { this.searchQuery = ''; this.refreshView(); }
+  }
 
+  /** Source 单选切换 */
   toggleSource(source: 'donation' | 'inventory') {
+    this.selectedSource = source;
     this.filter.donation = source === 'donation';
     this.filter.inventory = source === 'inventory';
 
-    // 👇 更新标题
-    if (source === 'inventory') {
-      this.viewTitle = 'Inventory';
-    } else if (source === 'donation') {
-      this.viewTitle = 'Donation List';
+    // 标题
+    this.viewTitle = (source === 'inventory') ? 'Inventory' : 'Donation List';
+
+    // 当 Source 变化时，若当前 Location 在新 Source 下不可用，回到 All
+    if (this.selectedLocation !== 'All' && !this.availableLocations.includes(this.selectedLocation)) {
+      this.selectedLocation = 'All';
     }
+
+    // 当 Source 变化时，让 “All” 真正包含当前 availableCategories
+    // （可选）如果你希望保留之前勾选，移除此行。
+    this.filter.categories.all = true;
 
     this.refreshView();
   }
 
+  /** Category 勾选（支持动态 key） */
   toggleCategory(category: CategoryKey) {
     if (category === 'all') {
       const enabled = !this.filter.categories.all;
-      this.filter.categories = { all: enabled, fruit: enabled, vegetable: enabled, meat: enabled, carb: enabled };
+      // 将当前“可用分类”全部同步到 filter.categories
+      const currentKeys = this.availableCategories.map(c => c.key);
+      currentKeys.forEach(k => (this.filter.categories as any)[k] = enabled);
+      this.filter.categories.all = enabled;
     } else {
-      this.filter.categories[category] = !this.filter.categories[category];
+      // 若 key 不存在，先初始化
+      if ((this.filter.categories as any)[category] === undefined) {
+        (this.filter.categories as any)[category] = true;
+      }
+      (this.filter.categories as any)[category] = !(this.filter.categories as any)[category];
       this.filter.categories.all = false;
     }
     this.refreshView();
   }
 
-increaseSelected(item: Item) {
-  if (item.selectedQty < item.remaining) {
-    item.selectedQty++;
+  /** 数量增减 */
+  increaseSelected(item: Item) {
+    if (item.selectedQty < item.remaining) {
+      item.selectedQty++;
+    }
   }
-}
-decreaseSelected(item: Item) {
-  if (item.selectedQty > 0) {
-    item.selectedQty--;
+  decreaseSelected(item: Item) {
+    if (item.selectedQty > 0) {
+      item.selectedQty--;
+    }
   }
-}
 
-
-  // 弹窗逻辑
+  /** 弹窗逻辑 */
   openConfirm(item: Item, action: 'used' | 'meal' | 'donate') {
     if (item.selectedQty <= 0) return;
     this.confirmItem = item;
