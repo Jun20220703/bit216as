@@ -55,7 +55,47 @@ app.get('/', (req, res) => {
   res.json({ message: 'Food Shield API Server is running!' });
 });
 
-/* Error handling middleware */
+
+//Add item API
+app.post('/api/foods', async (req, res) => {
+  try{
+    console.log("Received POST /api/foods:", req.body);
+    const newFood = new Food(req.body);
+    await newFood.save();
+    res.status(201).json(newFood);
+  } catch (error){
+    console.error("Error savinf food:", error);
+    res.status(400).json({message: error.message});
+  }
+});
+
+app.get('/api/foods', async(req, res) => {
+  try{
+    const foods = await Food.find();
+    res.json(foods);
+  } catch (error){
+    res.status(500).json({message: 'Error fetching foods',error});
+  }
+});
+
+// delete food item from manage-inventory
+app.delete('/api/foods/:id', async (req, res) => {
+  try {
+    const deletedFood = await Food.findByIdAndDelete(req.params.id);
+    if (!deletedFood) {
+      return res.status(404).json({ message: 'Food not found' });
+    }
+    res.json({ message: 'Deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting food:', error);
+    res.status(500).json({ message: 'Server error while deleting food' });
+  }
+});
+
+
+
+
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Something went wrong!', error: err.message });

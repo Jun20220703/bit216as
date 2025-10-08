@@ -31,7 +31,7 @@ export class FoodService {
     return this.http.post<Food>(this.apiUrl, food, { headers });
   }
 
-  deleteFood(id: string): Observable<any> {
+  deleteFood(id: string) {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

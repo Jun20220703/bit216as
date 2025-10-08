@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const foodSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  qty: { type: Number, required: true },   // <-- 改成 Number
+  qty: { type: Number, required: true },
   expiry: { type: String, required: true },
   category: { type: String, required: true },
   storage: { type: String, required: true },
