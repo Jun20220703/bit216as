@@ -20,7 +20,7 @@
 }
 
 .top-section .slogan-text {
-  margin-top: 100px;
+  margin-top: 30px;
 }
 
 .top-section .main-message {
@@ -47,6 +47,7 @@
   max-width: 700px;
   height: auto;
   border-radius: 15px;
+  margin-top: 30px;
 }
 
 .right-content {
