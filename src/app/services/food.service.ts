@@ -2,6 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface Food {
+  _id?: string;
+  name: string;
+  qty: number;          // ← backend と合わせる
+  expiry: string;       // ← 追加
+  category: string;
+  storage: string;
+  notes?: string;       // ← optional
+}
+
 @Injectable({
   providedIn: 'root'
 })
