@@ -41,6 +41,7 @@ export class AddFoodItemComponent {
       return;
     }
 
+    console.log('submitting:', this.foodForm.value);
     this.foodService.addFood(this.foodForm.value).subscribe({
       next: (res) =>{
         console.log('Food saved Successfully:', res);

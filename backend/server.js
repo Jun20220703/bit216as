@@ -8,7 +8,7 @@ const browseFoodRoutes = require('./routes/browseFood');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // 데이터베이스 연결
 connectDB();
