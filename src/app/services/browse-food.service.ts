@@ -10,6 +10,7 @@ export interface Food {
   category: string;
   storage: string;
   notes?: string;
+  status?: 'inventory' | 'donation' | 'expired'; // ✅ 加入 expired
 }
 
 @Injectable({
@@ -22,5 +23,16 @@ export class BrowseFoodService {
 
   getFoods(): Observable<Food[]> {
     return this.http.get<Food[]>(this.apiUrl);
+  }
+
+  /** 更新食物状态（Donate / Inventory） */
+  updateFoodStatus(id: string, status: 'inventory' | 'donation' | 'expired'): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}/status`, { status });
+  }
+
+
+  /** 更新食物数量（Used / Meal） */
+  updateFoodQty(id: string, newQty: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}/qty`, { qty: newQty });
   }
 }
