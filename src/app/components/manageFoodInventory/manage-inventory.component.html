@@ -33,7 +33,10 @@
           <td>
             <button type="button" (click)="editItem(item)">Edit</button>
             <button type="button" (click)="openDeleteModal(item)">Delete</button>
-            <button type="button" (click)="openDonateModal(item)">Donate</button>
+            <button 
+              type="button" 
+              *ngIf="isExpiringSoon(item.expiry)"
+              (click)="openDonateModal(item)">Donate</button>
           </td>
         </tr>
       </tbody>
