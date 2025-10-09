@@ -17,6 +17,13 @@ export class LoginPageComponent {
   name: string = '';
   isRegisterMode: boolean = false;
   isLoading: boolean = false;
+  
+  // Password recovery properties
+  showPasswordRecovery: boolean = false;
+  recoveryEmail: string = '';
+  isRecoveryLoading: boolean = false;
+  recoveryMessage: string = '';
+  recoverySuccess: boolean = false;
 
   constructor(private router: Router, private http: HttpClient) {}
 
@@ -72,7 +79,65 @@ export class LoginPageComponent {
     this.router.navigate(['/registration']);
   }
 
-  onForgotPassword() {
-    alert('Forgot password functionality would be implemented here.');
+  onForgotPassword(event: Event) {
+    event.preventDefault(); // Prevent default link behavior
+    this.showPasswordRecovery = true;
+    this.recoveryEmail = '';
+    this.recoveryMessage = '';
+    this.recoverySuccess = false;
+  }
+
+  onPasswordRecovery() {
+    if (!this.recoveryEmail) {
+      this.recoveryMessage = 'Please enter your email address.';
+      this.recoverySuccess = false;
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.recoveryEmail)) {
+      this.recoveryMessage = 'Please enter a valid email address.';
+      this.recoverySuccess = false;
+      return;
+    }
+
+    this.isRecoveryLoading = true;
+    this.recoveryMessage = '';
+
+    // Call password recovery API
+    this.http.post('http://localhost:5000/api/users/forgot-password', {
+      email: this.recoveryEmail
+    }).subscribe({
+      next: (response: any) => {
+        console.log('Password recovery email sent:', response);
+        this.isRecoveryLoading = false;
+        this.recoveryMessage = 'Password recovery link has been sent to your email address. Please check your inbox and follow the instructions to reset your password.';
+        this.recoverySuccess = true;
+      },
+      error: (error) => {
+        console.error('Password recovery failed:', error);
+        this.isRecoveryLoading = false;
+        
+        if (error.error && error.error.message) {
+          this.recoveryMessage = error.error.message;
+        } else if (error.status === 0) {
+          this.recoveryMessage = 'Cannot connect to server. Please check if the backend server is running.';
+        } else if (error.status === 404) {
+          this.recoveryMessage = 'No account found with this email address.';
+        } else {
+          this.recoveryMessage = 'Failed to send recovery email. Please try again later.';
+        }
+        this.recoverySuccess = false;
+      }
+    });
+  }
+
+  onCancelRecovery() {
+    this.showPasswordRecovery = false;
+    this.recoveryEmail = '';
+    this.recoveryMessage = '';
+    this.recoverySuccess = false;
+    this.isRecoveryLoading = false;
   }
 }
