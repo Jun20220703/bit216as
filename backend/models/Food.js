@@ -7,10 +7,12 @@ const foodSchema = new mongoose.Schema({
   category: { type: String, required: true },
   storage: { type: String, required: true },
   notes: { type: String, default: '' },
+  
 
   // ✅ 新增字段：状态 (inventory / donation)
   status: { type: String, enum: ['inventory', 'donation', 'expired'],
     default: 'inventory' },
+
 });
 
 module.exports = mongoose.model('Food', foodSchema);

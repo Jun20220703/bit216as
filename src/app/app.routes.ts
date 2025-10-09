@@ -6,6 +6,7 @@ import { HomePageComponent } from './components/registerAndPrivacySettings/homeP
 import { AccountSettingsComponent } from './components/registerAndPrivacySettings/accountSettings/accountSettings.component';
 import { ManageFoodInventory } from './components/manageFoodInventory/manage-inventory.component';
 import { AddFoodItemComponent } from './components/addFoodItem/add-food-item.component';
+import { DonationListComponent } from './components/donationList/donation-list.component';
 export const routes: Routes = [
   { path: 'home', component: HomePageComponent },
   { path: 'inventory', component: InventoryComponent },
@@ -14,5 +15,6 @@ export const routes: Routes = [
   { path: 'account-settings', component: AccountSettingsComponent },
   { path: 'manage-inventory', component: ManageFoodInventory},
   { path: 'add-food', component: AddFoodItemComponent},
+  { path: 'donation-list', component: DonationListComponent},
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];

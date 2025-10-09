@@ -8,7 +8,7 @@ const foodRoutes = require('./routes/foodRoutes');   // 增删改查
 const browseFood = require('./routes/browseFood');   // 只读浏览
 const userRoutes = require('./routes/users');        // 用户相关
 const donationRoutes = require('./routes/donationRoutes');
-
+const DonationList = require('./models/DonationList');
 
 
 const app = express();
@@ -91,6 +91,51 @@ app.delete('/api/foods/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error while deleting food' });
   }
 });
+
+app.post('/api/donations', async(req, res)=>{
+  try{
+    const { foodId, qty, location, availability, notes } = req.body;
+
+    if (!foodId || !qty || !location || !availability) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+
+      const donation = new DonationList({
+        foodId, 
+        qty,
+        donationAt: new Date()
+      });
+      await donation.save();
+
+      await Food.findByIdAndUpdate(foodId, 
+      {
+        status:'donation',
+        location, 
+        avaiability, 
+        notes
+      });
+    
+      res.status(201).json({message: 'Donation successfully saved', donation});
+    } catch(error){
+      console.error('Error saving donation: ', error);
+      res.status(500).json({message: 'Server error', error});
+    }
+});
+app.get('/api/donations', async (req, res) => {
+  try {
+    // populateで関連するFoodの詳細を取得
+    const donations = await DonationList.find()
+      .populate('foodId', 'name qty expiry category storage status location availability notes');
+
+    res.json(donations);
+  } catch (error) {
+    console.error('Error fetching donations:', error);
+    res.status(500).json({ message: 'Error fetching donations', error });
+  }
+});
+
+
 
 
 
