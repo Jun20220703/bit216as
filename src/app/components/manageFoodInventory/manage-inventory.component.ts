@@ -131,5 +131,15 @@ goToDonationList() {
   console.log('Navigate to Donation List');
 }
 
+isExpiringSoon(expiryDate: string): boolean{
+  const today = new Date();
+  const expiry = new Date(expiryDate);
+
+  const diffInTime = expiry.getTime() - today.getTime();
+  const diffInDays = diffInTime / (1000 * 3600 * 24);
+
+  return diffInDays <= 5 && diffInDays >= 0;
+}
+
 
 }
