@@ -128,6 +128,7 @@ confirmDonate() {
 }
 
 goToDonationList() {
+  this.router.navigate(['/donation-list']);
   console.log('Navigate to Donation List');
 }
 
