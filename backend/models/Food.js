@@ -7,6 +7,7 @@ const foodSchema = new mongoose.Schema({
   category: { type: String, required: true },
   storage: { type: String, required: true },
   notes: { type: String, default: '' },
+  userId:{ type: mongoose.Schema.Types.ObjectId, ref:'User', required: true},
   
 
   // ✅ 新增字段：状态 (inventory / donation)
