@@ -157,16 +157,23 @@ export class AccountSettingsComponent implements OnInit {
     // Confirm before saving
     const confirmed = confirm('Are you sure to save?');
     if (!confirmed) {
+      this.isSaving = false;
+      this.cdr.detectChanges();
       return;
     }
 
     this.isSaving = true;
     this.saveError = '';
+    
+    // Force UI update to show saving state immediately
+    this.cdr.detectChanges();
 
     // Get user ID from localStorage (assuming it's stored there after login)
     const userId = localStorage.getItem('userId');
     if (!userId) {
       alert('User not authenticated. Please log in again.');
+      this.isSaving = false;
+      this.cdr.detectChanges();
       this.router.navigate(['/login']);
       return;
     }
@@ -194,6 +201,9 @@ export class AccountSettingsComponent implements OnInit {
           if (response.user) {
             localStorage.setItem('user', JSON.stringify(response.user));
           }
+          
+          // Force UI update to ensure buttons are re-enabled
+          this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Profile update failed:', error);
@@ -221,6 +231,9 @@ export class AccountSettingsComponent implements OnInit {
           
           this.saveError = errorMessage;
           alert(`Failed to update profile: ${errorMessage}`);
+          
+          // Force UI update to ensure buttons are re-enabled even on error
+          this.cdr.detectChanges();
         }
       });
   }
