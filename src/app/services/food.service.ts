@@ -34,4 +34,17 @@ export class FoodService {
   deleteFood(id: string) {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  donateFood(foodId: string, donationData: any): Observable<any> {
+  return this.http.post<any>('http://localhost:5001/api/donations', {
+    foodId,
+    ...donationData
+  });
+}
+    getDonations(): Observable<any[]> {
+    return this.http.get<any[]>('http://localhost:5001/api/donations');
+    }
+
+
+
 }

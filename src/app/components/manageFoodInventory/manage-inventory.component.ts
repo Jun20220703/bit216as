@@ -98,20 +98,33 @@ confirmDonate() {
     return;
   }
 
-  const donatedItem = {
-    ...this.selectedDonateItem,
-    pickupLocation: this.donationDetails.location,
+
+  const donationData = {
+    foodId: this.selectedDonateItem._id,
+    qty: this.selectedDonateItem.qty,
+    location: this.donationDetails.location,
     availability: this.donationDetails.availability,
     notes: this.donationDetails.notes
   };
 
-  console.log('✅ Donated item:', donatedItem);
-  this.router.navigate(['/donation-list']); // Donationリストページへ遷移
+  this.foodService.donateFood(this.selectedDonateItem._id, donationData).subscribe({
+    next: (res) => {
+      console.log('Donation saved:', res);
+      this.showDonateModal = false;
+      this.selectedDonateItem = null;
+      this.donationDetails = { location: '', availability: '', notes: '' };
+      this.donateError = '';
 
-  this.showDonateModal = false;
-  this.selectedDonateItem = null;
-  this.donationDetails = { location: '', availability: '', notes: '' };
-  this.donateError = '';
+      this.loadFoods();
+      this.router.navigate(['/donation-list']);
+    },
+    error: (err) => {
+      console.error('Error saving donation:', err);
+      this.donateError = 'Failed to save donation.Please try again.';
+    }
+  })
+
+  
 }
 
 goToDonationList() {

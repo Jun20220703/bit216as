@@ -17,15 +17,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of donations">
-          <td>{{ item.name }}</td>
-          <td>{{ item.qty }}</td>
-          <td>{{ item.expiry }}</td>
-          <td>{{ item.pickupLocation }}</td>
-          <td>{{ item.availability }}</td>
+        <tr *ngFor="let donation of donations">
+          <td>{{ donation.foodId?.name }}</td>
+          <td>{{ donation.foodId?.qty }}</td>
+          <td>{{ donation.foodId?.expiry }}</td>
+          <td>{{ donation.foodId?.location }}</td>
+          <td>{{ donation.foodId?.availability }}</td>
           <td>
-            <button (click)="edit(item)">Edit</button>
-            <button (click)="delete(item)">Delete</button>
+            <button (click)="edit(donation)">Edit</button>
+            <button (click)="delete(donation)">Delete</button>
           </td>
         </tr>
       </tbody>
