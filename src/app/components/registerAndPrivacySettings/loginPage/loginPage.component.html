@@ -26,7 +26,7 @@
       <h1>Log In</h1>
       <input type="email" placeholder="Email" [(ngModel)]="email" name="email">
       <input type="password" placeholder="Password" [(ngModel)]="password" name="password">
-      <a href="#" (click)="onForgotPassword()" class="forgot-password">Forgot Your Password?</a>
+      <a href="javascript:void(0)" (click)="onForgotPassword($event)" class="forgot-password">Forgot Your Password?</a>
       <button type="submit" [disabled]="isLoading">
         <span *ngIf="!isLoading">Log In</span>
         <span *ngIf="isLoading">Logging in...</span>
@@ -55,5 +55,40 @@
     </div>
   </div>
   </div>
+  </div>
+
+  <!-- Password Recovery Modal -->
+  <div *ngIf="showPasswordRecovery" class="password-recovery-overlay">
+    <div class="password-recovery-modal">
+      <div class="password-recovery-content">
+        <h2>Password Recovery</h2>
+        <p>Enter your email address and we'll send you a link to reset your password.</p>
+        
+        <form (ngSubmit)="onPasswordRecovery()" class="recovery-form">
+          <div class="form-group">
+            <label for="recovery-email">Email Address:</label>
+            <input 
+              type="email" 
+              id="recovery-email" 
+              [(ngModel)]="recoveryEmail" 
+              name="recoveryEmail"
+              placeholder="Enter your email address"
+              required>
+          </div>
+          
+          <div class="recovery-buttons">
+            <button type="button" class="cancel-recovery-btn" (click)="onCancelRecovery()">Cancel</button>
+            <button type="submit" class="send-recovery-btn" [disabled]="isRecoveryLoading">
+              <span *ngIf="!isRecoveryLoading">Send Recovery Link</span>
+              <span *ngIf="isRecoveryLoading">Sending...</span>
+            </button>
+          </div>
+        </form>
+        
+        <div *ngIf="recoveryMessage" class="recovery-message" [class.success]="recoverySuccess" [class.error]="!recoverySuccess">
+          {{ recoveryMessage }}
+        </div>
+      </div>
+    </div>
   </div>
 </div>
