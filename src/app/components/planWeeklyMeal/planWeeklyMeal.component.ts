@@ -117,6 +117,18 @@ export class PlanWeeklyMealComponent implements OnInit {
     this.initializeWeekDays();
   }
 
+  previousDay() {
+    const firstDay = this.weekDays[0].fullDate;
+    firstDay.setDate(firstDay.getDate() - 1);
+    this.initializeWeekDays();
+  }
+
+  nextDay() {
+    const firstDay = this.weekDays[0].fullDate;
+    firstDay.setDate(firstDay.getDate() + 1);
+    this.initializeWeekDays();
+  }
+
   filterInventory() {
     if (!this.searchTerm.trim()) {
       this.filteredInventory = [...this.inventory];
