@@ -29,8 +29,7 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 /* Section Titles */
@@ -374,10 +373,6 @@
     margin-left: 0;
     padding: 20px;
     z-index: 1;
-  }
-  
-  .meal-planning-container {
-    max-width: 100%;
   }
   
   .week-days {
