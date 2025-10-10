@@ -7,10 +7,12 @@
     <!-- Header -->
     <header class="inventory-header">
       <div class="inventory-title">
-        <label>Inventory</label>
+        <label>{{ viewTitle }}</label>
         <div class="select-wrapper">
-          <select [(ngModel)]="selectedLocation">
-            <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
+          <!-- 🔹 下拉列表：动态 Storage -->
+          <select [(ngModel)]="selectedLocation" (ngModelChange)="refreshView()">
+            <option value="All">All</option>
+            <option *ngFor="let loc of availableLocations" [value]="loc">{{ loc }}</option>
           </select>
           <span class="custom-arrow">▼</span>
         </div>
@@ -24,7 +26,11 @@
 
     <!-- Search bar -->
     <div *ngIf="showSearch" class="search-bar">
-      <input type="text" [(ngModel)]="searchQuery" placeholder="Search food items..." />
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="refreshView()"
+        placeholder="Search food items..." />
     </div>
 
     <!-- Filter Drawer -->
@@ -34,72 +40,170 @@
         <button class="close-btn" (click)="toggleFilterPanel()">×</button>
       </div>
 
+      <!-- Source -->
       <div class="filter-section">
         <h3>Source</h3>
         <label>
-          <input type="radio" name="source" [checked]="filter.inventory" (change)="toggleSource('inventory')" />
+          <input
+            type="radio"
+            name="source"
+            value="inventory"
+            [(ngModel)]="selectedSource"
+            (ngModelChange)="toggleSource($event)" />
           Inventory only
         </label>
         <label>
-          <input type="radio" name="source" [checked]="filter.donation" (change)="toggleSource('donation')" />
+          <input
+            type="radio"
+            name="source"
+            value="donation"
+            [(ngModel)]="selectedSource"
+            (ngModelChange)="toggleSource($event)" />
           Donation List
         </label>
       </div>
 
+      <!-- Category -->
       <div class="filter-section">
         <h3>Category</h3>
-        <label><input type="checkbox" [checked]="filter.categories.all" (change)="toggleCategory('all')" /> All</label>
-        <label><input type="checkbox" [checked]="filter.categories.fruit" (change)="toggleCategory('fruit')" /> Fruit</label>
-        <label><input type="checkbox" [checked]="filter.categories.vegetable" (change)="toggleCategory('vegetable')" /> Vegetable</label>
-        <label><input type="checkbox" [checked]="filter.categories.meat" (change)="toggleCategory('meat')" /> Meat</label>
-        <label><input type="checkbox" [checked]="filter.categories.carb" (change)="toggleCategory('carb')" /> Carbohydrates</label>
+        <label>
+          <input
+            type="checkbox"
+            [checked]="filter.categories.all"
+            (change)="toggleCategory('all')" />
+          All
+        </label>
+
+        <!-- 动态生成分类 -->
+        <label *ngFor="let cat of availableCategories">
+          <input
+            type="checkbox"
+            [checked]="filter.categories[cat.key]"
+            (change)="toggleCategory(cat.key)" />
+          {{ cat.name }}
+        </label>
       </div>
 
-      <div class="filter-section">
+      <!-- ✅ Expired in 只在 Inventory 模式下显示 -->
+      <div class="filter-section" *ngIf="selectedSource === 'inventory'">
         <h3>Expired in</h3>
-        <input type="number" [(ngModel)]="filter.expiredIn" />
-        <span> day(s)</span>
+
+        <div class="expired-input-group">
+          <input
+            type="number"
+            [(ngModel)]="filter.expiredIn"
+            placeholder="Enter days"
+            min="0" />
+          <span>day(s)</span>
+        </div>
+
+        <!-- ✅ Apply 按钮单独放一行 -->
+        <button class="apply-btn" (click)="applyExpiredFilter()">Apply</button>
       </div>
     </div>
+    <!-- ✅ Filter Drawer END -->
 
-
-    <!-- Location & Category List -->
-    <div *ngFor="let loc of filteredLocations()" class="location-block">
-      <!-- 只有 All 才显示 Location 大标题 -->
+    <!-- 🔹 渲染 Storage → Category → Item -->
+    <div *ngFor="let loc of viewLocs" class="location-block">
       <h1 *ngIf="selectedLocation === 'All'" class="location-title">{{ loc.name }}</h1>
 
-      <!-- Category -->
       <div *ngFor="let category of loc.categories" class="category" [ngClass]="category.colorClass">
         <h2>{{ category.icon }} {{ category.name }}</h2>
 
-        <!-- Item -->
-        <div *ngFor="let item of category.items"
-             class="item"
-             (mouseenter)="hoverItem = item"
-             (mouseleave)="hoverItem = null">
-          
-          <!-- 左：名称 -->
+        <!-- 每个食品项目 -->
+        <div
+          *ngFor="let item of category.items"
+          class="item"
+          (mouseenter)="hoverItem = item"
+          (mouseleave)="hoverItem = null">
+
+          <!-- 食物名称 -->
           <div class="item-name">{{ item.name }}</div>
 
-          <!-- 中：数量 -->
-          <div class="quantity-slot">
-            <div class="quantity-control" role="group">
-              <button (click)="decreaseItem(item)">-</button>
-              <span class="qty">{{ item.quantity }}</span>
-              <button (click)="increaseItem(item)">+</button>
+          <!-- ✅ Donation List 模式 -->
+          <div *ngIf="selectedSource === 'donation'; else normalItem" class="donation-row">
+            <div class="remaining-box donation-view">{{ item.remaining }}</div>
+            <div class="edit-slot">
+              <button class="edit-btn" (click)="openConfirm(item, 'edit')">Edit</button>
             </div>
           </div>
 
-          <!-- 右：hover 动作 -->
-          <div class="hover-slot">
-            <div class="hover-actions" [class.visible]="hoverItem === item">
-              <button class="used">Used</button>
-              <button class="meal">Meal</button>
-              <button class="donate">Donate</button>
+          <!-- ✅ Inventory 模式 -->
+          <ng-template #normalItem>
+            <!-- 剩余数量 -->
+            <div class="remaining-box" [ngClass]="getExpiryClass(item)">
+              {{ item.remaining }}
             </div>
-          </div>
+
+            <!-- 剩余天数 -->
+            <div class="days-inline" [ngClass]="getExpiryClass(item)">
+              {{ getRemainingDays(item.expiry) <= 0 ? 'Expired' : getRemainingDays(item.expiry) + ' days left' }}
+            </div>
+
+            <!-- 数量控制器 -->
+            <div class="quantity-control">
+              <button type="button" (click)="decreaseSelected(item)">-</button>
+              <span class="qty">{{ item.selectedQty }}</span>
+              <button type="button" (click)="increaseSelected(item)">+</button>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="hover-actions" [class.visible]="hoverItem === item">
+              <button class="used" (click)="openConfirm(item, 'used')">Used</button>
+              <button class="meal" (click)="openConfirm(item, 'meal')">Meal</button>
+              <button class="donate" (click)="openConfirm(item, 'donate')">Donate</button>
+            </div>
+          </ng-template>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- 确认弹窗 -->
+<div
+  class="modal-overlay"
+  *ngIf="showConfirm && confirmAction"
+  (click)="closeConfirm()">
+
+  <div
+    class="modal"
+    [ngClass]="{
+      'modal-used': confirmAction === 'used',
+      'modal-meal': confirmAction === 'meal',
+      'modal-donate': confirmAction === 'donate',
+      'modal-edit': confirmAction === 'edit'
+    }"
+
+    (click)="$event.stopPropagation()">
+
+    <h2>
+    <ng-container [ngSwitch]="confirmAction">
+      <ng-container *ngSwitchCase="'edit'">
+        Edit donation item of <strong>{{ confirmItem?.name }}</strong>?
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        Do you want to mark {{ confirmItem?.selectedQty }}
+        {{ confirmItem?.name }}(s) as {{ confirmAction }}?
+      </ng-container>
+    </ng-container>
+  </h2>
+
+
+    <div class="modal-buttons">
+      <button class="cancel-btn" (click)="closeConfirm()">Cancel</button>
+      <button
+  class="action-btn"
+  [ngClass]="{
+    'btn-used': confirmAction === 'used',
+    'btn-meal': confirmAction === 'meal',
+    'btn-donate': confirmAction === 'donate',
+    'btn-edit': confirmAction === 'edit'
+  }"
+  (click)="confirmActionProceed()">
+  {{ confirmAction === 'edit' ? 'Edit' : (confirmAction | titlecase) }}
+</button>
+
     </div>
   </div>
 </div>

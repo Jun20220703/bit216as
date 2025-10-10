@@ -1,0 +1,34 @@
+<div class="container">
+  <app-sidebar></app-sidebar>
+
+  <main class="content">
+    <h1>Food Inventory</h1>
+    <h3>> Donation List</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Item Name</th>
+          <th>Qty</th>
+          <th>Expiry Date</th>
+          <th>Pickup Location</th>
+          <th>Availability</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let donation of donations">
+          <td>{{ donation.foodId?.name }}</td>
+          <td>{{ donation.foodId?.qty }}</td>
+          <td>{{ donation.foodId?.expiry }}</td>
+          <td>{{ donation.foodId?.location }}</td>
+          <td>{{ donation.foodId?.availability }}</td>
+          <td>
+            <button (click)="edit(donation)">Edit</button>
+            <button (click)="delete(donation)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</div>
