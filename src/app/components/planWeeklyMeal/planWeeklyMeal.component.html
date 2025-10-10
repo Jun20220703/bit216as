@@ -16,18 +16,22 @@
       </div>
       
       <div class="week-days">
+        <button class="week-nav-arrow left" (click)="previousDay()" title="Previous day">‹</button>
         <div class="day-column" *ngFor="let day of weekDays">
-          <div class="day-header">
-            <div class="day-name">{{ day.name }}</div>
-            <div class="day-number">{{ day.date }}</div>
-          </div>
-          <div class="meal-slots">
-            <div class="meal-slot" *ngFor="let meal of mealTypes">
-              <div class="meal-indicator"></div>
-              <div class="meal-name">{{ meal }}</div>
+          <div class="day-card">
+            <div class="day-header">
+              <div class="day-name">{{ day.name }}</div>
+              <div class="day-number">{{ day.date }}</div>
+            </div>
+            <div class="meal-slots">
+              <div class="meal-slot" *ngFor="let meal of mealTypes">
+                <div class="meal-indicator"></div>
+                <div class="meal-name">{{ meal }}</div>
+              </div>
             </div>
           </div>
         </div>
+        <button class="week-nav-arrow right" (click)="nextDay()" title="Next day">›</button>
       </div>
     </div>
   </div>
