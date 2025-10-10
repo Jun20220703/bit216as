@@ -290,6 +290,12 @@
   font-size: 0.95rem;
 }
 
+.item-quantity {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .quantity-circle {
   background: #e9ecef;
   color: #1a1a1a;
@@ -301,7 +307,6 @@
   justify-content: center;
   font-weight: 600;
   font-size: 0.9rem;
-  margin: 0 auto;
 }
 
 .item-category {
