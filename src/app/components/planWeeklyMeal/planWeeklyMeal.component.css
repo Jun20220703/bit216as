@@ -304,9 +304,28 @@
   margin: 0 auto;
 }
 
+.item-category {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.item-mark {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.item-expiry {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .category-badge {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   background: #e8f5e8;
   color: #1a1a1a;
@@ -314,6 +333,7 @@
   border-radius: 15px;
   font-size: 0.85rem;
   font-weight: 500;
+  width: 100%;
 }
 
 .category-icon {
@@ -343,6 +363,7 @@
 .marked-badge {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   background: #fff3cd;
   color: #856404;
@@ -350,6 +371,7 @@
   border-radius: 12px;
   font-size: 0.8rem;
   font-weight: 500;
+  width: 100%;
 }
 
 .checkmark {
@@ -365,6 +387,8 @@
   font-size: 0.8rem;
   font-weight: 500;
   text-align: center;
+  display: inline-block;
+  width: 100%;
 }
 
 /* Responsive Design */
