@@ -4,6 +4,7 @@ import { RegistrationPageComponent } from './components/registerAndPrivacySettin
 import { LoginPageComponent } from './components/registerAndPrivacySettings/loginPage/loginPage.component';
 import { HomePageComponent } from './components/registerAndPrivacySettings/homePage/homePage.component';
 import { AccountSettingsComponent } from './components/registerAndPrivacySettings/accountSettings/accountSettings.component';
+import { PlanWeeklyMealComponent } from './components/planWeeklyMeal/planWeeklyMeal.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomePageComponent },
@@ -11,5 +12,6 @@ export const routes: Routes = [
   { path: 'registration', component: RegistrationPageComponent },
   { path: 'login', component: LoginPageComponent },
   { path: 'account-settings', component: AccountSettingsComponent },
+  { path: 'planWeeklyMeal', component: PlanWeeklyMealComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
