@@ -242,7 +242,7 @@
 .toggle{
     background-color: #2E6A4B;
     height: 100%;
-    background: linear-gradient(to right, #2E6A4B, #2E6A4B);
+    background: linear-gradient(to right, #2E8B57, #2E8B57);
     color: #fff;
     position: relative;
     left: -100%;
@@ -286,4 +286,192 @@
 
 .container.active .toggle-right{
     transform: translateX(200%);
+}
+
+/* Password Recovery Modal Styles */
+.password-recovery-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.password-recovery-modal {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: slideIn 0.3s ease-in-out;
+}
+
+.password-recovery-content {
+    padding: 40px;
+    text-align: center;
+}
+
+.password-recovery-content h2 {
+    color: #2E6A4B;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.password-recovery-content p {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.recovery-form {
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    color: #333;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: #2E6A4B;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(46, 106, 75, 0.1);
+}
+
+.recovery-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.cancel-recovery-btn,
+.send-recovery-btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 140px;
+}
+
+.cancel-recovery-btn {
+    background-color: #f5f5f5;
+    color: #666;
+    border: 2px solid #ddd;
+}
+
+.cancel-recovery-btn:hover {
+    background-color: #e9e9e9;
+    border-color: #bbb;
+}
+
+.send-recovery-btn {
+    background-color: #2E6A4B;
+    color: white;
+}
+
+.send-recovery-btn:hover:not(:disabled) {
+    background-color: #1e4a2e;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 106, 75, 0.3);
+}
+
+.send-recovery-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.recovery-message {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.recovery-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.recovery-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Responsive Design for Modal */
+@media (max-width: 768px) {
+    .password-recovery-modal {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .password-recovery-content {
+        padding: 30px 20px;
+    }
+    
+    .password-recovery-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    .recovery-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .cancel-recovery-btn,
+    .send-recovery-btn {
+        width: 100%;
+    }
 }
