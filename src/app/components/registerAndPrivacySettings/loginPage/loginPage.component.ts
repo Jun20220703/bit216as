@@ -40,7 +40,7 @@ export class LoginPageComponent {
     this.isLoading = true;
 
     // Call login API
-    this.http.post('http://localhost:5000/api/users/login', {
+    this.http.post('http://localhost:5001/api/users/login', {
       email: this.email,
       password: this.password
     }).subscribe({
@@ -106,7 +106,7 @@ export class LoginPageComponent {
     this.recoveryMessage = '';
 
     // Call password recovery API
-    this.http.post('http://localhost:5000/api/users/forgot-password', {
+    this.http.post('http://localhost:5001/api/users/forgot-password', {
       email: this.recoveryEmail
     }).subscribe({
       next: (response: any) => {
