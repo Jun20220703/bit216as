@@ -14,7 +14,7 @@
 
 .main-content {
   flex: 1;
-  margin-left: 250px; /* Sidebar width */
+  margin-left: 380px; /* Sidebar width + extra space */
   padding: 30px;
   overflow-x: auto;
   min-height: 100vh;
