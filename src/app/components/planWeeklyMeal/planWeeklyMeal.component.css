@@ -172,6 +172,8 @@
   transition: all 0.2s ease;
   flex-shrink: 0;
   z-index: 10;
+  align-self: flex-start;
+  margin-top: 20px;
 }
 
 .week-nav-arrow:hover {
