@@ -28,8 +28,44 @@ export class LoginPageComponent {
   verificationCode: string = '';
   newPassword: string = '';
   confirmPassword: string = '';
+  
+  // Timer properties
+  timeLeft: number = 0; // 남은 시간 (초)
+  timerInterval: any = null; // 타이머 인터벌
 
   constructor(private router: Router, private http: HttpClient, private cdr: ChangeDetectorRef) {}
+
+  // 타이머 시작 (2분 = 120초)
+  startTimer() {
+    this.timeLeft = 120; // 2분
+    this.timerInterval = setInterval(() => {
+      this.timeLeft--;
+      this.cdr.detectChanges();
+      
+      if (this.timeLeft <= 0) {
+        this.stopTimer();
+        this.recoveryMessage = 'Verification code has expired. Please request a new one.';
+        this.recoverySuccess = false;
+        this.recoveryStep = 'email';
+        this.verificationCode = '';
+      }
+    }, 1000);
+  }
+
+  // 타이머 중지
+  stopTimer() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+  }
+
+  // 남은 시간을 MM:SS 형식으로 반환
+  getTimeLeftFormatted(): string {
+    const minutes = Math.floor(this.timeLeft / 60);
+    const seconds = this.timeLeft % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
 
   toggleMode() {
     this.isRegisterMode = !this.isRegisterMode;
@@ -131,6 +167,9 @@ export class LoginPageComponent {
           this.recoverySuccess = true;
           this.recoveryStep = 'verify';
         }
+        
+        // 타이머 시작
+        this.startTimer();
         
         // 강제로 변경 감지 트리거
         this.cdr.detectChanges();
@@ -262,13 +301,24 @@ export class LoginPageComponent {
       next: (response: any) => {
         console.log('Password reset successful:', response);
         this.isRecoveryLoading = false;
-        this.recoveryMessage = 'Password has been reset successfully. You can now log in with your new password.';
+        this.recoveryMessage = 'Password reset succeeded! Redirecting to login page...';
         this.recoverySuccess = true;
         
-        // Close modal after 3 seconds
+        // 강제로 변경 감지 트리거
+        this.cdr.detectChanges();
+        
+        // Close modal and redirect to login after 2 seconds
         setTimeout(() => {
           this.onCancelRecovery();
-        }, 3000);
+          // Reset all recovery form fields
+          this.recoveryEmail = '';
+          this.verificationCode = '';
+          this.newPassword = '';
+          this.confirmPassword = '';
+          this.recoveryStep = 'email';
+          this.recoveryMessage = '';
+          this.recoverySuccess = false;
+        }, 2000);
       },
       error: (error) => {
         console.error('Password reset failed:', error);
@@ -296,5 +346,8 @@ export class LoginPageComponent {
     this.verificationCode = '';
     this.newPassword = '';
     this.confirmPassword = '';
+    
+    // 타이머 중지
+    this.stopTimer();
   }
 }
