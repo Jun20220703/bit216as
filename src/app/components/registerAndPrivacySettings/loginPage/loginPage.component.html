@@ -63,7 +63,7 @@
       <div class="password-recovery-content">
         <h2>Password Recovery</h2>
         <p *ngIf="!recoveryStep || recoveryStep === 'email'">Enter your email address and we'll send you a verification code to reset your password.</p>
-        <p *ngIf="recoveryStep === 'verify'">Enter the 6-digit verification code sent to your email address.</p>
+          <p *ngIf="recoveryStep === 'verify'">Enter the 6-digit verification code sent to your email address.</p>
         <p *ngIf="recoveryStep === 'reset'">Enter your new password.</p>
         
         <!-- Step 1: Email Input -->
@@ -88,20 +88,26 @@
           </div>
         </form>
 
-        <!-- Step 2: Verification Code Input -->
-        <form *ngIf="recoveryStep === 'verify'" (ngSubmit)="onVerifyCode()" class="recovery-form">
-          <div class="form-group">
-            <label for="verification-code">Verification Code:</label>
-            <input 
-              type="text" 
-              id="verification-code" 
-              [(ngModel)]="verificationCode" 
-              name="verificationCode"
-              placeholder="Enter 6-digit code"
-              maxlength="6"
-              pattern="[0-9]{6}"
-              required>
-          </div>
+          <!-- Step 2: Verification Code Input -->
+          <form *ngIf="recoveryStep === 'verify'" (ngSubmit)="onVerifyCode()" class="recovery-form">
+            <div class="form-group">
+              <label for="verification-code">Verification Code:</label>
+              <input 
+                type="text" 
+                id="verification-code" 
+                [(ngModel)]="verificationCode" 
+                name="verificationCode"
+                placeholder="Enter 6-digit code"
+                maxlength="6"
+                pattern="[0-9]{6}"
+                required>
+            </div>
+            
+            <!-- Timer display below input field -->
+            <div *ngIf="timeLeft > 0" class="timer-display">
+              <span class="timer-label">Time remaining:</span>
+              <span class="timer-value">{{ getTimeLeftFormatted() }}</span>
+            </div>
           
           <div class="recovery-buttons">
             <button type="button" class="cancel-recovery-btn" (click)="onCancelRecovery()">Cancel</button>
