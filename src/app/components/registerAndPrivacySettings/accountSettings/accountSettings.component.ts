@@ -78,7 +78,7 @@ export class AccountSettingsComponent implements OnInit {
 
     // Always load fresh data from database to get latest profile photo
     console.log('Loading fresh user data from database...');
-    this.http.get(`http://localhost:5000/api/users/profile/${userId}`)
+    this.http.get(`http://localhost:5001/api/users/profile/${userId}`)
       .subscribe({
         next: (response: any) => {
           console.log('Raw response from API:', response);
@@ -190,7 +190,7 @@ export class AccountSettingsComponent implements OnInit {
     console.log('User ID:', userId);
 
     // Call the API
-    this.http.put(`http://localhost:5000/api/users/profile/${userId}`, updateData)
+    this.http.put(`http://localhost:5001/api/users/profile/${userId}`, updateData)
       .subscribe({
         next: (response: any) => {
           console.log('Profile updated successfully:', response);
@@ -306,7 +306,7 @@ export class AccountSettingsComponent implements OnInit {
         }
 
         // Call password update API
-        this.http.put(`http://localhost:5000/api/users/profile/${userId}`, {
+        this.http.put(`http://localhost:5001/api/users/profile/${userId}`, {
           password: this.newPassword
         }).subscribe({
           next: (response: any) => {
