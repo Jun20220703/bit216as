@@ -22,7 +22,7 @@ async function sendPasswordRecoveryEmail(email, verificationCode) {
   console.log('='.repeat(60));
   console.log('📧 To:', email);
   console.log('🔐 Verification Code:', verificationCode);
-        console.log('⏰ Expires in: 2 minutes');
+  console.log('⏰ Expires in: 2 minutes');
   console.log('='.repeat(60));
   console.log('📝 Please use this code in the verification step');
   console.log('='.repeat(60));
@@ -31,18 +31,18 @@ async function sendPasswordRecoveryEmail(email, verificationCode) {
     const mailOptions = {
       from: 'kkjhhyu0405@gmail.com',
       to: email,
-      subject: 'Food Shield - 비밀번호 복구 인증번호',
+      subject: 'Food Shield - Password Recovery Verification Code',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
             <h1 style="color: #2E6A4B; font-size: 28px; margin: 0;">Food Shield</h1>
-            <p style="color: #666; font-size: 16px; margin: 10px 0 0 0;">비밀번호 복구</p>
+            <p style="color: #666; font-size: 16px; margin: 10px 0 0 0;">Password Recovery</p>
           </div>
           
           <div style="background-color: #f8f9fa; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
-            <h2 style="color: #333; font-size: 24px; margin: 0 0 20px 0;">인증번호를 확인해주세요</h2>
+            <h2 style="color: #333; font-size: 24px; margin: 0 0 20px 0;">Please verify your verification code</h2>
             <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-              비밀번호를 재설정하기 위해 아래의 6자리 인증번호를 입력해주세요.
+              Please enter the 6-digit verification code below to reset your password.
             </p>
             
             <div style="background-color: #2E6A4B; color: white; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
@@ -50,12 +50,12 @@ async function sendPasswordRecoveryEmail(email, verificationCode) {
             </div>
             
                 <p style="color: #666; font-size: 14px; margin: 20px 0 0 0;">
-                  이 인증번호는 2분 후에 만료됩니다.
+                  This verification code will expire in 2 minutes.
                 </p>
           </div>
           
           <div style="text-align: center; color: #999; font-size: 14px;">
-            <p>이 이메일을 요청하지 않으셨다면 무시하셔도 됩니다.</p>
+            <p>If you did not request this email, please ignore it.</p>
             <p>© 2024 Food Shield. All rights reserved.</p>
           </div>
         </div>
