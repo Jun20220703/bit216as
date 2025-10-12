@@ -180,8 +180,8 @@ router.post('/forgot-password', async (req, res) => {
     }
 
     // 6자리 인증번호 생성
-    const verificationCode = generateVerificationCode();
-    const codeExpires = new Date(Date.now() + 10 * 60 * 1000); // 10분 후 만료
+        const verificationCode = generateVerificationCode();
+        const codeExpires = new Date(Date.now() + 2 * 60 * 1000); // 2분 후 만료
 
     // 사용자 정보에 인증번호 저장
     user.passwordReset = {
