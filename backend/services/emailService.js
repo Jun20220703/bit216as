@@ -17,9 +17,19 @@ function generateVerificationCode() {
 
 // 비밀번호 복구 이메일 전송
 async function sendPasswordRecoveryEmail(email, verificationCode) {
+  console.log('='.repeat(60));
+  console.log('📧 PASSWORD RECOVERY EMAIL');
+  console.log('='.repeat(60));
+  console.log('📧 To:', email);
+  console.log('🔐 Verification Code:', verificationCode);
+  console.log('⏰ Expires in: 10 minutes');
+  console.log('='.repeat(60));
+  console.log('📝 Please use this code in the verification step');
+  console.log('='.repeat(60));
+
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'kkjhhyu0405@gmail.com',
+      from: 'kkjhhyu0405@gmail.com',
       to: email,
       subject: 'Food Shield - 비밀번호 복구 인증번호',
       html: `
@@ -52,13 +62,33 @@ async function sendPasswordRecoveryEmail(email, verificationCode) {
       `
     };
 
+    console.log('📤 Attempting to send email...');
+    console.log('📧 From:', mailOptions.from);
+    console.log('📧 To:', mailOptions.to);
+    console.log('📧 Subject:', mailOptions.subject);
+    
     const result = await transporter.sendMail(mailOptions);
-    console.log('✅ Email sent successfully:', result.messageId);
+    console.log('✅ Email sent successfully!');
+    console.log('📧 Message ID:', result.messageId);
+    console.log('📧 Response:', result.response);
     return { success: true, messageId: result.messageId };
   } catch (error) {
-    console.log('⚠️ Email sending failed, but continuing with console output');
-    console.log('Error:', error.message);
+    console.error('❌ Email sending failed:');
+    console.error('Error code:', error.code);
+    console.error('Error message:', error.message);
+    console.error('Error response:', error.response);
+    
+    // 상세한 오류 정보 출력
+    if (error.code === 'EAUTH') {
+      console.error('🔐 Authentication failed. Please check your Gmail app password.');
+    } else if (error.code === 'ECONNECTION') {
+      console.error('🌐 Connection failed. Please check your internet connection.');
+    } else if (error.code === 'EENVELOPE') {
+      console.error('📧 Envelope error. Please check email addresses.');
+    }
+    
     // 이메일 전송이 실패해도 콘솔에 출력했으므로 성공으로 처리
+    console.log('⚠️ Email sending failed, but continuing with console output');
     return { success: true, messageId: 'console-output' };
   }
 }
