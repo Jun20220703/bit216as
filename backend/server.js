@@ -1,11 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const connectDB = require('./config/database');
 const foodRoutes = require('./routes/foodRoutes');
 const browseFoodRoutes = require('./routes/browseFood');
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
