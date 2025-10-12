@@ -24,6 +24,10 @@ export class LoginPageComponent {
   isRecoveryLoading: boolean = false;
   recoveryMessage: string = '';
   recoverySuccess: boolean = false;
+  recoveryStep: string = 'email'; // 'email', 'verify', 'reset'
+  verificationCode: string = '';
+  newPassword: string = '';
+  confirmPassword: string = '';
 
   constructor(private router: Router, private http: HttpClient) {}
 
@@ -40,7 +44,7 @@ export class LoginPageComponent {
     this.isLoading = true;
 
     // Call login API
-    this.http.post('http://localhost:5000/api/users/login', {
+    this.http.post('http://localhost:5001/api/users/login', {
       email: this.email,
       password: this.password
     }).subscribe({
@@ -85,6 +89,10 @@ export class LoginPageComponent {
     this.recoveryEmail = '';
     this.recoveryMessage = '';
     this.recoverySuccess = false;
+    this.recoveryStep = 'email';
+    this.verificationCode = '';
+    this.newPassword = '';
+    this.confirmPassword = '';
   }
 
   onPasswordRecovery() {
@@ -105,15 +113,16 @@ export class LoginPageComponent {
     this.isRecoveryLoading = true;
     this.recoveryMessage = '';
 
-    // Call password recovery API
-    this.http.post('http://localhost:5000/api/users/forgot-password', {
+    // Call email service API
+    this.http.post('http://localhost:3001/api/send-recovery-email', {
       email: this.recoveryEmail
     }).subscribe({
       next: (response: any) => {
         console.log('Password recovery email sent:', response);
         this.isRecoveryLoading = false;
-        this.recoveryMessage = 'Password recovery link has been sent to your email address. Please check your inbox and follow the instructions to reset your password.';
+        this.recoveryMessage = 'Email has been sent successfully! A 6-digit verification code has been sent to your email address. Please check your inbox.';
         this.recoverySuccess = true;
+        this.recoveryStep = 'verify';
       },
       error: (error) => {
         console.error('Password recovery failed:', error);
@@ -133,11 +142,144 @@ export class LoginPageComponent {
     });
   }
 
+  onVerifyCode() {
+    if (!this.verificationCode) {
+      this.recoveryMessage = 'Please enter the verification code.';
+      this.recoverySuccess = false;
+      return;
+    }
+
+    if (this.verificationCode.length !== 6) {
+      this.recoveryMessage = 'Please enter a valid 6-digit verification code.';
+      this.recoverySuccess = false;
+      return;
+    }
+
+    this.isRecoveryLoading = true;
+    this.recoveryMessage = '';
+
+    // Call verify code API
+    this.http.post('http://localhost:5001/api/users/verify-code', {
+      email: this.recoveryEmail,
+      verificationCode: this.verificationCode
+    }).subscribe({
+      next: (response: any) => {
+        console.log('Verification code verified:', response);
+        this.isRecoveryLoading = false;
+        this.recoveryMessage = 'Verification code is valid. Please enter your new password.';
+        this.recoverySuccess = true;
+        this.recoveryStep = 'reset';
+      },
+      error: (error) => {
+        console.error('Code verification failed:', error);
+        this.isRecoveryLoading = false;
+        
+        if (error.error && error.error.message) {
+          this.recoveryMessage = error.error.message;
+        } else if (error.status === 0) {
+          this.recoveryMessage = 'Cannot connect to server. Please check if the backend server is running.';
+        } else {
+          this.recoveryMessage = 'Invalid or expired verification code. Please try again.';
+        }
+        this.recoverySuccess = false;
+      }
+    });
+  }
+
+  onResendCode() {
+    this.isRecoveryLoading = true;
+    this.recoveryMessage = '';
+
+    // Call password recovery API again
+    this.http.post('http://localhost:5001/api/users/forgot-password', {
+      email: this.recoveryEmail
+    }).subscribe({
+      next: (response: any) => {
+        console.log('Verification code resent:', response);
+        this.isRecoveryLoading = false;
+        this.recoveryMessage = 'A new verification code has been sent to your email address.';
+        this.recoverySuccess = true;
+      },
+      error: (error) => {
+        console.error('Resend code failed:', error);
+        this.isRecoveryLoading = false;
+        
+        if (error.error && error.error.message) {
+          this.recoveryMessage = error.error.message;
+        } else if (error.status === 0) {
+          this.recoveryMessage = 'Cannot connect to server. Please check if the backend server is running.';
+        } else {
+          this.recoveryMessage = 'Failed to resend verification code. Please try again later.';
+        }
+        this.recoverySuccess = false;
+      }
+    });
+  }
+
+  onResetPassword() {
+    if (!this.newPassword || !this.confirmPassword) {
+      this.recoveryMessage = 'Please enter and confirm your new password.';
+      this.recoverySuccess = false;
+      return;
+    }
+
+    if (this.newPassword.length < 6) {
+      this.recoveryMessage = 'Password must be at least 6 characters long.';
+      this.recoverySuccess = false;
+      return;
+    }
+
+    if (this.newPassword !== this.confirmPassword) {
+      this.recoveryMessage = 'Passwords do not match. Please try again.';
+      this.recoverySuccess = false;
+      return;
+    }
+
+    this.isRecoveryLoading = true;
+    this.recoveryMessage = '';
+
+    // Call reset password API
+    this.http.post('http://localhost:5001/api/users/reset-password', {
+      email: this.recoveryEmail,
+      verificationCode: this.verificationCode,
+      newPassword: this.newPassword
+    }).subscribe({
+      next: (response: any) => {
+        console.log('Password reset successful:', response);
+        this.isRecoveryLoading = false;
+        this.recoveryMessage = 'Password has been reset successfully. You can now log in with your new password.';
+        this.recoverySuccess = true;
+        
+        // Close modal after 3 seconds
+        setTimeout(() => {
+          this.onCancelRecovery();
+        }, 3000);
+      },
+      error: (error) => {
+        console.error('Password reset failed:', error);
+        this.isRecoveryLoading = false;
+        
+        if (error.error && error.error.message) {
+          this.recoveryMessage = error.error.message;
+        } else if (error.status === 0) {
+          this.recoveryMessage = 'Cannot connect to server. Please check if the backend server is running.';
+        } else {
+          this.recoveryMessage = 'Failed to reset password. Please try again.';
+        }
+        this.recoverySuccess = false;
+      }
+    });
+  }
+
   onCancelRecovery() {
     this.showPasswordRecovery = false;
     this.recoveryEmail = '';
     this.recoveryMessage = '';
     this.recoverySuccess = false;
     this.isRecoveryLoading = false;
+    this.recoveryStep = 'email';
+    this.verificationCode = '';
+    this.newPassword = '';
+    this.confirmPassword = '';
   }
 }
