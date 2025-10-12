@@ -168,11 +168,26 @@ export class LoginPageComponent {
           this.recoveryStep = 'verify';
         }
         
+        // 로딩 상태를 false로 명시적으로 설정
+        this.isRecoveryLoading = false;
+        console.log('isRecoveryLoading set to:', this.isRecoveryLoading);
+        console.log('recoveryStep set to:', this.recoveryStep);
+        
         // 타이머 시작
         this.startTimer();
         
-        // 강제로 변경 감지 트리거
-        this.cdr.detectChanges();
+        // UI 업데이트를 위한 약간의 지연
+        setTimeout(() => {
+          console.log('Triggering change detection...');
+          this.cdr.detectChanges();
+          
+          // 추가적인 강제 업데이트
+          setTimeout(() => {
+            this.cdr.markForCheck();
+            this.cdr.detectChanges();
+            console.log('Final state check - isRecoveryLoading:', this.isRecoveryLoading, 'recoveryStep:', this.recoveryStep);
+          }, 50);
+        }, 100);
       },
       error: (error) => {
         console.error('Password recovery failed:', error);
