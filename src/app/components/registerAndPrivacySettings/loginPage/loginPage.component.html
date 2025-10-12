@@ -67,7 +67,7 @@
         <p *ngIf="recoveryStep === 'reset'">Enter your new password.</p>
         
         <!-- Step 1: Email Input -->
-        <form *ngIf="!recoveryStep || recoveryStep === 'email'" (ngSubmit)="onPasswordRecovery()" class="recovery-form">
+        <form *ngIf="recoveryStep === 'email' || (!recoveryStep && !isRecoveryLoading)" (ngSubmit)="onPasswordRecovery()" class="recovery-form">
           <div class="form-group">
             <label for="recovery-email">Email Address:</label>
             <input 
