@@ -180,6 +180,10 @@ export class LoginPageComponent {
         this.recoveryMessage = 'Verification code is valid. Please enter your new password.';
         this.recoverySuccess = true;
         this.recoveryStep = 'reset';
+        console.log('recoveryStep changed to:', this.recoveryStep);
+        
+        // 강제로 변경 감지 트리거
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Code verification failed:', error);
