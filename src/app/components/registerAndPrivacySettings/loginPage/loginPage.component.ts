@@ -37,17 +37,29 @@ export class LoginPageComponent {
 
   // 타이머 시작 (2분 = 120초)
   startTimer() {
+    // 기존 타이머가 있다면 정리
+    this.stopTimer();
+    
     this.timeLeft = 120; // 2분
+    console.log('Starting timer with timeLeft:', this.timeLeft);
+    
     this.timerInterval = setInterval(() => {
       this.timeLeft--;
+      console.log('Timer tick - timeLeft:', this.timeLeft);
+      
+      // 강제로 변경 감지 트리거
+      this.cdr.markForCheck();
       this.cdr.detectChanges();
       
       if (this.timeLeft <= 0) {
+        console.log('Timer expired!');
         this.stopTimer();
         this.recoveryMessage = 'Verification code has expired. Please request a new one.';
         this.recoverySuccess = false;
         this.recoveryStep = 'email';
         this.verificationCode = '';
+        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       }
     }, 1000);
   }
@@ -64,7 +76,9 @@ export class LoginPageComponent {
   getTimeLeftFormatted(): string {
     const minutes = Math.floor(this.timeLeft / 60);
     const seconds = this.timeLeft % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    const formatted = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    console.log('getTimeLeftFormatted called - timeLeft:', this.timeLeft, 'formatted:', formatted);
+    return formatted;
   }
 
   toggleMode() {
@@ -173,13 +187,14 @@ export class LoginPageComponent {
         console.log('isRecoveryLoading set to:', this.isRecoveryLoading);
         console.log('recoveryStep set to:', this.recoveryStep);
         
-        // 타이머 시작
-        this.startTimer();
-        
         // UI 업데이트를 위한 약간의 지연
         setTimeout(() => {
           console.log('Triggering change detection...');
           this.cdr.detectChanges();
+          
+          // 타이머 시작 (UI 업데이트 후)
+          this.startTimer();
+          console.log('Timer started, timeLeft:', this.timeLeft);
           
           // 추가적인 강제 업데이트
           setTimeout(() => {
