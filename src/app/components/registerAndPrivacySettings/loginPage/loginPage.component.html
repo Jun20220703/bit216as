@@ -62,9 +62,12 @@
     <div class="password-recovery-modal">
       <div class="password-recovery-content">
         <h2>Password Recovery</h2>
-        <p>Enter your email address and we'll send you a link to reset your password.</p>
+        <p *ngIf="!recoveryStep || recoveryStep === 'email'">Enter your email address and we'll send you a verification code to reset your password.</p>
+        <p *ngIf="recoveryStep === 'verify'">Enter the 6-digit verification code sent to your email address.</p>
+        <p *ngIf="recoveryStep === 'reset'">Enter your new password.</p>
         
-        <form (ngSubmit)="onPasswordRecovery()" class="recovery-form">
+        <!-- Step 1: Email Input -->
+        <form *ngIf="!recoveryStep || recoveryStep === 'email'" (ngSubmit)="onPasswordRecovery()" class="recovery-form">
           <div class="form-group">
             <label for="recovery-email">Email Address:</label>
             <input 
@@ -79,8 +82,71 @@
           <div class="recovery-buttons">
             <button type="button" class="cancel-recovery-btn" (click)="onCancelRecovery()">Cancel</button>
             <button type="submit" class="send-recovery-btn" [disabled]="isRecoveryLoading">
-              <span *ngIf="!isRecoveryLoading">Send Recovery Link</span>
+              <span *ngIf="!isRecoveryLoading">Send Verification Code</span>
               <span *ngIf="isRecoveryLoading">Sending...</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Step 2: Verification Code Input -->
+        <form *ngIf="recoveryStep === 'verify'" (ngSubmit)="onVerifyCode()" class="recovery-form">
+          <div class="form-group">
+            <label for="verification-code">Verification Code:</label>
+            <input 
+              type="text" 
+              id="verification-code" 
+              [(ngModel)]="verificationCode" 
+              name="verificationCode"
+              placeholder="Enter 6-digit code"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              required>
+          </div>
+          
+          <div class="recovery-buttons">
+            <button type="button" class="cancel-recovery-btn" (click)="onCancelRecovery()">Cancel</button>
+            <button type="button" class="resend-code-btn" (click)="onResendCode()" [disabled]="isRecoveryLoading">
+              <span *ngIf="!isRecoveryLoading">Resend Code</span>
+              <span *ngIf="isRecoveryLoading">Sending...</span>
+            </button>
+            <button type="submit" class="verify-code-btn" [disabled]="isRecoveryLoading">
+              <span *ngIf="!isRecoveryLoading">Verify Code</span>
+              <span *ngIf="isRecoveryLoading">Verifying...</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Step 3: New Password Input -->
+        <form *ngIf="recoveryStep === 'reset'" (ngSubmit)="onResetPassword()" class="recovery-form">
+          <div class="form-group">
+            <label for="new-password">New Password:</label>
+            <input 
+              type="password" 
+              id="new-password" 
+              [(ngModel)]="newPassword" 
+              name="newPassword"
+              placeholder="Enter new password"
+              minlength="6"
+              required>
+          </div>
+          
+          <div class="form-group">
+            <label for="confirm-password">Confirm Password:</label>
+            <input 
+              type="password" 
+              id="confirm-password" 
+              [(ngModel)]="confirmPassword" 
+              name="confirmPassword"
+              placeholder="Confirm new password"
+              minlength="6"
+              required>
+          </div>
+          
+          <div class="recovery-buttons">
+            <button type="button" class="cancel-recovery-btn" (click)="onCancelRecovery()">Cancel</button>
+            <button type="submit" class="reset-password-btn" [disabled]="isRecoveryLoading">
+              <span *ngIf="!isRecoveryLoading">Reset Password</span>
+              <span *ngIf="isRecoveryLoading">Resetting...</span>
             </button>
           </div>
         </form>
