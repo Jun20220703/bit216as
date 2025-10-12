@@ -22,7 +22,7 @@ async function sendPasswordRecoveryEmail(email, verificationCode) {
   console.log('='.repeat(60));
   console.log('📧 To:', email);
   console.log('🔐 Verification Code:', verificationCode);
-  console.log('⏰ Expires in: 10 minutes');
+        console.log('⏰ Expires in: 2 minutes');
   console.log('='.repeat(60));
   console.log('📝 Please use this code in the verification step');
   console.log('='.repeat(60));
@@ -49,9 +49,9 @@ async function sendPasswordRecoveryEmail(email, verificationCode) {
               <h3 style="margin: 0; font-size: 32px; letter-spacing: 5px; font-weight: bold;">${verificationCode}</h3>
             </div>
             
-            <p style="color: #666; font-size: 14px; margin: 20px 0 0 0;">
-              이 인증번호는 10분 후에 만료됩니다.
-            </p>
+                <p style="color: #666; font-size: 14px; margin: 20px 0 0 0;">
+                  이 인증번호는 2분 후에 만료됩니다.
+                </p>
           </div>
           
           <div style="text-align: center; color: #999; font-size: 14px;">
