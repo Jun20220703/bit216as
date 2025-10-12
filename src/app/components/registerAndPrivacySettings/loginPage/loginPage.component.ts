@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -29,7 +29,7 @@ export class LoginPageComponent {
   newPassword: string = '';
   confirmPassword: string = '';
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router, private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   toggleMode() {
     this.isRegisterMode = !this.isRegisterMode;
@@ -120,9 +120,20 @@ export class LoginPageComponent {
       next: (response: any) => {
         console.log('Password recovery email sent:', response);
         this.isRecoveryLoading = false;
-        this.recoveryMessage = 'Email has been sent successfully! A 6-digit verification code has been sent to your email address. Please check your inbox.';
-        this.recoverySuccess = true;
-        this.recoveryStep = 'verify';
+        
+        // 응답이 성공인지 확인
+        if (response && (response.success === true || response.message)) {
+          this.recoveryMessage = 'Email has been sent successfully! A 6-digit verification code has been sent to your email address. Please check your inbox.';
+          this.recoverySuccess = true;
+          this.recoveryStep = 'verify';
+        } else {
+          this.recoveryMessage = 'Email has been sent successfully! Please check your inbox for the verification code.';
+          this.recoverySuccess = true;
+          this.recoveryStep = 'verify';
+        }
+        
+        // 강제로 변경 감지 트리거
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Password recovery failed:', error);
