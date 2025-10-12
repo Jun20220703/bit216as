@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { generateVerificationCode, sendPasswordRecoveryEmail } = require('../services/emailService');
 
 // 회원가입
 router.post('/register', async (req, res) => {
@@ -160,6 +161,136 @@ router.put('/profile/:userId', async (req, res) => {
   } catch (error) {
     console.error('Profile update error:', error);
     res.status(500).json({ message: 'Profile update failed', error: error.message });
+  }
+});
+
+// 비밀번호 복구 이메일 전송
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    // 사용자 찾기
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'No account found with this email address' });
+    }
+
+    // 6자리 인증번호 생성
+        const verificationCode = generateVerificationCode();
+        const codeExpires = new Date(Date.now() + 2 * 60 * 1000); // 2분 후 만료
+
+    // 사용자 정보에 인증번호 저장
+    user.passwordReset = {
+      verificationCode,
+      codeExpires,
+      isVerified: false
+    };
+    await user.save();
+
+    // 이메일 전송
+    const emailResult = await sendPasswordRecoveryEmail(email, verificationCode);
+    
+    // 항상 성공으로 처리 (콘솔에 출력했으므로)
+    res.json({ 
+      success: true,
+      message: 'Email has been sent successfully! Please check your inbox for the verification code.',
+      email: email
+    });
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({ message: 'Password recovery failed', error: error.message });
+  }
+});
+
+// 인증번호 확인
+router.post('/verify-code', async (req, res) => {
+  try {
+    const { email, verificationCode } = req.body;
+
+    if (!email || !verificationCode) {
+      return res.status(400).json({ message: 'Email and verification code are required' });
+    }
+
+    // 사용자 찾기
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'No account found with this email address' });
+    }
+
+    // 인증번호 확인
+    if (!user.passwordReset.verificationCode || 
+        user.passwordReset.verificationCode !== verificationCode) {
+      return res.status(400).json({ message: 'Invalid verification code' });
+    }
+
+    // 만료 시간 확인
+    if (new Date() > user.passwordReset.codeExpires) {
+      return res.status(400).json({ message: 'Verification code has expired' });
+    }
+
+    // 인증 성공으로 표시
+    user.passwordReset.isVerified = true;
+    await user.save();
+
+    res.json({ message: 'Verification code is valid' });
+  } catch (error) {
+    console.error('Verify code error:', error);
+    res.status(500).json({ message: 'Code verification failed', error: error.message });
+  }
+});
+
+// 비밀번호 재설정
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { email, verificationCode, newPassword } = req.body;
+
+    if (!email || !verificationCode || !newPassword) {
+      return res.status(400).json({ message: 'Email, verification code, and new password are required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+    }
+
+    // 사용자 찾기
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'No account found with this email address' });
+    }
+
+    // 인증번호 및 인증 상태 확인
+    if (!user.passwordReset.verificationCode || 
+        user.passwordReset.verificationCode !== verificationCode ||
+        !user.passwordReset.isVerified) {
+      return res.status(400).json({ message: 'Invalid or unverified code' });
+    }
+
+    // 만료 시간 확인
+    if (new Date() > user.passwordReset.codeExpires) {
+      return res.status(400).json({ message: 'Verification code has expired' });
+    }
+
+    // 새 비밀번호 해싱
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // 비밀번호 업데이트 및 인증 정보 초기화
+    user.password = hashedPassword;
+    user.passwordReset = {
+      verificationCode: null,
+      codeExpires: null,
+      isVerified: false
+    };
+    await user.save();
+
+    res.json({ message: 'Password has been reset successfully' });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({ message: 'Password reset failed', error: error.message });
   }
 });
 

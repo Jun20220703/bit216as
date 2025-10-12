@@ -1,6 +1,6 @@
 <aside class="sidebar">
   <div class="profile">
-    <img src="assets/avatar.png" alt="avatar">
+    <img [src]="profilePhoto" alt="avatar" (error)="onImageError($event)">
     <h2>HELLO,<br>{{username}}</h2>
   </div>
 

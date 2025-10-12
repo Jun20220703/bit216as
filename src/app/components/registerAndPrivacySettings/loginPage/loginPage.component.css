@@ -148,8 +148,9 @@
 }
 
 .container button.hidden{
-    background-color: transparent;
-    border-color: #fff;
+    background-color: #2E6A4B;
+    border-color: #2E6A4B;
+    color: #fff;
 }
 
 .container form{
@@ -374,7 +375,10 @@
 }
 
 .cancel-recovery-btn,
-.send-recovery-btn {
+.send-recovery-btn,
+.verify-code-btn,
+.reset-password-btn,
+.resend-code-btn {
     padding: 15px 30px;
     border: none;
     border-radius: 10px;
@@ -407,11 +411,40 @@
     box-shadow: 0 5px 15px rgba(46, 106, 75, 0.3);
 }
 
-.send-recovery-btn:disabled {
+.send-recovery-btn:disabled,
+.verify-code-btn:disabled,
+.reset-password-btn:disabled,
+.resend-code-btn:disabled {
     background-color: #ccc;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+}
+
+.verify-code-btn,
+.reset-password-btn {
+    background-color: #2E6A4B;
+    color: white;
+}
+
+.verify-code-btn:hover:not(:disabled),
+.reset-password-btn:hover:not(:disabled) {
+    background-color: #1e4a2e;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 106, 75, 0.3);
+}
+
+.resend-code-btn {
+    background-color: #f8f9fa;
+    color: #2E6A4B;
+    border: 2px solid #2E6A4B;
+}
+
+.resend-code-btn:hover:not(:disabled) {
+    background-color: #2E6A4B;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 106, 75, 0.3);
 }
 
 .recovery-message {
@@ -432,6 +465,38 @@
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+}
+
+/* Timer styles */
+.timer-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 15px 0;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.timer-label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.timer-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2E6A4B;
+    font-family: 'Courier New', monospace;
+    background-color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #2E6A4B;
+    min-width: 60px;
+    text-align: center;
 }
 
 @keyframes fadeIn {
