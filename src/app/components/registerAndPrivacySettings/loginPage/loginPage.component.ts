@@ -113,8 +113,8 @@ export class LoginPageComponent {
     this.isRecoveryLoading = true;
     this.recoveryMessage = '';
 
-    // Call email service API
-    this.http.post('http://localhost:3001/api/send-recovery-email', {
+    // Call password recovery API
+    this.http.post('http://localhost:5001/api/users/forgot-password', {
       email: this.recoveryEmail
     }).subscribe({
       next: (response: any) => {
