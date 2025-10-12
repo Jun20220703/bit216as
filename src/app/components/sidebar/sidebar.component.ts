@@ -1,13 +1,52 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,  // standalone so it can be imported
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
-  imports: [RouterModule]
+  imports: [RouterModule, CommonModule]
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   username = 'junkaiyane';
+  profilePhoto: string = 'assets/avatar.png'; // 기본 아바타
+
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  ngOnInit() {
+    this.loadUserProfile();
+    
+    // 주기적으로 사용자 데이터 확인 (간단한 방법)
+    setInterval(() => {
+      this.loadUserProfile();
+    }, 2000); // 2초마다 확인
+  }
+
+  loadUserProfile() {
+    // localStorage에서 사용자 정보 로드
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        const user = JSON.parse(userData);
+        const newUsername = user.name || 'User';
+        const newProfilePhoto = user.profilePhoto || 'assets/avatar.png';
+        
+        // 변경사항이 있을 때만 업데이트
+        if (this.username !== newUsername || this.profilePhoto !== newProfilePhoto) {
+          this.username = newUsername;
+          this.profilePhoto = newProfilePhoto;
+          this.cdr.detectChanges();
+        }
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }
+
+  onImageError(event: any) {
+    // 이미지 로드 실패 시 기본 아바타로 변경
+    event.target.src = 'assets/avatar.png';
+  }
 }
