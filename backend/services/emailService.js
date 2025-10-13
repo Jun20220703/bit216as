@@ -132,14 +132,24 @@ async function sendTwoFactorAuthEmail(email, verificationCode) {
             <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0;">
               <h4 style="color: #2E6A4B; margin: 0 0 10px 0; font-size: 16px;">Next Steps:</h4>
               <ol style="color: #666; font-size: 14px; margin: 0; padding-left: 20px;">
+                <li>Click the confirmation link below to access your account</li>
                 <li>Enter the verification code in the application</li>
                 <li>Complete the setup process</li>
                 <li>Your account will be protected with 2FA</li>
               </ol>
             </div>
             
+            <div style="text-align: center; margin: 25px 0;">
+              <a href="http://localhost:4200/account-settings?tab=privacy" 
+                 style="display: inline-block; background-color: #2E6A4B; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; transition: background-color 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                 onmouseover="this.style.backgroundColor='#1e5a3a'"
+                 onmouseout="this.style.backgroundColor='#2E6A4B'">
+                Complete Two-Factor Authentication Setup
+              </a>
+            </div>
+            
             <p style="color: #666; font-size: 14px; margin: 20px 0 0 0;">
-              This verification code will expire in 2 minutes.
+              This verification code will expire in 10 minutes.
             </p>
           </div>
           
