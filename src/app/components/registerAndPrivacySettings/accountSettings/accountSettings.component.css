@@ -32,7 +32,7 @@
   border: none;
   background: transparent;
   color: #666;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 500;
   cursor: pointer;
   border-radius: 6px;
@@ -183,10 +183,11 @@
 
 .profile-photo-label {
   color: #4CAF50;
-  font-size: 20px;
+  font-size: 23px;
   font-weight: 500;
   margin-bottom: 15px;
   align-self: flex-start;
+  margin-left: 35px;
 }
 
 .profile-photo-container {
@@ -271,7 +272,7 @@
 
 .field-label {
   color: #333;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
 }
 
