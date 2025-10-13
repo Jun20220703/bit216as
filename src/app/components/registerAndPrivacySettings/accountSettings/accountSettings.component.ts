@@ -9,7 +9,7 @@ interface UserData {
   name: string;
   email: string;
   password: string;
-  householdSize: number | string;
+  householdSize: string;
   dateOfBirth: string;
   profilePhoto?: string;
 }
@@ -69,6 +69,12 @@ export class AccountSettingsComponent implements OnInit {
   loadUserData() {
     this.isLoadingUserData = true;
     
+    // SSR 호환성을 위한 localStorage 체크
+    if (typeof window === 'undefined' || !window.localStorage) {
+      this.isLoadingUserData = false;
+      return;
+    }
+    
     const userId = localStorage.getItem('userId');
     if (!userId) {
       alert('User not authenticated. Please log in again.');
@@ -94,14 +100,18 @@ export class AccountSettingsComponent implements OnInit {
           };
           
           // Load actual password from localStorage
-          this.actualPassword = localStorage.getItem('userPassword') || '';
+          if (typeof window !== 'undefined' && window.localStorage) {
+            this.actualPassword = localStorage.getItem('userPassword') || '';
+          }
           
           this.isLoadingUserData = false;
           console.log('Loaded fresh user data from database:', this.userData);
           console.log('Profile photo from database:', response.profilePhoto);
           
           // Update localStorage with fresh data
-          localStorage.setItem('user', JSON.stringify(response));
+          if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.setItem('user', JSON.stringify(response));
+          }
           
           // Force UI update
           this.cdr.detectChanges();
@@ -148,11 +158,12 @@ export class AccountSettingsComponent implements OnInit {
     }
 
     // Validate household size if provided
-    const householdSizeNum = Number(this.userData.householdSize);
-    if (this.userData.householdSize && this.userData.householdSize !== 'No-Selection' && 
-        (isNaN(householdSizeNum) || householdSizeNum < 1 || householdSizeNum > 20)) {
-      alert('Household size must be between 1 and 20');
-      return;
+    if (this.userData.householdSize && this.userData.householdSize !== 'No-Selection') {
+      const validValues = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10+'];
+      if (!validValues.includes(this.userData.householdSize)) {
+        alert('Please select a valid household size');
+        return;
+      }
     }
 
     // Confirm before saving
@@ -170,6 +181,11 @@ export class AccountSettingsComponent implements OnInit {
     this.cdr.detectChanges();
 
     // Get user ID from localStorage (assuming it's stored there after login)
+    if (typeof window === 'undefined' || !window.localStorage) {
+      alert('User not authenticated. Please log in again.');
+      this.router.navigate(['/login']);
+      return;
+    }
     const userId = localStorage.getItem('userId');
     if (!userId) {
       alert('User not authenticated. Please log in again.');
@@ -182,7 +198,7 @@ export class AccountSettingsComponent implements OnInit {
     // Prepare data for API call
     const updateData = {
       name: this.userData.name,
-      householdSize: (this.userData.householdSize === 'No-Selection' || this.userData.householdSize === null || this.userData.householdSize === undefined) ? null : Number(this.userData.householdSize),
+      householdSize: (this.userData.householdSize === 'No-Selection' || this.userData.householdSize === null || this.userData.householdSize === undefined) ? null : this.userData.householdSize,
       dateOfBirth: this.userData.dateOfBirth,
       profilePhoto: this.profilePhotoPreview || this.userData.profilePhoto
     };
@@ -199,7 +215,7 @@ export class AccountSettingsComponent implements OnInit {
           alert('Updates have been saved successfully');
           
           // Update local storage with new user data
-          if (response.user) {
+          if (typeof window !== 'undefined' && window.localStorage && response.user) {
             localStorage.setItem('user', JSON.stringify(response.user));
           }
           
@@ -299,6 +315,11 @@ export class AccountSettingsComponent implements OnInit {
         }
 
         // Get user ID
+        if (typeof window === 'undefined' || !window.localStorage) {
+          alert('User not authenticated. Please log in again.');
+          this.router.navigate(['/login']);
+          return;
+        }
         const userId = localStorage.getItem('userId');
         if (!userId) {
           alert('User not authenticated. Please log in again.');
@@ -321,10 +342,12 @@ export class AccountSettingsComponent implements OnInit {
             this.showNewPassword = false;
             this.showConfirmPassword = false;
             alert('Password changed successfully! Please log in again with your new password.');
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            localStorage.removeItem('userId');
-            localStorage.removeItem('userPassword');
+            if (typeof window !== 'undefined' && window.localStorage) {
+              localStorage.removeItem('token');
+              localStorage.removeItem('user');
+              localStorage.removeItem('userId');
+              localStorage.removeItem('userPassword');
+            }
             this.router.navigate(['/login']);
           },
           error: (error) => {
