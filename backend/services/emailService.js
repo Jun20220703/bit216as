@@ -118,7 +118,7 @@ async function sendTwoFactorAuthEmail(email, verificationCode) {
           </div>
           
           <div style="background-color: #f8f9fa; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
-            <h2 style="color: #333; font-size: 24px; margin: 0 0 20px 0;">Welcome to Two-Factor Authentication!</h2>
+            <h2 style="color: #333; font-size: 24px; margin: 0 0 20px 0;">Welcome to Food Shield!</h2>
             <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
               Thank you for enabling Two-Factor Authentication for your Food Shield account. 
               This adds an extra layer of security to protect your account.
@@ -132,14 +132,14 @@ async function sendTwoFactorAuthEmail(email, verificationCode) {
             <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0;">
               <h4 style="color: #2E6A4B; margin: 0 0 10px 0; font-size: 16px;">Next Steps:</h4>
               <ol style="color: #666; font-size: 14px; margin: 0; padding-left: 20px;">
-                <li>Enter the verification code above in the app</li>
+                <li>Enter the verification code above in the application</li>
                 <li>Complete the setup process</li>
                 <li>Your account will be protected with 2FA</li>
               </ol>
             </div>
             
             <p style="color: #666; font-size: 14px; margin: 20px 0 0 0;">
-              This verification code will expire in 10 minutes.
+              This verification code will expire in 2 minutes.
             </p>
           </div>
           
