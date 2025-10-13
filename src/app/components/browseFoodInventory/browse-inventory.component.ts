@@ -11,6 +11,9 @@ interface Item {
   selectedQty: number;
   source: 'inventory' | 'donation' | 'expired';
   expiry: string;
+  notes?: string;   // 🔹 新增，可选的 notes
+  owner?: string;   // 🔹 可选，只有你需要用的时候才映射
+
 }
 
 type CategoryKey = 'all' | 'fruit' | 'vegetable' | 'meat' | 'grain' | 'dairy' | 'others';
@@ -50,6 +53,8 @@ export class InventoryComponent implements OnInit {
   showSearch = false;
   searchQuery: string = '';
   hoverItem: Item | null = null;
+  hoverItemNotes: string | null = null;
+
 
   showConfirm = false;
   confirmItem: Item | null = null;
@@ -171,8 +176,11 @@ export class InventoryComponent implements OnInit {
         remaining: Number(food.qty),
         selectedQty: 0,
         source: (food.status === 'donation') ? 'donation' : (food.status === 'expired') ? 'expired' : 'inventory',
-        expiry: food.expiry
+        expiry: food.expiry,
+        notes: food.notes,   // 🔹 把 notes 映射进来
+        owner: food.owner   // 🔹 如果你要用 owner，就在这里映射
       });
+
     });
 
     return Object.values(map);
