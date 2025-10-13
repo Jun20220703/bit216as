@@ -127,8 +127,8 @@ export class VerificationComponent implements OnInit, OnDestroy {
         
         // 메시지가 표시되도록 충분한 시간을 기다린 후 리다이렉트
         setTimeout(() => {
-          console.log('Redirecting to account settings...');
-          this.router.navigate(['/account-settings'], { queryParams: { tab: 'privacy' } });
+          console.log('Redirecting to home page...');
+          this.router.navigate(['/home']);
         }, 2000);
       },
       error: (error) => {
