@@ -50,7 +50,7 @@
 .menu {
   display: flex;
   flex-direction: column;
-  margin-top: -40px;
+  margin-top: -50px;
 }
 
 .menu-item {
@@ -59,6 +59,7 @@
   color: #ffffff;
   margin-bottom: .25rem;
   border-radius: 6px;
+  font-size: 20px;
 }
 
 .menu-item.active,
