@@ -65,6 +65,9 @@ export class AccountSettingsComponent implements OnInit {
   constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient, private cdr: ChangeDetectorRef, private ngZone: NgZone) {}
 
   ngOnInit() {
+    console.log('AccountSettingsComponent initialized');
+    console.log('Initial showTwoFactorDialog:', this.showTwoFactorDialog);
+    
     // Check URL parameters for tab selection
     this.route.queryParams.subscribe(params => {
       if (params['tab'] === 'privacy') {
@@ -499,20 +502,35 @@ export class AccountSettingsComponent implements OnInit {
   }
 
   // Two-Factor Authentication methods
-  onTwoFactorToggle(event: any) {
-    console.log('Two-Factor toggle clicked:', event.target.checked);
-    console.log('Current twoFactorEnabled:', this.twoFactorEnabled);
+  onTwoFactorToggle(newValue: boolean) {
+    console.log('=== Two-Factor Toggle Event ===');
+    console.log('New value:', newValue);
+    console.log('Previous twoFactorEnabled:', this.twoFactorEnabled);
+    console.log('Current showTwoFactorDialog:', this.showTwoFactorDialog);
     
-    // click 이벤트에서는 checked 상태가 아직 변경되지 않았으므로 반대로 확인
-    if (!event.target.checked) {
-      // 토글을 켜려고 할 때 (현재는 false이지만 클릭으로 true가 될 예정)
-      console.log('Showing 2FA dialog');
+    if (newValue === true) {
+      // 토글을 켜려고 할 때
+      console.log('🔄 Enabling 2FA - showing dialog');
       this.showTwoFactorDialog = true;
-      // ngModel이 자동으로 업데이트되므로 수동으로 설정하지 않음
+      this.twoFactorEnabled = true; // ngModelChange에서는 수동으로 설정해야 함
+      
+      // UI 강제 업데이트
+      this.cdr.detectChanges();
+      
+      // 추가 확인을 위한 setTimeout
+      setTimeout(() => {
+        console.log('✅ After timeout - Dialog visible:', this.showTwoFactorDialog);
+        console.log('✅ After timeout - Toggle enabled:', this.twoFactorEnabled);
+      }, 100);
+      
+      console.log('✅ Dialog should be visible now:', this.showTwoFactorDialog);
     } else {
       // 토글을 끄려고 할 때는 바로 끄기
-      console.log('Turning off 2FA');
+      console.log('🔄 Disabling 2FA');
       this.twoFactorEnabled = false;
+      this.showTwoFactorDialog = false;
+      this.cdr.detectChanges();
+      console.log('✅ 2FA disabled, dialog closed');
     }
   }
 
@@ -521,6 +539,8 @@ export class AccountSettingsComponent implements OnInit {
     console.log('2FA cancelled, turning off toggle');
     this.twoFactorEnabled = false;
     this.showTwoFactorDialog = false;
+    this.cdr.detectChanges();
+    console.log('Toggle reset to OFF, dialog closed');
   }
 
   onTwoFactorConfirm() {
@@ -528,6 +548,7 @@ export class AccountSettingsComponent implements OnInit {
     console.log('2FA confirmed, sending email to:', this.userData.email);
     this.showTwoFactorDialog = false;
     this.isEnablingTwoFactor = true;
+    this.cdr.detectChanges();
     
     // 백엔드 API 호출
     this.http.post('http://localhost:5001/api/users/enable-2fa', {
@@ -537,12 +558,14 @@ export class AccountSettingsComponent implements OnInit {
         console.log('2FA email sent successfully:', response);
         this.twoFactorEnabled = true;
         this.isEnablingTwoFactor = false;
+        this.cdr.detectChanges();
         alert('A welcome message with confirmation link and 6-digit verification code has been sent to your email!');
       },
       error: (error) => {
         console.error('Failed to send 2FA email:', error);
         this.twoFactorEnabled = false;
         this.isEnablingTwoFactor = false;
+        this.cdr.detectChanges();
         alert('Failed to send 2FA email. Please try again.');
       }
     });
