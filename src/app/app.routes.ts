@@ -18,5 +18,5 @@ export const routes: Routes = [
   { path: 'manage-inventory', component: ManageFoodInventory},
   { path: 'add-food', component: AddFoodItemComponent},
   { path: 'donation-list', component: DonationListComponent},
-  { path: '', redirectTo: 'home', pathMatch: 'full' }
+  { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
