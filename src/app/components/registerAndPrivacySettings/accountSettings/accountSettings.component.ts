@@ -65,6 +65,17 @@ export class AccountSettingsComponent implements OnInit {
   // Email link access state
   showEmailLinkMessage: boolean = false;
 
+  // 2FA Verification form state
+  showVerificationForm: boolean = false;
+  verificationCode: string = '';
+  isVerifyingCode: boolean = false;
+  verificationMessage: string = '';
+  verificationSuccess: boolean = false;
+
+  // Success message state
+  showSuccessMessage: boolean = false;
+  successMessage: string = '';
+
   constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient, private cdr: ChangeDetectorRef, private ngZone: NgZone) {}
 
   ngOnInit() {
@@ -78,16 +89,28 @@ export class AccountSettingsComponent implements OnInit {
       }
       // Check if accessed via email link (2FA setup)
       if (params['from'] === 'email' || params['2fa'] === 'setup') {
+        console.log('Email link access detected:', params);
         this.activeTab = 'privacy';
-        // Show a special message for email link access
-        this.showEmailLinkMessage = true;
+        // Enable 2FA toggle and show verification form
+        this.twoFactorEnabled = true;
+        this.showVerificationForm = true;
+        
+        // If token is provided, perform temporary login
+        if (params['token']) {
+          console.log('Token found, performing temporary login:', params['token']);
+          this.performTemporaryLogin(params['token']);
+        } else {
+          console.log('No token found in URL parameters');
+        }
+        
+        this.cdr.detectChanges();
+      } else {
+        // Only load user data if not accessed via email link
+        setTimeout(() => {
+          this.loadUserData();
+        }, 100);
       }
     });
-
-    // Use setTimeout to ensure component is fully initialized
-    setTimeout(() => {
-      this.loadUserData();
-    }, 100);
   }
 
   loadUserData() {
@@ -100,9 +123,11 @@ export class AccountSettingsComponent implements OnInit {
     }
     
     const userId = localStorage.getItem('userId');
+    console.log('loadUserData - userId:', userId, 'showVerificationForm:', this.showVerificationForm);
     
-    // If accessed via email link, show special message instead of redirecting
-    if (!userId && this.showEmailLinkMessage) {
+    // If accessed via email link, skip authentication check completely
+    if (this.showVerificationForm) {
+      console.log('Skipping authentication check for email link access');
       this.isLoadingUserData = false;
       this.cdr.detectChanges();
       return;
@@ -595,6 +620,102 @@ export class AccountSettingsComponent implements OnInit {
 
   dismissEmailMessage() {
     this.showEmailLinkMessage = false;
+    this.cdr.detectChanges();
+  }
+
+  // 2FA Verification methods
+  onVerifyCode() {
+    if (!this.verificationCode || this.verificationCode.length !== 6) {
+      this.verificationMessage = 'Please enter a valid 6-digit verification code.';
+      this.verificationSuccess = false;
+      return;
+    }
+
+    this.isVerifyingCode = true;
+    this.verificationMessage = '';
+
+    // Verify the code with backend
+    this.http.post('http://localhost:5001/api/users/verify-2fa-code', {
+      email: this.userData.email,
+      verificationCode: this.verificationCode
+    }).subscribe({
+      next: (response: any) => {
+        console.log('2FA verification successful:', response);
+        this.isVerifyingCode = false;
+        this.verificationSuccess = true;
+        this.verificationMessage = 'Two-Factor Authentication has been successfully enabled!';
+        this.showVerificationForm = false;
+        
+        // Show success message
+        this.showSuccessModal('Verification is successful! Go back to your account');
+        
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('2FA verification failed:', error);
+        this.isVerifyingCode = false;
+        this.verificationSuccess = false;
+        this.verificationMessage = error.error?.message || 'Invalid verification code. Please try again.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+
+  onCancelVerification() {
+    this.showVerificationForm = false;
+    this.twoFactorEnabled = false;
+    this.verificationCode = '';
+    this.verificationMessage = '';
+    this.cdr.detectChanges();
+  }
+
+  // Temporary login from email link
+  performTemporaryLogin(token: string) {
+    console.log('Performing temporary login with token:', token);
+    
+    this.http.get(`http://localhost:5001/api/users/temp-login/${token}`)
+      .subscribe({
+        next: (response: any) => {
+          console.log('Temporary login successful:', response);
+          
+          // Set user data
+          this.userData = {
+            name: response.user.name || '',
+            email: response.user.email || '',
+            password: '************',
+            householdSize: response.user.householdSize || 'No-Selection',
+            dateOfBirth: response.user.dateOfBirth ? new Date(response.user.dateOfBirth).toISOString().split('T')[0] : '',
+            profilePhoto: response.user.profilePhoto || ''
+          };
+          
+          // Store in localStorage for this session
+          if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.setItem('user', JSON.stringify(response.user));
+            localStorage.setItem('userId', response.user.id);
+          }
+          
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Temporary login failed:', error);
+          this.verificationMessage = 'Invalid or expired link. Please try again.';
+          this.verificationSuccess = false;
+          this.showVerificationForm = false;
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  // Show success message
+  showSuccessModal(message: string) {
+    this.successMessage = message;
+    this.showSuccessMessage = true;
+    this.cdr.detectChanges();
+  }
+
+  onSuccessClose() {
+    this.showSuccessMessage = false;
     this.cdr.detectChanges();
   }
 }
