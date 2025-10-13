@@ -92,6 +92,19 @@
   overflow-y: auto;
   transform: translateX(100%);
 }
+
+/* 🧩 让 Category 的 checkbox 竖直排列 */
+.filter-section label {
+  display: block;             /* 一行一个 */
+  margin-bottom: 0.4rem;      /* 间距 */
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.filter-section input[type="checkbox"] {
+  margin-right: 8px;
+}
+
 .filter-drawer.open {
   transform: translateX(0);
 }

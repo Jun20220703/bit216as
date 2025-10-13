@@ -66,23 +66,28 @@
       <!-- Category -->
       <div class="filter-section">
         <h3>Category</h3>
+
+        <!-- All -->
         <label>
           <input
             type="checkbox"
-            [checked]="filter.categories.all"
-            (change)="toggleCategory('all')" />
+            name="cat_all"
+            [(ngModel)]="filter.categories.all"
+            (ngModelChange)="onCategoryAllToggle($event)" />
           All
         </label>
 
-        <!-- 动态生成分类 -->
+        <!-- 动态分类（竖排没问题，沿用你之前的CSS） -->
         <label *ngFor="let cat of availableCategories">
           <input
             type="checkbox"
-            [checked]="filter.categories[cat.key]"
-            (change)="toggleCategory(cat.key)" />
+            name="cat_{{cat.key}}"
+            [(ngModel)]="filter.categories[cat.key]"
+            (ngModelChange)="onCategoryChange(cat.key, $event)" />
           {{ cat.name }}
         </label>
       </div>
+
 
       <!-- ✅ Expired in 只在 Inventory 模式下显示 -->
       <div class="filter-section" *ngIf="selectedSource === 'inventory'">

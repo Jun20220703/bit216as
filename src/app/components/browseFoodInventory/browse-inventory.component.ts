@@ -59,17 +59,10 @@ export class InventoryComponent implements OnInit {
   filter = {
     donation: false,
     inventory: true,
-    categories: { 
-      all: true, 
-      fruit: true, 
-      vegetable: true, 
-      meat: true, 
-      grain: true, 
-      dairy: true,
-      others: true   // ✅ 新增 Others
-    },
+    categories: {} as { [key in CategoryKey]?: boolean },
     expiredIn: 0
   };
+
 
   /** 数据缓存 */
   viewLocs: Location[] = [];
@@ -78,13 +71,6 @@ export class InventoryComponent implements OnInit {
 
   ngOnInit() { 
     this.loadFoods();
-
-    // ✅ 自动补上分类字段
-    this.availableCategories.forEach(cat => {
-      if (!(cat.key in this.filter.categories)) {
-        (this.filter.categories as any)[cat.key] = true;
-      }
-    });
   }
 
   /** 从 API 获取数据 */
@@ -92,6 +78,16 @@ export class InventoryComponent implements OnInit {
     this.browseService.getFoods().subscribe((data: Food[]) => {
       console.log("📦 拿到的数据:", data);
       this.rawFoods = data;
+
+      // ✅ 这里再动态初始化 categories（在数据加载后执行）
+      this.availableCategories.forEach(cat => {
+        if (this.filter.categories[cat.key] === undefined) {
+          this.filter.categories[cat.key] = true;
+        }
+      });
+
+
+
       this.refreshView();
     });
   }
@@ -160,20 +156,17 @@ export class InventoryComponent implements OnInit {
     return Object.values(map);
   }
 
-  /** 分类名映射 */
   private mapCategoryKey(category: string): CategoryKey {
-    switch (category.toLowerCase()) {
-      case 'fruit': return 'fruit';
-      case 'vegetable': return 'vegetable';
-      case 'meat': return 'meat';
-      case 'carbohydrates':
-      case 'carb':
-      case 'grain': return 'grain';
-      case 'dairy': return 'dairy';
-      case 'others': return 'others';
-      default: return 'all';
-    }
-  }
+  const c = (category || '').trim().toLowerCase();
+  if (c.includes('fruit')) return 'fruit';
+  if (c.includes('vegetable')) return 'vegetable';
+  if (c.includes('meat')) return 'meat';
+  if (c.includes('grain') || c.includes('carb')) return 'grain';
+  if (c.includes('dairy')) return 'dairy';
+  if (c.includes('other')) return 'others';
+  return 'all';
+}
+
 
   /** 分类图标 */
   private getCategoryIcon(key: CategoryKey): string {
@@ -204,10 +197,14 @@ export class InventoryComponent implements OnInit {
 
     locs = locs.map(loc => ({
       ...loc,
-      categories: loc.categories.filter(cat =>
-        this.filter.categories.all || (this.filter.categories as any)[cat.key] === true
-      )
+      categories: loc.categories.map(cat => ({
+        ...cat,
+        items: (this.filter.categories.all || (this.filter.categories as any)[cat.key])
+          ? cat.items
+          : []  // 若该分类未被选中，就隐藏 item
+      }))
     }));
+
 
     if (this.searchQuery.trim() !== '') {
       const q = this.searchQuery.toLowerCase();
@@ -268,7 +265,13 @@ export class InventoryComponent implements OnInit {
     this.showFilter = false;
   }
 
+  /** ✅ 修复后的分类切换逻辑 */
   toggleCategory(category: CategoryKey | string) {
+    // 🩹 确保 category key 存在
+    if (!(category in this.filter.categories)) {
+      (this.filter.categories as any)[category] = true;
+    }
+
     if (category === 'all') {
       const enabled = !this.filter.categories.all;
       const currentKeys = this.availableCategories.map(c => c.key);
@@ -283,8 +286,32 @@ export class InventoryComponent implements OnInit {
       this.filter.categories.all = allSelected;
     }
 
+    console.log('🧩 Filter Categories Updated:', this.filter.categories);
     this.refreshView();
   }
+
+  /** 单个分类变更 */
+onCategoryChange(key: CategoryKey, checked: boolean) {
+  (this.filter.categories as any)[key] = checked;
+
+  // 计算 all 是否应该自动为 true（全部都选了）
+  const keys = this.availableCategories.map(c => c.key);
+  this.filter.categories.all = keys.every(k => (this.filter.categories as any)[k] === true);
+
+  this.refreshView();
+}
+
+/** All 开关：一键全选 / 全关 */
+onCategoryAllToggle(checked: boolean) {
+  this.filter.categories.all = checked;
+
+  // 把当前存在的分类全部设置为同一状态
+  const keys = this.availableCategories.map(c => c.key);
+  keys.forEach(k => (this.filter.categories as any)[k] = checked);
+
+  this.refreshView();
+}
+
 
   /** 数量调整 */
   increaseSelected(item: Item) {
@@ -294,9 +321,8 @@ export class InventoryComponent implements OnInit {
     if (item.selectedQty > 0) item.selectedQty--;
   }
 
-  /** 弹窗逻辑 ✅（修正函数名）*/
+  /** 弹窗逻辑 */
   openConfirm(item: Item, action: 'used' | 'meal' | 'donate' | 'edit') {
-    // donation 模式允许 edit 直接打开，不需要选数量
     console.log('🟢 openConfirm called with', item.name, action);
     if (action !== 'edit' && item.selectedQty <= 0) return;
     this.confirmItem = item;
