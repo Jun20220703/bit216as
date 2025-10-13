@@ -192,12 +192,27 @@
         <div class="setting-item">
           <span class="setting-label">Two-Factor Authentication</span>
           <div class="toggle-switch">
-            <input type="checkbox" id="two-factor-auth" class="toggle-input">
+            <input type="checkbox" id="two-factor-auth" class="toggle-input" 
+                   [(ngModel)]="twoFactorEnabled" 
+                   (click)="onTwoFactorToggle($event)">
             <label for="two-factor-auth" class="toggle-label">
               <span class="toggle-slider"></span>
-              <span class="toggle-text">OFF</span>
+              <span class="toggle-text">{{ twoFactorEnabled ? 'ON' : 'OFF' }}</span>
             </label>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two-Factor Authentication Confirmation Dialog -->
+  <div *ngIf="showTwoFactorDialog" class="dialog-overlay">
+    <div class="dialog-container">
+      <div class="dialog-content">
+        <h3>Are you sure to switch on Two-Factor Authentication?</h3>
+        <div class="dialog-buttons">
+          <button class="dialog-button cancel-dialog-button" (click)="onTwoFactorCancel()">Cancel</button>
+          <button class="dialog-button confirm-dialog-button" (click)="onTwoFactorConfirm()">Yes</button>
         </div>
       </div>
     </div>
