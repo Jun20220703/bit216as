@@ -239,7 +239,7 @@
           <div class="toggle-switch">
             <input type="checkbox" id="two-factor-auth" class="toggle-input" 
                    [ngModel]="twoFactorEnabled" 
-                   (ngModelChange)="onTwoFactorToggle($event)">
+                   (click)="onTwoFactorToggleClick($event)">
             <label for="two-factor-auth" class="toggle-label">
               <span class="toggle-slider"></span>
               <span class="toggle-text">{{ twoFactorEnabled ? 'ON' : 'OFF' }}</span>
