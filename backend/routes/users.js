@@ -297,15 +297,23 @@ router.post('/reset-password', async (req, res) => {
 // Two-Factor Authentication 활성화
 router.post('/enable-2fa', async (req, res) => {
   try {
+    console.log('=== ENABLE 2FA REQUEST ===');
+    console.log('Request body:', req.body);
+    
     const { email } = req.body;
 
     if (!email) {
+      console.log('No email provided');
       return res.status(400).json({ message: 'Email is required' });
     }
 
+    console.log('Looking for user with email:', email);
     // 사용자 찾기
     const user = await User.findOne({ email });
+    console.log('User found:', user ? 'Yes' : 'No');
+    
     if (!user) {
+      console.log('User not found in database');
       return res.status(404).json({ message: 'User not found' });
     }
 
@@ -394,14 +402,22 @@ router.post('/verify-2fa-code', async (req, res) => {
 router.get('/temp-login/:token', async (req, res) => {
   try {
     const { token } = req.params;
+    console.log('=== TEMP LOGIN REQUEST ===');
+    console.log('Token received:', token);
+    console.log('Token length:', token ? token.length : 'undefined');
 
     if (!token) {
+      console.log('No token provided');
       return res.status(400).json({ message: 'Token is required' });
     }
 
     // 임시 토큰으로 사용자 찾기
+    console.log('Searching for user with tempToken:', token);
     const user = await User.findOne({ 'twoFactorAuth.tempToken': token });
+    console.log('User found:', user ? 'Yes' : 'No');
+    
     if (!user) {
+      console.log('No user found with this token');
       return res.status(404).json({ message: 'Invalid or expired token' });
     }
 
@@ -433,6 +449,35 @@ router.get('/temp-login/:token', async (req, res) => {
 // 테스트 라우트
 router.get('/test', (req, res) => {
   res.json({ message: 'Users API is working!', timestamp: new Date().toISOString() });
+});
+
+// 디버그용: 모든 사용자의 tempToken 확인
+router.get('/debug-tokens', async (req, res) => {
+  try {
+    const users = await User.find({ 'twoFactorAuth.tempToken': { $exists: true } }, 
+      { email: 1, 'twoFactorAuth.tempToken': 1, 'twoFactorAuth.codeExpires': 1 });
+    
+    console.log('=== DEBUG: All users with tempToken ===');
+    users.forEach(user => {
+      console.log(`Email: ${user.email}`);
+      console.log(`Token: ${user.twoFactorAuth.tempToken}`);
+      console.log(`Expires: ${user.twoFactorAuth.codeExpires}`);
+      console.log('---');
+    });
+    
+    res.json({ 
+      message: 'Debug tokens retrieved', 
+      count: users.length,
+      users: users.map(u => ({
+        email: u.email,
+        token: u.twoFactorAuth.tempToken,
+        expires: u.twoFactorAuth.codeExpires
+      }))
+    });
+  } catch (error) {
+    console.error('Debug tokens error:', error);
+    res.status(500).json({ message: 'Failed to get debug tokens', error: error.message });
+  }
 });
 
 module.exports = router;
