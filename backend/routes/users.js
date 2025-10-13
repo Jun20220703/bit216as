@@ -312,17 +312,21 @@ router.post('/enable-2fa', async (req, res) => {
     // 6자리 인증번호 생성
     const verificationCode = generateVerificationCode();
     
-    // 사용자 정보에 2FA 인증번호 저장 (10분 유효)
+    // 임시 토큰 생성 (이메일 링크용)
+    const tempToken = require('crypto').randomBytes(32).toString('hex');
+    
+    // 사용자 정보에 2FA 인증번호와 임시 토큰 저장 (10분 유효)
     user.twoFactorAuth = {
       verificationCode: verificationCode,
       codeExpires: new Date(Date.now() + 10 * 60 * 1000), // 10분 후 만료
+      tempToken: tempToken, // 이메일 링크용 임시 토큰
       isEnabled: false // 아직 활성화되지 않음
     };
     await user.save();
 
     // 이메일 발송
     try {
-      await sendTwoFactorAuthEmail(email, verificationCode);
+      await sendTwoFactorAuthEmail(email, verificationCode, tempToken);
       res.json({ 
         message: 'Two-Factor Authentication email sent successfully',
         verificationCode: verificationCode // 개발용 (실제로는 제거해야 함)
@@ -337,6 +341,92 @@ router.post('/enable-2fa', async (req, res) => {
   } catch (error) {
     console.error('Enable 2FA error:', error);
     res.status(500).json({ message: 'Failed to enable 2FA', error: error.message });
+  }
+});
+
+// Two-Factor Authentication 코드 검증
+router.post('/verify-2fa-code', async (req, res) => {
+  try {
+    const { email, verificationCode } = req.body;
+
+    if (!email || !verificationCode) {
+      return res.status(400).json({ message: 'Email and verification code are required' });
+    }
+
+    // 사용자 찾기
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // 2FA 설정 확인
+    if (!user.twoFactorAuth || !user.twoFactorAuth.verificationCode) {
+      return res.status(400).json({ message: 'No 2FA setup found for this user' });
+    }
+
+    // 코드 만료 확인
+    if (user.twoFactorAuth.codeExpires < new Date()) {
+      return res.status(400).json({ message: 'Verification code has expired' });
+    }
+
+    // 코드 검증
+    if (user.twoFactorAuth.verificationCode !== verificationCode) {
+      return res.status(400).json({ message: 'Invalid verification code' });
+    }
+
+    // 2FA 활성화
+    user.twoFactorAuth.isEnabled = true;
+    user.twoFactorAuth.verificationCode = null; // 보안을 위해 코드 제거
+    user.twoFactorAuth.codeExpires = null;
+    await user.save();
+
+    res.json({ 
+      message: 'Two-Factor Authentication has been successfully enabled!',
+      twoFactorEnabled: true
+    });
+  } catch (error) {
+    console.error('Verify 2FA code error:', error);
+    res.status(500).json({ message: 'Failed to verify 2FA code', error: error.message });
+  }
+});
+
+// 임시 토큰으로 사용자 정보 가져오기 (이메일 링크용)
+router.get('/temp-login/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    if (!token) {
+      return res.status(400).json({ message: 'Token is required' });
+    }
+
+    // 임시 토큰으로 사용자 찾기
+    const user = await User.findOne({ 'twoFactorAuth.tempToken': token });
+    if (!user) {
+      return res.status(404).json({ message: 'Invalid or expired token' });
+    }
+
+    // 토큰 만료 확인
+    if (user.twoFactorAuth.codeExpires < new Date()) {
+      return res.status(400).json({ message: 'Token has expired' });
+    }
+
+    // 사용자 정보 반환 (비밀번호 제외)
+    const userData = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      householdSize: user.householdSize,
+      dateOfBirth: user.dateOfBirth,
+      profilePhoto: user.profilePhoto
+    };
+
+    res.json({ 
+      message: 'Temporary login successful',
+      user: userData
+    });
+  } catch (error) {
+    console.error('Temp login error:', error);
+    res.status(500).json({ message: 'Failed to process temporary login', error: error.message });
   }
 });
 
