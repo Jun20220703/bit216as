@@ -540,6 +540,32 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
   }
 
   // Two-Factor Authentication methods
+  onTwoFactorToggleClick(event: Event) {
+    event.preventDefault(); // 기본 동작 방지
+    event.stopPropagation(); // 이벤트 전파 방지
+    
+    console.log('=== Two-Factor Toggle Click Event ===');
+    console.log('Current twoFactorEnabled:', this.twoFactorEnabled);
+    
+    if (this.twoFactorEnabled === false) {
+      // 토글을 켜려고 할 때
+      console.log('🔄 Enabling 2FA - showing dialog');
+      this.showTwoFactorDialog = true;
+      this.twoFactorEnabled = true;
+      
+      // UI 강제 업데이트
+      this.cdr.detectChanges();
+      
+      console.log('✅ Dialog should be visible now:', this.showTwoFactorDialog);
+    } else {
+      // 토글을 끄려고 할 때는 확인 다이얼로그 표시
+      console.log('🔄 Disabling 2FA - showing disable dialog');
+      this.showTwoFactorDisableDialog = true;
+      this.cdr.detectChanges();
+      console.log('✅ Disable dialog should be visible now');
+    }
+  }
+
   onTwoFactorToggle(newValue: boolean) {
     console.log('=== Two-Factor Toggle Event ===');
     console.log('New value:', newValue);
@@ -563,11 +589,12 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
       
       console.log('✅ Dialog should be visible now:', this.showTwoFactorDialog);
     } else {
-      // 토글을 끄려고 할 때는 확인 다이얼로그 표시
-      console.log('🔄 Disabling 2FA - showing disable dialog');
+      // 토글을 끄려고 할 때는 먼저 토글을 원래 상태로 되돌리고 확인 다이얼로그 표시
+      console.log('🔄 Disabling 2FA - reverting toggle and showing disable dialog');
+      this.twoFactorEnabled = true; // 원래 상태로 되돌리기
       this.showTwoFactorDisableDialog = true;
       this.cdr.detectChanges();
-      console.log('✅ Disable dialog should be visible now');
+      console.log('✅ Toggle reverted to ON, disable dialog should be visible now');
     }
   }
 
@@ -582,9 +609,10 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
 
   // 2FA 끄기 확인 다이얼로그 메서드들
   onTwoFactorDisableCancel() {
-    // 취소 시 다이얼로그만 닫기
-    console.log('2FA disable cancelled');
+    // 취소 시 다이얼로그만 닫기 (토글은 ON 상태 유지)
+    console.log('2FA disable cancelled - keeping toggle ON');
     this.showTwoFactorDisableDialog = false;
+    // twoFactorEnabled는 이미 ON 상태이므로 변경하지 않음
     this.cdr.detectChanges();
   }
 
