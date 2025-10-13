@@ -6,7 +6,7 @@ export interface Food {
   _id?: string;
   name: string;
   qty: number;          // ← backend と合わせる
-  expiry: string;       // ← 追加
+  expiry: Date;       // ← 追加
   category: string;
   storage: string;
   notes?: string;       // ← optional
