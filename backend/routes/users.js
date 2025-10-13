@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { generateVerificationCode, sendPasswordRecoveryEmail } = require('../services/emailService');
+const { generateVerificationCode, sendPasswordRecoveryEmail, sendTwoFactorAuthEmail } = require('../services/emailService');
 
 // 회원가입
 router.post('/register', async (req, res) => {
@@ -291,6 +291,52 @@ router.post('/reset-password', async (req, res) => {
   } catch (error) {
     console.error('Reset password error:', error);
     res.status(500).json({ message: 'Password reset failed', error: error.message });
+  }
+});
+
+// Two-Factor Authentication 활성화
+router.post('/enable-2fa', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    // 사용자 찾기
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // 6자리 인증번호 생성
+    const verificationCode = generateVerificationCode();
+    
+    // 사용자 정보에 2FA 인증번호 저장 (10분 유효)
+    user.twoFactorAuth = {
+      verificationCode: verificationCode,
+      codeExpires: new Date(Date.now() + 10 * 60 * 1000), // 10분 후 만료
+      isEnabled: false // 아직 활성화되지 않음
+    };
+    await user.save();
+
+    // 이메일 발송
+    try {
+      await sendTwoFactorAuthEmail(email, verificationCode);
+      res.json({ 
+        message: 'Two-Factor Authentication email sent successfully',
+        verificationCode: verificationCode // 개발용 (실제로는 제거해야 함)
+      });
+    } catch (emailError) {
+      console.error('2FA email sending failed:', emailError);
+      res.status(500).json({ 
+        message: 'Failed to send 2FA email', 
+        error: emailError.message 
+      });
+    }
+  } catch (error) {
+    console.error('Enable 2FA error:', error);
+    res.status(500).json({ message: 'Failed to enable 2FA', error: error.message });
   }
 });
 
