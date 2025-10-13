@@ -71,7 +71,8 @@ app.post('/api/foods', async (req, res) => {
 
 app.get('/api/foods', async(req, res) => {
   try{
-    const foods = await Food.find();
+    const userId = req.query.userId; // frontendからクエリで渡す
+    const foods = await Food.find({owner: userId});
     res.json(foods);
   } catch (error){
     res.status(500).json({message: 'Error fetching foods',error});

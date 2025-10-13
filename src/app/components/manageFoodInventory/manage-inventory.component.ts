@@ -20,16 +20,31 @@ export class ManageFoodInventory {
     this.loadFoods();
   }
 
-  loadFoods(){
-    this.foodService.getFoods().subscribe({
-      next: (data) => {
-        this.foodItems = data;
-      },
-      error: (err) => {
-        console.error('Error loading foods:', err);
-      }
-    });
+loadFoods() {
+  // localStorage からログインユーザー情報を取得
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  console.log('Loaded user from localStorage:', user);
+
+  const userId = user.id;
+
+  if (!userId) {
+    console.error('User ID not found in localStorage.');
+    this.foodItems = [];
+    return;
   }
+
+  this.foodService.getFoods(userId).subscribe({
+    next: (data) => {
+      this.foodItems = data.filter((f: any) => f.owner === userId);
+      console.log('Filtered food items:', this.foodItems);
+
+    },
+    error: (err) => {
+      console.error('Error loading foods:', err);
+    }
+  });
+}
+
   addFoodItem() {
     this.router.navigate(['/add-food']);
   }
