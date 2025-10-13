@@ -99,7 +99,7 @@ export class RegistrationPageComponent {
         name: form.value.name,
         email: form.value.email,
         password: this.password,
-        householdSize: form.value.householdSize === 'No-Selection' ? null : parseInt(form.value.householdSize),
+        householdSize: form.value.householdSize === 'No-Selection' ? null : form.value.householdSize,
         dateOfBirth: form.value.dob
       };
 
