@@ -19,10 +19,10 @@
 
       <div class="form-group">
         <label for="qty">Quantity</label>
-        <input id="qty" type="text" formControlName="qty" placeholder="e.g. 2kg, 5pcs" />
+        <input id="qty" type="text" formControlName="qty" placeholder="Enter numbers only" />
         <div class="error">
           @if (foodForm.get('qty')?.touched && foodForm.get('qty')?.invalid){
-            Quantity is required
+            Quantity is required. Please enter NUMBER ONLY.
           }
         </div>
       </div>
