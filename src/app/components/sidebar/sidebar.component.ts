@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
+import { ManageFoodInventory } from '../manageFoodInventory/manage-inventory.component';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
@@ -10,8 +10,8 @@ import { CommonModule } from '@angular/common';
   imports: [RouterModule, CommonModule]
 })
 export class SidebarComponent implements OnInit {
-  username = 'junkaiyane';
-  profilePhoto: string = 'assets/avatar.png'; // 기본 아바타
+  username = 'User';
+  profilePhoto: string = ''; // 프로필 사진이 없을 때는 빈 문자열
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -39,9 +39,9 @@ export class SidebarComponent implements OnInit {
       if (userData) {
         const user = JSON.parse(userData);
         const newUsername = user.name || 'User';
-        const newProfilePhoto = user.profilePhoto || 'assets/avatar.png';
-
-        // 仅在变化时更新视图
+        const newProfilePhoto = user.profilePhoto || '';
+        
+        // 변경사항이 있을 때만 업데이트
         if (this.username !== newUsername || this.profilePhoto !== newProfilePhoto) {
           this.username = newUsername;
           this.profilePhoto = newProfilePhoto;
@@ -55,6 +55,8 @@ export class SidebarComponent implements OnInit {
 
   /** 图片加载失败回退 */
   onImageError(event: any) {
-    event.target.src = 'assets/avatar.png';
+    // 이미지 로드 실패 시 프로필 사진을 숨김
+    this.profilePhoto = '';
+    this.cdr.detectChanges();
   }
 }

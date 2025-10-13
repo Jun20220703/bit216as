@@ -18,5 +18,28 @@ router.put('/status/:name', async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const filter = userId ? { owner: userId } : {};
+    const foods = await Food.find(filter);
+    res.json(foods);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.patch('/:id/status', async (req, res) => {
+  try {
+    const { status } = req.body;
+    const food = await Food.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    res.json(food);
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating food status', error: err });
+  }
+});
+
+
+
 
 module.exports = router;

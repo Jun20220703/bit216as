@@ -26,7 +26,7 @@ export class AddFoodItemComponent {
 
     this.foodForm = this.fb.group({
       name: ['', Validators.required],
-      qty: ['', Validators.required],
+      qty: ['', [Validators.required, Validators.pattern(/^\d+$/)]], // ← 数字のみ
       expiry: ['', Validators.required],
       category: ['', Validators.required],
       storage: ['', Validators.required],
@@ -42,10 +42,12 @@ export class AddFoodItemComponent {
   }
 
   const rawData = this.foodForm.value;
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
   const foodData = {
     ...rawData,
     qty: Number(rawData.qty),
-    expiry: new Date(rawData.expiry)
+    expiry: new Date(rawData.expiry),
+    owner: user.id   // user.id を正しく参照
   };
 
   console.log('submitting (converted):', foodData);

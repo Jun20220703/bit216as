@@ -1,11 +1,11 @@
 <aside class="sidebar">
   <div class="profile">
-    <img [src]="profilePhoto" alt="avatar" (error)="onImageError($event)">
+    <img *ngIf="profilePhoto" [src]="profilePhoto" alt="avatar" (error)="onImageError($event)">
     <h2>HELLO,<br>{{username}}</h2>
   </div>
 
   <nav class="menu">
-    <a routerLink="/manage" class="menu-item" routerLinkActive="active">📦 Manage inventory</a>
+    <a routerLink="/manage-inventory" class="menu-item" routerLinkActive="active">📦 Manage inventory</a>
     <a routerLink="/inventory" class="menu-item" routerLinkActive="active">🔎 Browse inventory</a>
     <a routerLink="/analytics" class="menu-item" routerLinkActive="active">📊 View Analytics</a>
     <a routerLink="/planWeeklyMeal" class="menu-item" routerLinkActive="active">🍽 Plan Weekly Meals</a>

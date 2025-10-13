@@ -10,6 +10,7 @@ export interface Food {
   category: string;
   storage: string;
   notes?: string;       // ← optional
+  owner? : string;
 }
 
 @Injectable({
@@ -21,8 +22,8 @@ export class FoodService {
 
   constructor(private http: HttpClient) {}
 
-  getFoods(): Observable<Food[]> {
-    return this.http.get<Food[]>(this.apiUrl);
+  getFoods(userId: string): Observable<Food[]> {
+    return this.http.get<Food[]>(`${this.apiUrl}?userId=${userId}`);
   }
 
   addFood(food: Food): Observable<Food> {
@@ -43,6 +44,11 @@ export class FoodService {
 }
     getDonations(): Observable<any[]> {
     return this.http.get<any[]>('http://localhost:5001/api/donations');
+    }
+    
+    updateFoodStatus(foodId: string, status: string): Observable<any> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http.patch(`${this.apiUrl}/${foodId}/status`, { status }, { headers });
     }
 
 
