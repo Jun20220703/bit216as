@@ -62,16 +62,25 @@ export class AccountSettingsComponent implements OnInit {
   showTwoFactorDialog: boolean = false;
   isEnablingTwoFactor: boolean = false;
 
+  // Email link access state
+  showEmailLinkMessage: boolean = false;
+
   constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient, private cdr: ChangeDetectorRef, private ngZone: NgZone) {}
 
   ngOnInit() {
     console.log('AccountSettingsComponent initialized');
     console.log('Initial showTwoFactorDialog:', this.showTwoFactorDialog);
     
-    // Check URL parameters for tab selection
+    // Check URL parameters for tab selection and email link access
     this.route.queryParams.subscribe(params => {
       if (params['tab'] === 'privacy') {
         this.activeTab = 'privacy';
+      }
+      // Check if accessed via email link (2FA setup)
+      if (params['from'] === 'email' || params['2fa'] === 'setup') {
+        this.activeTab = 'privacy';
+        // Show a special message for email link access
+        this.showEmailLinkMessage = true;
       }
     });
 
@@ -91,6 +100,14 @@ export class AccountSettingsComponent implements OnInit {
     }
     
     const userId = localStorage.getItem('userId');
+    
+    // If accessed via email link, show special message instead of redirecting
+    if (!userId && this.showEmailLinkMessage) {
+      this.isLoadingUserData = false;
+      this.cdr.detectChanges();
+      return;
+    }
+    
     if (!userId) {
       alert('User not authenticated. Please log in again.');
       this.router.navigate(['/login']);
@@ -569,5 +586,15 @@ export class AccountSettingsComponent implements OnInit {
         alert('Failed to send 2FA email. Please try again.');
       }
     });
+  }
+
+  // Email link access methods
+  goToLogin() {
+    this.router.navigate(['/login']);
+  }
+
+  dismissEmailMessage() {
+    this.showEmailLinkMessage = false;
+    this.cdr.detectChanges();
   }
 }
