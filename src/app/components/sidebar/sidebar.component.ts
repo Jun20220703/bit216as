@@ -46,8 +46,7 @@ export class SidebarComponent implements OnInit {
   }
 
   onImageError(event: any) {
-    // 이미지 로드 실패 시 프로필 사진을 숨김
-    this.profilePhoto = '';
-    this.cdr.detectChanges();
+    // 이미지 로드 실패 시 기본 아바타로 변경
+    event.target.src = 'assets/avatar.png';
   }
 }
