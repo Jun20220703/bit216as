@@ -60,6 +60,7 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
   // Two-Factor Authentication state
   twoFactorEnabled: boolean = false;
   showTwoFactorDialog: boolean = false;
+  showTwoFactorDisableDialog: boolean = false;
   isEnablingTwoFactor: boolean = false;
   isWaitingForVerification: boolean = false;
   verificationCheckInterval: any = null;
@@ -562,12 +563,11 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
       
       console.log('✅ Dialog should be visible now:', this.showTwoFactorDialog);
     } else {
-      // 토글을 끄려고 할 때는 바로 끄기
-      console.log('🔄 Disabling 2FA');
-      this.twoFactorEnabled = false;
-      this.showTwoFactorDialog = false;
+      // 토글을 끄려고 할 때는 확인 다이얼로그 표시
+      console.log('🔄 Disabling 2FA - showing disable dialog');
+      this.showTwoFactorDisableDialog = true;
       this.cdr.detectChanges();
-      console.log('✅ 2FA disabled, dialog closed');
+      console.log('✅ Disable dialog should be visible now');
     }
   }
 
@@ -578,6 +578,23 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
     this.showTwoFactorDialog = false;
     this.cdr.detectChanges();
     console.log('Toggle reset to OFF, dialog closed');
+  }
+
+  // 2FA 끄기 확인 다이얼로그 메서드들
+  onTwoFactorDisableCancel() {
+    // 취소 시 다이얼로그만 닫기
+    console.log('2FA disable cancelled');
+    this.showTwoFactorDisableDialog = false;
+    this.cdr.detectChanges();
+  }
+
+  onTwoFactorDisableConfirm() {
+    // 2FA 끄기 확인
+    console.log('2FA disable confirmed');
+    this.twoFactorEnabled = false;
+    this.showTwoFactorDisableDialog = false;
+    this.cdr.detectChanges();
+    console.log('✅ 2FA disabled');
   }
 
   onTwoFactorConfirm() {
