@@ -28,13 +28,6 @@ export class SidebarComponent implements OnInit {
 
   /** ✅ 安全加载用户信息，避免 SSR 报错 */
   loadUserProfile() {
-    // localStorage에서 사용자 정보 로드 (SSR 호환)
-    if (typeof window === 'undefined' || !window.localStorage) {
-      return;
-    }
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      try {
     // ⚙️ SSR 环境防护：Node.js 下没有 localStorage
     if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
       console.warn('⚠️ localStorage not available (SSR mode). Skipping profile load.');
@@ -63,6 +56,8 @@ export class SidebarComponent implements OnInit {
   /** 图片加载失败回退 */
   onImageError(event: any) {
     // 이미지 로드 실패 시 기본 아바타로 변경
-    event.target.src = 'assets/avatar.png';
+    if (event && event.target) {
+      event.target.src = 'assets/avatar.png';
+    }
   }
 }
