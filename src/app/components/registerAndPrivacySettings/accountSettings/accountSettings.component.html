@@ -251,7 +251,7 @@
   </div>
 
   <!-- Two-Factor Authentication Confirmation Dialog -->
-  <div *ngIf="showTwoFactorDialog" class="dialog-overlay">
+  <div *ngIf="showTwoFactorDialog && !isWaitingForVerification" class="dialog-overlay">
     <div class="dialog-container">
       <div class="dialog-content">
         <h3>Are you sure to switch on Two-Factor Authentication?</h3>
@@ -262,7 +262,22 @@
       </div>
     </div>
   </div>
+
+  <!-- Verification Waiting Dialog -->
+  <div *ngIf="showTwoFactorDialog && isWaitingForVerification" class="dialog-overlay">
+    <div class="dialog-container">
+      <div class="dialog-content">
+        <div class="waiting-icon">⏳</div>
+        <h3>Your account is currently verifying to enable use of 2FA</h3>
+        <p class="waiting-message">Please check your email and complete the verification process in the new tab.</p>
+        <div class="dialog-buttons">
+          <button class="dialog-button cancel-dialog-button" (click)="onCancelVerificationWaiting()">Cancel</button>
+        </div>
+      </div>
+    </div>
   </div>
+  </div>
+
 
   <!-- Success Message Modal -->
   <div *ngIf="showSuccessMessage" class="success-overlay">
