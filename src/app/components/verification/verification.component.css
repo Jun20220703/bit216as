@@ -78,6 +78,8 @@
   flex-direction: column;
   gap: 10px;
   text-align: left;
+  align-items: flex-start;
+  margin-right: 50px;
 }
 
 .verification-input-group label {
