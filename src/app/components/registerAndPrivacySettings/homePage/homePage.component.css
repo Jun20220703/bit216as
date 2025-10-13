@@ -223,3 +223,76 @@
     max-width: 280px;
   }
 }
+
+/* Welcome Message */
+.welcome-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  color: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  z-index: 2000;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+}
+
+.welcome-content h3 {
+  margin: 0 0 20px 0;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.welcome-content p {
+  margin: 0 0 30px 0;
+  font-size: 1.4rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.welcome-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.setup-btn {
+  background-color: white;
+  color: #4CAF50;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  min-width: 160px;
+}
+
+.setup-btn:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+.dismiss-btn {
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+  padding: 14px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.dismiss-btn:hover {
+  background-color: white;
+  color: #4CAF50;
+}
