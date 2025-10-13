@@ -57,6 +57,11 @@ export class AccountSettingsComponent implements OnInit {
   showNewPassword: boolean = false;
   showConfirmPassword: boolean = false;
 
+  // Two-Factor Authentication state
+  twoFactorEnabled: boolean = false;
+  showTwoFactorDialog: boolean = false;
+  isEnablingTwoFactor: boolean = false;
+
   constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient, private cdr: ChangeDetectorRef, private ngZone: NgZone) {}
 
   ngOnInit() {
@@ -491,5 +496,55 @@ export class AccountSettingsComponent implements OnInit {
 
   onImageLoad(event: any) {
     console.log('Image loaded successfully:', event.target.src);
+  }
+
+  // Two-Factor Authentication methods
+  onTwoFactorToggle(event: any) {
+    console.log('Two-Factor toggle clicked:', event.target.checked);
+    console.log('Current twoFactorEnabled:', this.twoFactorEnabled);
+    
+    // click 이벤트에서는 checked 상태가 아직 변경되지 않았으므로 반대로 확인
+    if (!event.target.checked) {
+      // 토글을 켜려고 할 때 (현재는 false이지만 클릭으로 true가 될 예정)
+      console.log('Showing 2FA dialog');
+      this.showTwoFactorDialog = true;
+      // ngModel이 자동으로 업데이트되므로 수동으로 설정하지 않음
+    } else {
+      // 토글을 끄려고 할 때는 바로 끄기
+      console.log('Turning off 2FA');
+      this.twoFactorEnabled = false;
+    }
+  }
+
+  onTwoFactorCancel() {
+    // 취소 시 토글을 다시 끄기
+    console.log('2FA cancelled, turning off toggle');
+    this.twoFactorEnabled = false;
+    this.showTwoFactorDialog = false;
+  }
+
+  onTwoFactorConfirm() {
+    // 확인 시 이메일 발송
+    console.log('2FA confirmed, sending email to:', this.userData.email);
+    this.showTwoFactorDialog = false;
+    this.isEnablingTwoFactor = true;
+    
+    // 백엔드 API 호출
+    this.http.post('http://localhost:5001/api/users/enable-2fa', {
+      email: this.userData.email
+    }).subscribe({
+      next: (response: any) => {
+        console.log('2FA email sent successfully:', response);
+        this.twoFactorEnabled = true;
+        this.isEnablingTwoFactor = false;
+        alert('A welcome message with confirmation link and 6-digit verification code has been sent to your email!');
+      },
+      error: (error) => {
+        console.error('Failed to send 2FA email:', error);
+        this.twoFactorEnabled = false;
+        this.isEnablingTwoFactor = false;
+        alert('Failed to send 2FA email. Please try again.');
+      }
+    });
   }
 }
