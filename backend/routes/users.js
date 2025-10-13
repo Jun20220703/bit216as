@@ -480,4 +480,40 @@ router.get('/debug-tokens', async (req, res) => {
   }
 });
 
+// Cancel 2FA verification
+router.post('/cancel-2fa-verification', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    // 사용자 찾기
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // 2FA verification 상태 초기화
+    if (user.twoFactorAuth) {
+      user.twoFactorAuth.verificationCode = null;
+      user.twoFactorAuth.codeExpires = null;
+      user.twoFactorAuth.tempToken = null;
+      user.twoFactorAuth.isEnabled = false;
+      await user.save();
+    }
+
+    console.log('2FA verification cancelled for user:', email);
+
+    res.json({ 
+      message: '2FA verification has been cancelled successfully',
+      verificationCancelled: true
+    });
+  } catch (error) {
+    console.error('Cancel 2FA verification error:', error);
+    res.status(500).json({ message: 'Failed to cancel 2FA verification', error: error.message });
+  }
+});
+
 module.exports = router;
