@@ -1,7 +1,7 @@
 import { Component, ChangeDetectorRef, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SidebarComponent } from '../../sidebar/sidebar.component';
 
@@ -57,9 +57,16 @@ export class AccountSettingsComponent implements OnInit {
   showNewPassword: boolean = false;
   showConfirmPassword: boolean = false;
 
-  constructor(private router: Router, private http: HttpClient, private cdr: ChangeDetectorRef, private ngZone: NgZone) {}
+  constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient, private cdr: ChangeDetectorRef, private ngZone: NgZone) {}
 
   ngOnInit() {
+    // Check URL parameters for tab selection
+    this.route.queryParams.subscribe(params => {
+      if (params['tab'] === 'privacy') {
+        this.activeTab = 'privacy';
+      }
+    });
+
     // Use setTimeout to ensure component is fully initialized
     setTimeout(() => {
       this.loadUserData();
