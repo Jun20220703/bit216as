@@ -45,6 +45,11 @@ export class FoodService {
     getDonations(): Observable<any[]> {
     return this.http.get<any[]>('http://localhost:5001/api/donations');
     }
+    
+    updateFoodStatus(foodId: string, status: string): Observable<any> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http.patch(`${this.apiUrl}/${foodId}/status`, { status }, { headers });
+    }
 
 
 

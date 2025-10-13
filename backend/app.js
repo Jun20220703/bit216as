@@ -37,7 +37,7 @@ mongoose.connect("mongodb+srv://kkjhhyu0405:kjh030407@cluster0.chogk.mongodb.net
 /* Middleware */
 app.use(cors({
   origin: 'http://localhost:4200',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
@@ -135,6 +135,8 @@ app.get('/api/donations', async (req, res) => {
     res.status(500).json({ message: 'Error fetching donations', error });
   }
 });
+app.options('/api/foods/:id/status', cors());
+
 
 
 
