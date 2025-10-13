@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from "../sidebar/sidebar.component";
 import { Router } from '@angular/router';
@@ -14,7 +14,10 @@ import { FormsModule } from '@angular/forms';
 export class ManageFoodInventory {
   foodItems: any[] = [];
 
-  constructor (private foodService: FoodService, private router: Router){}
+  constructor (
+    private foodService: FoodService, 
+    private router: Router,
+    private cdr: ChangeDetectorRef){}
 
   ngOnInit(){
     this.loadFoods();
@@ -35,9 +38,10 @@ loadFoods() {
 
   this.foodService.getFoods(userId).subscribe({
     next: (data) => {
-      this.foodItems = data.filter((f: any) => f.owner === userId && f.status !== 'donation');
+      this.foodItems = data.filter((f: any) =>   f.owner === userId && f.status ==='inventory');
       console.log('Filtered food items:', this.foodItems);
 
+        this.cdr.detectChanges();
     },
     error: (err) => {
       console.error('Error loading foods:', err);

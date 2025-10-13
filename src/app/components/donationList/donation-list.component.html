@@ -13,16 +13,18 @@
           <th>Expiry Date</th>
           <th>Pickup Location</th>
           <th>Availability</th>
+          <th>Notes</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let donation of donations">
           <td>{{ donation.foodId?.name }}</td>
-          <td>{{ donation.foodId?.qty }}</td>
-          <td>{{ donation.foodId?.expiry }}</td>
-          <td>{{ donation.foodId?.location }}</td>
-          <td>{{ donation.foodId?.availability }}</td>
+          <td>{{ donation.qty }}</td>
+          <td>{{ donation.expiry }}</td>
+          <td>{{ donation.location }}</td>
+          <td>{{ donation.availability }}</td>
+          <td>{{ donation.notes }}</td>
           <td>
             <button (click)="edit(donation)">Edit</button>
             <button (click)="delete(donation)">Delete</button>
