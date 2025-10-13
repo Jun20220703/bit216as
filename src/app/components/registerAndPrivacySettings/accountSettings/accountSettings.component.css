@@ -134,7 +134,7 @@
 
 .setting-label {
   color: #333;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 500;
 }
 
@@ -587,20 +587,20 @@
 }
 
 .toggle-slider {
-  width: 50px;
-  height: 24px;
+  width: 70px;
+  height: 32px;
   background: #333;
-  border-radius: 12px;
+  border-radius: 16px;
   position: relative;
   transition: all 0.3s ease;
-  margin-right: 8px;
+  margin-right: 12px;
 }
 
 .toggle-slider::before {
   content: '';
   position: absolute;
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   background: white;
   border-radius: 50%;
   top: 2px;
@@ -613,14 +613,14 @@
 }
 
 .toggle-input:checked + .toggle-label .toggle-slider::before {
-  transform: translateX(26px);
+  transform: translateX(38px);
 }
 
 .toggle-text {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 500;
   color: #333;
-  min-width: 30px;
+  min-width: 40px;
   text-align: center;
 }
 
