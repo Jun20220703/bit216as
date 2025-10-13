@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit, NgZone } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -21,7 +21,7 @@ interface UserData {
   styleUrls: ['./accountSettings.component.css'],
   imports: [CommonModule, FormsModule, HttpClientModule, SidebarComponent]
 })
-export class AccountSettingsComponent implements OnInit {
+export class AccountSettingsComponent implements OnInit, OnDestroy {
   activeTab: 'account' | 'privacy' = 'account';
   
   userData: UserData = {
@@ -61,6 +61,8 @@ export class AccountSettingsComponent implements OnInit {
   twoFactorEnabled: boolean = false;
   showTwoFactorDialog: boolean = false;
   isEnablingTwoFactor: boolean = false;
+  isWaitingForVerification: boolean = false;
+  verificationCheckInterval: any = null;
 
   // Email link access state
   showEmailLinkMessage: boolean = false;
@@ -76,41 +78,38 @@ export class AccountSettingsComponent implements OnInit {
   showSuccessMessage: boolean = false;
   successMessage: string = '';
 
+  // Custom alert modal state
+  showCustomAlert: boolean = false;
+  customAlertTitle: string = '';
+  customAlertMessage: string = '';
+
   constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient, private cdr: ChangeDetectorRef, private ngZone: NgZone) {}
+
+  ngOnDestroy() {
+    this.stopVerificationCheck();
+  }
 
   ngOnInit() {
     console.log('AccountSettingsComponent initialized');
     console.log('Initial showTwoFactorDialog:', this.showTwoFactorDialog);
     
-    // Check URL parameters for tab selection and email link access
+    // Check URL parameters for tab selection
     this.route.queryParams.subscribe(params => {
       if (params['tab'] === 'privacy') {
         this.activeTab = 'privacy';
       }
-      // Check if accessed via email link (2FA setup)
-      if (params['from'] === 'email' || params['2fa'] === 'setup') {
-        console.log('Email link access detected:', params);
-        this.activeTab = 'privacy';
-        // Enable 2FA toggle and show verification form
-        this.twoFactorEnabled = true;
-        this.showVerificationForm = true;
-        
-        // If token is provided, perform temporary login
-        if (params['token']) {
-          console.log('Token found, performing temporary login:', params['token']);
-          this.performTemporaryLogin(params['token']);
-        } else {
-          console.log('No token found in URL parameters');
-        }
-        
-        this.cdr.detectChanges();
-      } else {
-        // Only load user data if not accessed via email link
-        setTimeout(() => {
-          this.loadUserData();
-        }, 100);
-      }
     });
+    
+    // Load user data
+    setTimeout(() => {
+      this.loadUserData();
+    }, 100);
+    
+    // Check for verification completion
+    this.checkVerificationStatus();
+    
+    // Start periodic check for verification completion
+    this.startVerificationCheck();
   }
 
   loadUserData() {
@@ -123,15 +122,7 @@ export class AccountSettingsComponent implements OnInit {
     }
     
     const userId = localStorage.getItem('userId');
-    console.log('loadUserData - userId:', userId, 'showVerificationForm:', this.showVerificationForm);
-    
-    // If accessed via email link, skip authentication check completely
-    if (this.showVerificationForm) {
-      console.log('Skipping authentication check for email link access');
-      this.isLoadingUserData = false;
-      this.cdr.detectChanges();
-      return;
-    }
+    console.log('loadUserData - userId:', userId);
     
     if (!userId) {
       alert('User not authenticated. Please log in again.');
@@ -155,6 +146,10 @@ export class AccountSettingsComponent implements OnInit {
             dateOfBirth: response.dateOfBirth ? new Date(response.dateOfBirth).toISOString().split('T')[0] : '',
             profilePhoto: response.profilePhoto || ''
           };
+          
+          // Set 2FA status from backend data
+          this.twoFactorEnabled = response.twoFactorAuth?.isEnabled || false;
+          console.log('2FA status loaded from backend:', this.twoFactorEnabled);
           
           // Load actual password from localStorage
           if (typeof window !== 'undefined' && window.localStorage) {
@@ -588,7 +583,6 @@ export class AccountSettingsComponent implements OnInit {
   onTwoFactorConfirm() {
     // 확인 시 이메일 발송
     console.log('2FA confirmed, sending email to:', this.userData.email);
-    this.showTwoFactorDialog = false;
     this.isEnablingTwoFactor = true;
     this.cdr.detectChanges();
     
@@ -600,15 +594,17 @@ export class AccountSettingsComponent implements OnInit {
         console.log('2FA email sent successfully:', response);
         this.twoFactorEnabled = true;
         this.isEnablingTwoFactor = false;
+        this.isWaitingForVerification = true;
+        // 다이얼로그는 이미 열려있으므로 그대로 유지
         this.cdr.detectChanges();
-        alert('A welcome message with confirmation link and 6-digit verification code has been sent to your email!');
       },
       error: (error) => {
         console.error('Failed to send 2FA email:', error);
         this.twoFactorEnabled = false;
         this.isEnablingTwoFactor = false;
+        this.showTwoFactorDialog = false;
         this.cdr.detectChanges();
-        alert('Failed to send 2FA email. Please try again.');
+        this.showCustomAlertModal('Error', 'Failed to send 2FA email. Please try again.');
       }
     });
   }
@@ -716,6 +712,61 @@ export class AccountSettingsComponent implements OnInit {
 
   onSuccessClose() {
     this.showSuccessMessage = false;
+    this.cdr.detectChanges();
+  }
+
+  // Cancel verification waiting state
+  onCancelVerificationWaiting() {
+    this.isWaitingForVerification = false;
+    this.twoFactorEnabled = false;
+    this.showTwoFactorDialog = false;
+    this.cdr.detectChanges();
+  }
+
+  // Check verification status
+  checkVerificationStatus() {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const verificationComplete = localStorage.getItem('2faVerificationComplete');
+      if (verificationComplete === 'true') {
+        // Clear the flag
+        localStorage.removeItem('2faVerificationComplete');
+        // Hide waiting state and dialog
+        this.isWaitingForVerification = false;
+        this.showTwoFactorDialog = false;
+        
+        // Reload user data to get updated 2FA status
+        this.loadUserData();
+        
+        this.cdr.detectChanges();
+      }
+    }
+  }
+
+  // Start periodic verification check
+  startVerificationCheck() {
+    this.verificationCheckInterval = setInterval(() => {
+      this.checkVerificationStatus();
+    }, 1000); // Check every second
+  }
+
+  // Stop verification check
+  stopVerificationCheck() {
+    if (this.verificationCheckInterval) {
+      clearInterval(this.verificationCheckInterval);
+      this.verificationCheckInterval = null;
+    }
+  }
+
+  // Custom alert modal methods
+  showCustomAlertModal(title: string, message: string) {
+    this.customAlertTitle = title;
+    this.customAlertMessage = message;
+    this.showCustomAlert = true;
+    this.cdr.detectChanges();
+  }
+
+  onCustomAlertClose() {
+    this.showCustomAlert = false;
     this.cdr.detectChanges();
   }
 }
