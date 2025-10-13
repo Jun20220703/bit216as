@@ -515,6 +515,15 @@
   background: #45a049;
 }
 
+.resend-dialog-button {
+  background: #2196F3;
+  color: white;
+}
+
+.resend-dialog-button:hover {
+  background: #1976D2;
+}
+
 /* Password Change Form */
 .password-change-container {
   background: white;
