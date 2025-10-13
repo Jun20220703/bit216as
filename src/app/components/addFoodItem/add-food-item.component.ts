@@ -35,24 +35,33 @@ export class AddFoodItemComponent {
   }
 
   saveFood() {
-    console.log('Save button clicked');
-    if(this.foodForm.invalid){
-      this.foodForm.markAllAsTouched();
-      return;
-    }
-
-    console.log('submitting:', this.foodForm.value);
-    this.foodService.addFood(this.foodForm.value).subscribe({
-      next: (res) =>{
-        console.log('Food saved Successfully:', res);
-        this.router.navigate(['/manage-inventory']);
-      },
-      error: (err) =>{
-        console.log('Error saving food:', err);
-        alert('Failed to save item. Check backend connection.');
-      }
-    });
+  console.log('Save button clicked');
+  if (this.foodForm.invalid) {
+    this.foodForm.markAllAsTouched();
+    return;
   }
+
+  const rawData = this.foodForm.value;
+  const foodData = {
+    ...rawData,
+    qty: Number(rawData.qty),
+    expiry: new Date(rawData.expiry)
+  };
+
+  console.log('submitting (converted):', foodData);
+
+  this.foodService.addFood(foodData).subscribe({
+    next: (res) => {
+      console.log('✅ Food saved successfully:', res);
+      this.router.navigate(['/manage-inventory']);
+    },
+    error: (err) => {
+      console.error('❌ Error saving food:', err);
+      alert('Failed to save item. Check backend connection.');
+    }
+  });
+}
+
 
   cancel() {
     this.router.navigate(['/manage-inventory']);
