@@ -188,6 +188,39 @@
 
     <!-- Privacy & Security Settings Tab -->
     <div *ngIf="activeTab === 'privacy'" class="tab-content">
+      <!-- 2FA Verification Form -->
+      <div *ngIf="showVerificationForm" class="verification-form-container">
+        <div class="verification-form">
+          <h2 class="verification-title">Two-Factor Authentication Setup</h2>
+          <p class="verification-instructions">Enter the 6-digit verification code sent to your email address.</p>
+          
+          <div class="verification-input-group">
+            <label for="verification-code">Verification Code:</label>
+            <input 
+              type="text" 
+              id="verification-code" 
+              [(ngModel)]="verificationCode" 
+              name="verificationCode"
+              placeholder="Enter 6-digit code"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              class="verification-input">
+          </div>
+          
+          <div class="verification-buttons">
+            <button type="button" class="cancel-verification-btn" (click)="onCancelVerification()">Cancel</button>
+            <button type="button" class="verify-code-btn" (click)="onVerifyCode()" [disabled]="isVerifyingCode">
+              <span *ngIf="!isVerifyingCode">Verify Code</span>
+              <span *ngIf="isVerifyingCode">Verifying...</span>
+            </button>
+          </div>
+          
+          <div *ngIf="verificationMessage" class="verification-message" [class.success]="verificationSuccess" [class.error]="!verificationSuccess">
+            {{ verificationMessage }}
+          </div>
+        </div>
+      </div>
+
       <!-- Email Link Access Message -->
       <div *ngIf="showEmailLinkMessage" class="email-link-message">
         <div class="email-link-content">
@@ -229,5 +262,19 @@
       </div>
     </div>
   </div>
+  </div>
+
+  <!-- Success Message Modal -->
+  <div *ngIf="showSuccessMessage" class="success-overlay">
+    <div class="success-container">
+      <div class="success-content">
+        <div class="success-icon">✓</div>
+        <h3 class="success-title">Success!</h3>
+        <p class="success-message">{{ successMessage }}</p>
+        <div class="success-buttons">
+          <button class="success-btn" (click)="onSuccessClose()">OK</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
