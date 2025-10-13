@@ -1,5 +1,6 @@
 <aside class="sidebar">
   <div class="profile">
+    <img src="assets/images/image1.png" alt="Food Shield Logo" class="logo">
     <img *ngIf="profilePhoto" [src]="profilePhoto" alt="avatar" (error)="onImageError($event)">
     <h2>HELLO,<br>{{username}}</h2>
   </div>
