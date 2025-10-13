@@ -77,15 +77,18 @@
           All
         </label>
 
-        <!-- 动态分类（竖排没问题，沿用你之前的CSS） -->
+        <!-- 动态分类 -->
         <label *ngFor="let cat of availableCategories">
-          <input
-            type="checkbox"
-            name="cat_{{cat.key}}"
-            [(ngModel)]="filter.categories[cat.key]"
-            (ngModelChange)="onCategoryChange(cat.key, $event)" />
-          {{ cat.name }}
-        </label>
+        <input
+          type="checkbox"
+          name="cat_{{cat.key}}"
+          [checked]="filter.categories[cat.key] === true"
+          (change)="onCategoryChange(cat.key, $event.target.checked)" />
+        {{ cat.name }}
+      </label>
+
+
+
       </div>
 
 
@@ -104,6 +107,9 @@
 
         <!-- ✅ Apply 按钮单独放一行 -->
         <button class="apply-btn" (click)="applyExpiredFilter()">Apply</button>
+
+        <!-- 🔹 Reset 按钮 -->
+<button class="reset-btn" (click)="resetExpiredFilter()">Reset</button>
       </div>
     </div>
     <!-- ✅ Filter Drawer END -->

@@ -441,3 +441,20 @@
 .donation-row {
   display: contents; /* 保持 grid 布局不破坏 */
 }
+
+.reset-btn {
+  margin-top: 0.5rem;
+  background-color: #e0e0e0; /* 灰色 */
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.reset-btn:hover {
+  background-color: #bdbdbd; /* hover 深灰 */
+}
