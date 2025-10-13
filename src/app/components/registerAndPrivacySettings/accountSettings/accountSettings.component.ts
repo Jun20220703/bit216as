@@ -64,6 +64,7 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
   isEnablingTwoFactor: boolean = false;
   isWaitingForVerification: boolean = false;
   verificationCheckInterval: any = null;
+  isEmailSent: boolean = false; // 이메일 발송 상태 추적
 
   // Email link access state
   showEmailLinkMessage: boolean = false;
@@ -551,7 +552,7 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
       // 토글을 켜려고 할 때
       console.log('🔄 Enabling 2FA - showing dialog');
       this.showTwoFactorDialog = true;
-      this.twoFactorEnabled = true;
+      // twoFactorEnabled는 아직 true로 설정하지 않음 (확인 후에 설정)
       
       // UI 강제 업데이트
       this.cdr.detectChanges();
@@ -603,8 +604,10 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
     console.log('2FA cancelled, turning off toggle');
     this.twoFactorEnabled = false;
     this.showTwoFactorDialog = false;
+    this.isEmailSent = false; // 이메일 발송 플래그 리셋
+    this.isEnablingTwoFactor = false; // 진행 중 플래그도 리셋
     this.cdr.detectChanges();
-    console.log('Toggle reset to OFF, dialog closed');
+    console.log('Toggle reset to OFF, dialog closed, email flags reset');
   }
 
   // 2FA 끄기 확인 다이얼로그 메서드들
@@ -645,9 +648,16 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
   }
 
   onTwoFactorConfirm() {
+    // 중복 호출 방지
+    if (this.isEnablingTwoFactor || this.isEmailSent) {
+      console.log('2FA email already being sent or sent, ignoring duplicate request');
+      return;
+    }
+    
     // 확인 시 이메일 발송
     console.log('2FA confirmed, sending email to:', this.userData.email);
     this.isEnablingTwoFactor = true;
+    this.isEmailSent = true;
     this.cdr.detectChanges();
     
     // 백엔드 API 호출
@@ -656,7 +666,7 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (response: any) => {
         console.log('2FA email sent successfully:', response);
-        this.twoFactorEnabled = true;
+        this.twoFactorEnabled = true; // 이제서야 true로 설정
         this.isEnablingTwoFactor = false;
         this.isWaitingForVerification = true;
         // 다이얼로그는 이미 열려있으므로 그대로 유지
@@ -664,8 +674,9 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Failed to send 2FA email:', error);
-        this.twoFactorEnabled = false;
+        this.twoFactorEnabled = false; // 오류 시 false로 유지
         this.isEnablingTwoFactor = false;
+        this.isEmailSent = false; // 오류 시 플래그 리셋
         this.showTwoFactorDialog = false;
         this.cdr.detectChanges();
         this.showCustomAlertModal('Error', 'Failed to send 2FA email. Please try again.');
@@ -781,10 +792,45 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
 
   // Cancel verification waiting state
   onCancelVerificationWaiting() {
-    this.isWaitingForVerification = false;
-    this.twoFactorEnabled = false;
-    this.showTwoFactorDialog = false;
-    this.cdr.detectChanges();
+    console.log('Cancelling 2FA verification for:', this.userData.email);
+    
+    // 백엔드에 verification 취소 요청하여 링크 무효화
+    this.http.post('http://localhost:5001/api/users/cancel-2fa-verification', {
+      email: this.userData.email
+    }).subscribe({
+      next: (response: any) => {
+        console.log('2FA verification cancelled successfully:', response);
+        
+        // UI 업데이트
+        this.isWaitingForVerification = false;
+        this.twoFactorEnabled = false;
+        this.showTwoFactorDialog = false;
+        this.isEmailSent = false; // 이메일 발송 플래그 리셋
+        this.isEnablingTwoFactor = false; // 진행 중 플래그도 리셋
+        
+        // 취소 메시지를 alert로 표시
+        alert('Enabling 2FA is cancelled');
+        
+        this.cdr.detectChanges();
+        console.log('2FA verification cancelled - UI updated, email flags reset');
+      },
+      error: (error) => {
+        console.error('Failed to cancel 2FA verification:', error);
+        
+        // 오류가 발생해도 UI는 업데이트
+        this.isWaitingForVerification = false;
+        this.twoFactorEnabled = false;
+        this.showTwoFactorDialog = false;
+        this.isEmailSent = false;
+        this.isEnablingTwoFactor = false;
+        
+        // 취소 메시지를 alert로 표시
+        alert('Enabling 2FA is cancelled');
+        
+        this.cdr.detectChanges();
+        console.log('2FA verification cancelled - UI updated despite error');
+      }
+    });
   }
 
   // Check verification status
