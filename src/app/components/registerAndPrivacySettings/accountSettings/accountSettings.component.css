@@ -261,7 +261,10 @@
 
 /* Make certain fields span full width */
 .form-field:nth-child(1),
-.form-field:nth-child(2) {
+.form-field:nth-child(2),
+.form-field:nth-child(3),
+.form-field:nth-child(4),
+.form-field:nth-child(5) {
   grid-column: 1 / -1;
 }
 
