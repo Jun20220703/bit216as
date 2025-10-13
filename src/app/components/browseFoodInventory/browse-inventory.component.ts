@@ -59,15 +59,7 @@ export class InventoryComponent implements OnInit {
   filter = {
     donation: false,
     inventory: true,
-    categories: { 
-      all: true, 
-      fruit: true, 
-      vegetable: true, 
-      meat: true, 
-      grain: true, 
-      dairy: true,
-      others: true   // ✅ 新增 Others
-    },
+    categories: {} as { [key in CategoryKey]?: boolean },
     expiredIn: 0
   };
 
@@ -76,22 +68,19 @@ export class InventoryComponent implements OnInit {
   rawFoods: Food[] = [];
   private expiredSet = new Set<string>();
 
-  ngOnInit() { 
+  ngOnInit() {
     this.loadFoods();
-
-    // ✅ 自动补上分类字段
-    this.availableCategories.forEach(cat => {
-      if (!(cat.key in this.filter.categories)) {
-        (this.filter.categories as any)[cat.key] = true;
-      }
-    });
   }
 
   /** 从 API 获取数据 */
   loadFoods() {
     this.browseService.getFoods().subscribe((data: Food[]) => {
-      console.log("📦 拿到的数据:", data);
+      console.log('📦 拿到的数据:', data);
       this.rawFoods = data;
+
+      // 初始化/同步分类键
+      this.ensureCategoryKeysInitialized(true);
+
       this.refreshView();
     });
   }
@@ -101,28 +90,57 @@ export class InventoryComponent implements OnInit {
     const set = new Set<string>();
     this.rawFoods.forEach(food => {
       if (this.matchSource(food.status as 'inventory' | 'donation')) {
-        set.add(food.storage);
+        set.add(food.storage || 'Unknown');
       }
     });
     return Array.from(set);
   }
 
-  /** 动态分类下拉 */
-  get availableCategories() {
-    const list: { key: CategoryKey, name: string }[] = [];
+  /** 动态分类下拉（不暴露 'all'，因为有单独的 All 复选框） */
+  get availableCategories(): { key: CategoryKey; name: string }[] {
+    const list: { key: CategoryKey; name: string }[] = [];
     const exists = new Set<CategoryKey>();
 
     this.rawFoods.forEach(food => {
       const key = this.mapCategoryKey(food.category);
+      if (key === 'all') return; // UI 里不显示 'all'
       if (this.matchSource(food.status as 'inventory' | 'donation') && !exists.has(key)) {
         exists.add(key);
-        list.push({ key, name: food.category });
+        const displayName = key.charAt(0).toUpperCase() + key.slice(1);
+        list.push({ key, name: displayName });
       }
     });
+
+    // 稳定排序（可选）
+    list.sort((a, b) => a.name.localeCompare(b.name));
     return list;
   }
 
-  /** 构建数据结构 */
+  /** 确保 filter.categories 拥有当前可用分类的键，必要时设默认值 */
+  private ensureCategoryKeysInitialized(setDefaultTrue = false) {
+    const keys = this.availableCategories.map(c => c.key);
+
+    // 新出现的分类键设成默认（通常为 true，表示“全选”初始态）
+    keys.forEach(k => {
+      if (this.filter.categories[k] === undefined) {
+        this.filter.categories[k] = setDefaultTrue ? true : !!this.filter.categories.all;
+      }
+    });
+
+    // 如果还没定义 All，就按当前分类是否都为 true 来判定
+    if (this.filter.categories.all === undefined) {
+      this.filter.categories.all = keys.length === 0 ? true : keys.every(k => this.filter.categories[k] === true);
+    } else {
+      // 如果 All 为 true，但有分类是 undefined，则补成 true
+      if (this.filter.categories.all) {
+        keys.forEach(k => {
+          if (this.filter.categories[k] === undefined) this.filter.categories[k] = true;
+        });
+      }
+    }
+  }
+
+  /** 构建数据结构：Storage → Category → Items */
   private buildLocations(): Location[] {
     const map: { [storage: string]: Location } = {};
 
@@ -138,7 +156,7 @@ export class InventoryComponent implements OnInit {
       let category = map[locName].categories.find(c => c.key === key);
       if (!category) {
         category = {
-          name: food.category,
+          name: key === 'all' ? 'Others' : (food.category || 'Others'),
           key,
           colorClass: key,
           icon: this.getCategoryIcon(key),
@@ -152,7 +170,7 @@ export class InventoryComponent implements OnInit {
         name: food.name,
         remaining: Number(food.qty),
         selectedQty: 0,
-        source: (food.status === 'donation') ? 'donation' : 'inventory',
+        source: (food.status === 'donation') ? 'donation' : (food.status === 'expired') ? 'expired' : 'inventory',
         expiry: food.expiry
       });
     });
@@ -160,19 +178,18 @@ export class InventoryComponent implements OnInit {
     return Object.values(map);
   }
 
-  /** 分类名映射 */
   private mapCategoryKey(category: string): CategoryKey {
-    switch (category.toLowerCase()) {
-      case 'fruit': return 'fruit';
-      case 'vegetable': return 'vegetable';
-      case 'meat': return 'meat';
-      case 'carbohydrates':
-      case 'carb':
-      case 'grain': return 'grain';
-      case 'dairy': return 'dairy';
-      case 'others': return 'others';
-      default: return 'all';
-    }
+    const c = (category || '').trim().toLowerCase();
+    const singular = c.endsWith('s') ? c.slice(0, -1) : c; // Fruits → fruit, Others → other
+
+    if (singular.includes('fruit')) return 'fruit';
+    if (singular.includes('vegetable')) return 'vegetable';
+    if (singular.includes('meat')) return 'meat';
+    if (singular.includes('grain') || singular.includes('carb')) return 'grain';
+    if (singular.includes('dairy')) return 'dairy';
+    if (singular.includes('other')) return 'others';
+
+    return 'all'; // 未识别的分类归到 all（UI 不显示，视作 Others）
   }
 
   /** 分类图标 */
@@ -183,7 +200,7 @@ export class InventoryComponent implements OnInit {
       case 'meat': return '🍖';
       case 'grain': return '🌾';
       case 'dairy': return '🥛';
-      default: return '📦';
+      default: return '📦'; // others / all
     }
   }
 
@@ -194,21 +211,36 @@ export class InventoryComponent implements OnInit {
     return true;
   }
 
-  /** 刷新界面 */
+  /** ✅ 刷新界面（分类过滤只看每个分类布尔值，不再被 all 覆盖） */
   refreshView() {
+    // 每次刷新先确保分类键存在
+    this.ensureCategoryKeysInitialized();
+
     let locs = this.buildLocations();
 
+    // 过滤 storage
     if (this.selectedLocation !== 'All') {
       locs = locs.filter(l => l.name === this.selectedLocation);
     }
 
+    // 过滤分类
+    const allowed = new Set<CategoryKey>(
+      this.availableCategories
+        .map(c => c.key)
+        .filter(k => this.filter.categories[k] === true)
+    );
+
     locs = locs.map(loc => ({
       ...loc,
-      categories: loc.categories.filter(cat =>
-        this.filter.categories.all || (this.filter.categories as any)[cat.key] === true
-      )
-    }));
+      categories: loc.categories
+        .map(cat => ({
+          ...cat,
+          items: (allowed.has(cat.key)) ? cat.items : []
+        }))
+        .filter(cat => cat.items.length > 0)
+    })).filter(loc => loc.categories.length > 0);
 
+    // 搜索过滤
     if (this.searchQuery.trim() !== '') {
       const q = this.searchQuery.toLowerCase();
       locs = locs.map(loc => ({
@@ -224,24 +256,47 @@ export class InventoryComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  /** 只显示即将过期食物 */
+  /** Expired Filter（仅 inventory） */
   applyExpiredFilter() {
+    if (this.selectedSource !== 'inventory') {
+      this.refreshView();
+      return;
+    }
+
     const limit = Number(this.filter.expiredIn);
     if (!limit || limit <= 0) {
       this.refreshView();
       return;
     }
 
+    // 确保分类键存在
+    this.ensureCategoryKeysInitialized();
+
     let locs = this.buildLocations();
 
+    // 先按 storage
+    if (this.selectedLocation !== 'All') {
+      locs = locs.filter(l => l.name === this.selectedLocation);
+    }
+
+    // 再按分类勾选
+    const allowed = new Set<CategoryKey>(
+      this.availableCategories
+        .map(c => c.key)
+        .filter(k => this.filter.categories[k] === true)
+    );
+
+    // 套用过期范围
     locs = locs.map(loc => ({
       ...loc,
       categories: loc.categories.map(cat => ({
         ...cat,
-        items: cat.items.filter(i => {
-          const days = this.getRemainingDays(i.expiry);
-          return days >= 0 && days <= limit;
-        })
+        items: allowed.has(cat.key)
+          ? cat.items.filter(i => {
+              const days = this.getRemainingDays(i.expiry);
+              return days >= 0 && days <= limit;
+            })
+          : []
       })).filter(cat => cat.items.length > 0)
     })).filter(loc => loc.categories.length > 0);
 
@@ -249,11 +304,21 @@ export class InventoryComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
+   /** Reset 过期过滤 */
+  resetExpiredFilter() {
+    this.filter.expiredIn = 0;
+    this.refreshView();
+  }
+
   /** UI 控制 */
   toggleFilterPanel() { this.showFilter = !this.showFilter; }
+
   toggleSearchBar() {
     this.showSearch = !this.showSearch;
-    if (!this.showSearch) { this.searchQuery = ''; this.refreshView(); }
+    if (!this.showSearch) {
+      this.searchQuery = '';
+      this.refreshView();
+    }
   }
 
   toggleSource(source: 'donation' | 'inventory') {
@@ -261,28 +326,35 @@ export class InventoryComponent implements OnInit {
     this.filter.donation = source === 'donation';
     this.filter.inventory = source === 'inventory';
     this.viewTitle = (source === 'inventory') ? 'Inventory' : 'Donation List';
-    this.filter.categories.all = true;
-    this.refreshView();
 
+    // 切换数据源后，重置 All 为 true，并同步所有可用分类
+    this.ensureCategoryKeysInitialized(true);
+    this.filter.categories.all = true;
+    this.availableCategories.forEach(c => this.filter.categories[c.key] = true);
+
+    // Donation 模式不需要过期范围
+    if (source === 'donation') this.filter.expiredIn = 0;
+
+    this.refreshView();
     this.showSearch = false;
     this.showFilter = false;
   }
 
-  toggleCategory(category: CategoryKey | string) {
-    if (category === 'all') {
-      const enabled = !this.filter.categories.all;
-      const currentKeys = this.availableCategories.map(c => c.key);
-      currentKeys.forEach(k => (this.filter.categories as any)[k] = enabled);
-      this.filter.categories.all = enabled;
-    } else {
-      const current = (this.filter.categories as any)[category];
-      (this.filter.categories as any)[category] = !current;
+  /** ✅ 单个分类切换 */
+  onCategoryChange(key: CategoryKey, checked: boolean) {
+    this.filter.categories[key] = checked;
 
-      const currentKeys = this.availableCategories.map(c => c.key);
-      const allSelected = currentKeys.every(k => (this.filter.categories as any)[k]);
-      this.filter.categories.all = allSelected;
-    }
+    // 如果所有分类都为 true → 勾选 All；否则取消 All
+    const keys = this.availableCategories.map(c => c.key);
+    this.filter.categories.all = keys.length === 0 ? true : keys.every(k => this.filter.categories[k] === true);
 
+    this.refreshView();
+  }
+
+  /** ✅ All 开关（同步所有当前可用分类） */
+  onCategoryAllToggle(checked: boolean) {
+    this.filter.categories.all = checked;
+    this.availableCategories.forEach(c => (this.filter.categories[c.key] = checked));
     this.refreshView();
   }
 
@@ -294,9 +366,8 @@ export class InventoryComponent implements OnInit {
     if (item.selectedQty > 0) item.selectedQty--;
   }
 
-  /** 弹窗逻辑 ✅（修正函数名）*/
+  /** 弹窗逻辑 */
   openConfirm(item: Item, action: 'used' | 'meal' | 'donate' | 'edit') {
-    // donation 模式允许 edit 直接打开，不需要选数量
     console.log('🟢 openConfirm called with', item.name, action);
     if (action !== 'edit' && item.selectedQty <= 0) return;
     this.confirmItem = item;

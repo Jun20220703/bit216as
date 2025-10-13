@@ -66,23 +66,31 @@
       <!-- Category -->
       <div class="filter-section">
         <h3>Category</h3>
+
+        <!-- All -->
         <label>
           <input
             type="checkbox"
-            [checked]="filter.categories.all"
-            (change)="toggleCategory('all')" />
+            name="cat_all"
+            [(ngModel)]="filter.categories.all"
+            (ngModelChange)="onCategoryAllToggle($event)" />
           All
         </label>
 
-        <!-- 动态生成分类 -->
+        <!-- 动态分类 -->
         <label *ngFor="let cat of availableCategories">
-          <input
-            type="checkbox"
-            [checked]="filter.categories[cat.key]"
-            (change)="toggleCategory(cat.key)" />
-          {{ cat.name }}
-        </label>
+        <input
+          type="checkbox"
+          name="cat_{{cat.key}}"
+          [checked]="filter.categories[cat.key] === true"
+          (change)="onCategoryChange(cat.key, $event.target.checked)" />
+        {{ cat.name }}
+      </label>
+
+
+
       </div>
+
 
       <!-- ✅ Expired in 只在 Inventory 模式下显示 -->
       <div class="filter-section" *ngIf="selectedSource === 'inventory'">
@@ -99,6 +107,9 @@
 
         <!-- ✅ Apply 按钮单独放一行 -->
         <button class="apply-btn" (click)="applyExpiredFilter()">Apply</button>
+
+        <!-- 🔹 Reset 按钮 -->
+<button class="reset-btn" (click)="resetExpiredFilter()">Reset</button>
       </div>
     </div>
     <!-- ✅ Filter Drawer END -->

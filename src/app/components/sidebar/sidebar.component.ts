@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ManageFoodInventory } from '../manageFoodInventory/manage-inventory.component';
 @Component({
   selector: 'app-sidebar',
-  standalone: true,  // standalone so it can be imported
+  standalone: true,
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
   imports: [RouterModule, CommonModule]
@@ -17,18 +17,26 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit() {
     this.loadUserProfile();
-    
-    // 주기적으로 사용자 데이터 확인 (간단한 방법)
-    setInterval(() => {
-      this.loadUserProfile();
-    }, 2000); // 2초마다 확인
+
+    // ✅ 定时检测用户信息更新（2秒一次）
+    if (typeof window !== 'undefined') {
+      setInterval(() => {
+        this.loadUserProfile();
+      }, 2000);
+    }
   }
 
+  /** ✅ 安全加载用户信息，避免 SSR 报错 */
   loadUserProfile() {
-    // localStorage에서 사용자 정보 로드
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      try {
+    // ⚙️ SSR 环境防护：Node.js 下没有 localStorage
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      console.warn('⚠️ localStorage not available (SSR mode). Skipping profile load.');
+      return;
+    }
+
+    try {
+      const userData = localStorage.getItem('user');
+      if (userData) {
         const user = JSON.parse(userData);
         const newUsername = user.name || 'User';
         const newProfilePhoto = user.profilePhoto || '';
@@ -39,12 +47,13 @@ export class SidebarComponent implements OnInit {
           this.profilePhoto = newProfilePhoto;
           this.cdr.detectChanges();
         }
-      } catch (error) {
-        console.error('Error parsing user data:', error);
       }
+    } catch (error) {
+      console.error('❌ Error loading user profile from localStorage:', error);
     }
   }
 
+  /** 图片加载失败回退 */
   onImageError(event: any) {
     // 이미지 로드 실패 시 프로필 사진을 숨김
     this.profilePhoto = '';

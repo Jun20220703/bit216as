@@ -11,6 +11,7 @@ export interface Food {
   storage: string;
   notes?: string;
   status?: 'inventory' | 'donation' | 'expired'; // ✅ 加入 expired
+  owner?: string;
 }
 
 @Injectable({
