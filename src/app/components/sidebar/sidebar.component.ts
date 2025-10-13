@@ -25,7 +25,10 @@ export class SidebarComponent implements OnInit {
   }
 
   loadUserProfile() {
-    // localStorage에서 사용자 정보 로드
+    // localStorage에서 사용자 정보 로드 (SSR 호환)
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return;
+    }
     const userData = localStorage.getItem('user');
     if (userData) {
       try {
