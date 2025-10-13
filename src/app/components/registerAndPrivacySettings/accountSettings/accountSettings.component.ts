@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { SidebarComponent } from '../../sidebar/sidebar.component';
 
 interface UserData {
   name: string;
@@ -18,7 +19,7 @@ interface UserData {
   standalone: true,
   templateUrl: './accountSettings.component.html',
   styleUrls: ['./accountSettings.component.css'],
-  imports: [CommonModule, FormsModule, HttpClientModule]
+  imports: [CommonModule, FormsModule, HttpClientModule, SidebarComponent]
 })
 export class AccountSettingsComponent implements OnInit {
   activeTab: 'account' | 'privacy' = 'account';
