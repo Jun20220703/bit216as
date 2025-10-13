@@ -188,6 +188,18 @@
 
     <!-- Privacy & Security Settings Tab -->
     <div *ngIf="activeTab === 'privacy'" class="tab-content">
+      <!-- Email Link Access Message -->
+      <div *ngIf="showEmailLinkMessage" class="email-link-message">
+        <div class="email-link-content">
+          <h3>🔐 Two-Factor Authentication Setup</h3>
+          <p>You've accessed this page via the email link. To complete your 2FA setup, please log in first.</p>
+          <div class="email-link-actions">
+            <button class="login-btn" (click)="goToLogin()">Go to Login</button>
+            <button class="dismiss-btn" (click)="dismissEmailMessage()">Dismiss</button>
+          </div>
+        </div>
+      </div>
+
       <div class="settings-card">
         <div class="setting-item">
           <span class="setting-label">Two-Factor Authentication</span>
