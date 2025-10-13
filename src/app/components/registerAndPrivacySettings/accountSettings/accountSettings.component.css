@@ -71,6 +71,7 @@
   
   .form-fields-section {
     grid-template-columns: 1fr;
+    gap: 20px; /* 모바일에서도 적절한 간격 유지 */
   }
   
   .form-field:nth-child(1),
@@ -182,7 +183,7 @@
 
 .profile-photo-label {
   color: #4CAF50;
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 500;
   margin-bottom: 15px;
   align-self: flex-start;
@@ -249,14 +250,14 @@
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 25px; /* 20px에서 35px로 증가 */
   align-content: start;
 }
 
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px; /* 8px에서 12px로 증가 */
 }
 
 /* Make certain fields span full width */
