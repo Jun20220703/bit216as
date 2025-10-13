@@ -16,6 +16,7 @@ export class DonationListComponent implements OnInit{
 
     ngOnInit(){
         this.loadDonations();
+        
     }
 
     loadDonations(){
