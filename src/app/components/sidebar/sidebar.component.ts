@@ -10,8 +10,8 @@ import { CommonModule } from '@angular/common';
   imports: [RouterModule, CommonModule]
 })
 export class SidebarComponent implements OnInit {
-  username = 'junkaiyane';
-  profilePhoto: string = 'assets/avatar.png'; // 기본 아바타
+  username = 'User';
+  profilePhoto: string = ''; // 프로필 사진이 없을 때는 빈 문자열
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -31,7 +31,7 @@ export class SidebarComponent implements OnInit {
       try {
         const user = JSON.parse(userData);
         const newUsername = user.name || 'User';
-        const newProfilePhoto = user.profilePhoto || 'assets/avatar.png';
+        const newProfilePhoto = user.profilePhoto || '';
         
         // 변경사항이 있을 때만 업데이트
         if (this.username !== newUsername || this.profilePhoto !== newProfilePhoto) {
@@ -46,7 +46,8 @@ export class SidebarComponent implements OnInit {
   }
 
   onImageError(event: any) {
-    // 이미지 로드 실패 시 기본 아바타로 변경
-    event.target.src = 'assets/avatar.png';
+    // 이미지 로드 실패 시 프로필 사진을 숨김
+    this.profilePhoto = '';
+    this.cdr.detectChanges();
   }
 }
