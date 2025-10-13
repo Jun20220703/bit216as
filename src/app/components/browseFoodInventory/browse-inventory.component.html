@@ -66,20 +66,24 @@
       <!-- Category -->
       <div class="filter-section">
         <h3>Category</h3>
+
+        <!-- All -->
         <label>
           <input
             type="checkbox"
-            [checked]="filter.categories.all"
-            (change)="toggleCategory('all')" />
+            name="cat_all"
+            [(ngModel)]="filter.categories.all"
+            (ngModelChange)="onCategoryAllToggle($event)" />
           All
         </label>
 
-        <!-- 动态生成分类 -->
+        <!-- 动态分类 -->
         <label *ngFor="let cat of availableCategories">
           <input
             type="checkbox"
-            [checked]="filter.categories[cat.key]"
-            (change)="toggleCategory(cat.key)" />
+            name="cat_{{cat.key}}"
+            [checked]="filter.categories[cat.key] === true"
+            (change)="onCategoryChange(cat.key, $event.target.checked)" />
           {{ cat.name }}
         </label>
       </div>
@@ -97,8 +101,10 @@
           <span>day(s)</span>
         </div>
 
-        <!-- ✅ Apply 按钮单独放一行 -->
+        <!-- ✅ Apply 按钮 -->
         <button class="apply-btn" (click)="applyExpiredFilter()">Apply</button>
+        <!-- 🔹 Reset 按钮 -->
+        <button class="reset-btn" (click)="resetExpiredFilter()">Reset</button>
       </div>
     </div>
     <!-- ✅ Filter Drawer END -->
@@ -118,11 +124,19 @@
           (mouseleave)="hoverItem = null">
 
           <!-- 食物名称 -->
-          <div class="item-name">{{ item.name }}</div>
+          <div class="item-name" (mouseenter)="hoverItemNotes = item._id" (mouseleave)="hoverItemNotes = null">
+            {{ item.name }}
+
+            <!-- Notes 卡片（hover 才显示） -->
+            <div class="item-notes-card" *ngIf="hoverItemNotes === item._id && item.notes">
+              📌 {{ item.notes }}
+            </div>
+          </div>
 
           <!-- ✅ Donation List 模式 -->
           <div *ngIf="selectedSource === 'donation'; else normalItem" class="donation-row">
-            <div class="remaining-box donation-view">{{ item.remaining }}</div>
+            <!-- 始终显示 qty -->
+            <div class="remaining-box donation-view">{{ item.qty }}</div>
             <div class="edit-slot">
               <button class="edit-btn" (click)="openConfirm(item, 'edit')">Edit</button>
             </div>
@@ -130,9 +144,9 @@
 
           <!-- ✅ Inventory 模式 -->
           <ng-template #normalItem>
-            <!-- 剩余数量 -->
+            <!-- 剩余数量（qty 一定显示） -->
             <div class="remaining-box" [ngClass]="getExpiryClass(item)">
-              {{ item.remaining }}
+              {{ item.qty }}
             </div>
 
             <!-- 剩余天数 -->
@@ -146,6 +160,7 @@
               <span class="qty">{{ item.selectedQty }}</span>
               <button type="button" (click)="increaseSelected(item)">+</button>
             </div>
+
 
             <!-- 操作按钮 -->
             <div class="hover-actions" [class.visible]="hoverItem === item">
@@ -174,36 +189,33 @@
       'modal-donate': confirmAction === 'donate',
       'modal-edit': confirmAction === 'edit'
     }"
-
     (click)="$event.stopPropagation()">
 
     <h2>
-    <ng-container [ngSwitch]="confirmAction">
-      <ng-container *ngSwitchCase="'edit'">
-        Edit donation item of <strong>{{ confirmItem?.name }}</strong>?
+      <ng-container [ngSwitch]="confirmAction">
+        <ng-container *ngSwitchCase="'edit'">
+          Edit donation item of <strong>{{ confirmItem?.name }}</strong>?
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          Do you want to mark {{ confirmItem?.selectedQty }}
+          {{ confirmItem?.name }}(s) as {{ confirmAction }}?
+        </ng-container>
       </ng-container>
-      <ng-container *ngSwitchDefault>
-        Do you want to mark {{ confirmItem?.selectedQty }}
-        {{ confirmItem?.name }}(s) as {{ confirmAction }}?
-      </ng-container>
-    </ng-container>
-  </h2>
-
+    </h2>
 
     <div class="modal-buttons">
       <button class="cancel-btn" (click)="closeConfirm()">Cancel</button>
       <button
-  class="action-btn"
-  [ngClass]="{
-    'btn-used': confirmAction === 'used',
-    'btn-meal': confirmAction === 'meal',
-    'btn-donate': confirmAction === 'donate',
-    'btn-edit': confirmAction === 'edit'
-  }"
-  (click)="confirmActionProceed()">
-  {{ confirmAction === 'edit' ? 'Edit' : (confirmAction | titlecase) }}
-</button>
-
+        class="action-btn"
+        [ngClass]="{
+          'btn-used': confirmAction === 'used',
+          'btn-meal': confirmAction === 'meal',
+          'btn-donate': confirmAction === 'donate',
+          'btn-edit': confirmAction === 'edit'
+        }"
+        (click)="confirmActionProceed()">
+        {{ confirmAction === 'edit' ? 'Edit' : (confirmAction | titlecase) }}
+      </button>
     </div>
   </div>
 </div>

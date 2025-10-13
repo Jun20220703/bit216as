@@ -26,7 +26,7 @@ export class AddFoodItemComponent {
 
     this.foodForm = this.fb.group({
       name: ['', Validators.required],
-      qty: ['', Validators.required],
+      qty: ['', [Validators.required, Validators.pattern(/^\d+$/)]], // ← 数字のみ
       expiry: ['', Validators.required],
       category: ['', Validators.required],
       storage: ['', Validators.required],
@@ -35,24 +35,35 @@ export class AddFoodItemComponent {
   }
 
   saveFood() {
-    console.log('Save button clicked');
-    if(this.foodForm.invalid){
-      this.foodForm.markAllAsTouched();
-      return;
-    }
-
-    console.log('submitting:', this.foodForm.value);
-    this.foodService.addFood(this.foodForm.value).subscribe({
-      next: (res) =>{
-        console.log('Food saved Successfully:', res);
-        this.router.navigate(['/manage-inventory']);
-      },
-      error: (err) =>{
-        console.log('Error saving food:', err);
-        alert('Failed to save item. Check backend connection.');
-      }
-    });
+  console.log('Save button clicked');
+  if (this.foodForm.invalid) {
+    this.foodForm.markAllAsTouched();
+    return;
   }
+
+  const rawData = this.foodForm.value;
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const foodData = {
+    ...rawData,
+    qty: Number(rawData.qty),
+    expiry: new Date(rawData.expiry),
+    owner: user.id   // user.id を正しく参照
+  };
+
+  console.log('submitting (converted):', foodData);
+
+  this.foodService.addFood(foodData).subscribe({
+    next: (res) => {
+      console.log('✅ Food saved successfully:', res);
+      this.router.navigate(['/manage-inventory']);
+    },
+    error: (err) => {
+      console.error('❌ Error saving food:', err);
+      alert('Failed to save item. Check backend connection.');
+    }
+  });
+}
+
 
   cancel() {
     this.router.navigate(['/manage-inventory']);
