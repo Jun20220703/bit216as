@@ -28,6 +28,16 @@
   margin-top: -50px;
 }
 
+.logo-link {
+  display: inline-block;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.logo-link:hover {
+  transform: scale(1.05);
+}
+
 .logo {
   width: 200px !important;
   height: 200px !important;
