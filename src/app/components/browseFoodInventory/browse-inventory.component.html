@@ -129,7 +129,15 @@
           (mouseleave)="hoverItem = null">
 
           <!-- 食物名称 -->
-          <div class="item-name">{{ item.name }}</div>
+          <div class="item-name" (mouseenter)="hoverItemNotes = item._id" (mouseleave)="hoverItemNotes = null">
+            {{ item.name }}
+
+            <!-- Notes 卡片（hover 才显示） -->
+            <div class="item-notes-card" *ngIf="hoverItemNotes === item._id && item.notes">
+              📌 {{ item.notes }}
+            </div>
+          </div>
+
 
           <!-- ✅ Donation List 模式 -->
           <div *ngIf="selectedSource === 'donation'; else normalItem" class="donation-row">
