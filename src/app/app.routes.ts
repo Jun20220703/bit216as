@@ -5,7 +5,8 @@ import { LoginPageComponent } from './components/registerAndPrivacySettings/logi
 import { HomePageComponent } from './components/registerAndPrivacySettings/homePage/homePage.component';
 import { AccountSettingsComponent } from './components/registerAndPrivacySettings/accountSettings/accountSettings.component';
 import { PlanWeeklyMealComponent } from './components/planWeeklyMeal/planWeeklyMeal.component';
-
+import { ManageFoodInventory } from './components/manageFoodInventory/manage-inventory.component';
+import { AddFoodItemComponent } from './components/addFoodItem/add-food-item.component';
 export const routes: Routes = [
   { path: 'home', component: HomePageComponent },
   { path: 'inventory', component: InventoryComponent },
@@ -13,5 +14,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
   { path: 'account-settings', component: AccountSettingsComponent },
   { path: 'planWeeklyMeal', component: PlanWeeklyMealComponent },
+  { path: 'manage-inventory', component: ManageFoodInventory},
+  { path: 'add-food', component: AddFoodItemComponent},
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
