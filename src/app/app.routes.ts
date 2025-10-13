@@ -8,6 +8,7 @@ import { PlanWeeklyMealComponent } from './components/planWeeklyMeal/planWeeklyM
 import { ManageFoodInventory } from './components/manageFoodInventory/manage-inventory.component';
 import { AddFoodItemComponent } from './components/addFoodItem/add-food-item.component';
 import { DonationListComponent } from './components/donationList/donation-list.component';
+import { VerificationComponent } from './components/verification/verification.component';
 export const routes: Routes = [
   { path: 'home', component: HomePageComponent },
   { path: 'inventory', component: InventoryComponent },
@@ -18,5 +19,6 @@ export const routes: Routes = [
   { path: 'manage-inventory', component: ManageFoodInventory},
   { path: 'add-food', component: AddFoodItemComponent},
   { path: 'donation-list', component: DonationListComponent},
+  { path: 'verification', component: VerificationComponent},
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
