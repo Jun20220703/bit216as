@@ -42,10 +42,12 @@ export class AddFoodItemComponent {
   }
 
   const rawData = this.foodForm.value;
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
   const foodData = {
     ...rawData,
     qty: Number(rawData.qty),
-    expiry: new Date(rawData.expiry)
+    expiry: new Date(rawData.expiry),
+    owner: user.id   // user.id を正しく参照
   };
 
   console.log('submitting (converted):', foodData);

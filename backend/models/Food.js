@@ -13,6 +13,9 @@ const foodSchema = new mongoose.Schema({
   status: { type: String, enum: ['inventory', 'donation', 'expired'],
     default: 'inventory' },
 
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+
+
 });
 
 module.exports = mongoose.model('Food', foodSchema);

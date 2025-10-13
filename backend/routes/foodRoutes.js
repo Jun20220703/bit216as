@@ -18,5 +18,17 @@ router.put('/status/:name', async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const filter = userId ? { owner: userId } : {};
+    const foods = await Food.find(filter);
+    res.json(foods);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 
 module.exports = router;

@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
+import { ManageFoodInventory } from '../manageFoodInventory/manage-inventory.component';
 @Component({
   selector: 'app-sidebar',
   standalone: true,  // standalone so it can be imported

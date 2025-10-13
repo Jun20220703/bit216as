@@ -10,6 +10,7 @@ export interface Food {
   category: string;
   storage: string;
   notes?: string;       // ← optional
+  owner? : string;
 }
 
 @Injectable({
@@ -21,8 +22,8 @@ export class FoodService {
 
   constructor(private http: HttpClient) {}
 
-  getFoods(): Observable<Food[]> {
-    return this.http.get<Food[]>(this.apiUrl);
+  getFoods(userId: string): Observable<Food[]> {
+    return this.http.get<Food[]>(`${this.apiUrl}?userId=${userId}`);
   }
 
   addFood(food: Food): Observable<Food> {
