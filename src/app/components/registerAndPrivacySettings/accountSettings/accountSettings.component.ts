@@ -625,6 +625,25 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
     console.log('✅ 2FA disabled');
   }
 
+  // Resend verification link
+  onResendVerificationLink() {
+    console.log('Resending verification link to:', this.userData.email);
+    
+    // 백엔드 API 호출하여 새로운 verification 링크 발송
+    this.http.post('http://localhost:5001/api/users/enable-2fa', {
+      email: this.userData.email
+    }).subscribe({
+      next: (response: any) => {
+        console.log('Verification link resent successfully:', response);
+        alert('Verification link has been resent to your email!');
+      },
+      error: (error) => {
+        console.error('Failed to resend verification link:', error);
+        alert('Failed to resend verification link. Please try again.');
+      }
+    });
+  }
+
   onTwoFactorConfirm() {
     // 확인 시 이메일 발송
     console.log('2FA confirmed, sending email to:', this.userData.email);
