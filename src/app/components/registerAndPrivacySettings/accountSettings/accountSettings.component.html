@@ -279,6 +279,19 @@
   </div>
 
 
+  <!-- Two-Factor Authentication Disable Confirmation Dialog -->
+  <div *ngIf="showTwoFactorDisableDialog" class="dialog-overlay">
+    <div class="dialog-container">
+      <div class="dialog-content">
+        <h3>Are you sure to switch off Two-Factor Authentication?</h3>
+        <div class="dialog-buttons">
+          <button class="dialog-button cancel-dialog-button" (click)="onTwoFactorDisableCancel()">Cancel</button>
+          <button class="dialog-button confirm-dialog-button" (click)="onTwoFactorDisableConfirm()">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Success Message Modal -->
   <div *ngIf="showSuccessMessage" class="success-overlay">
     <div class="success-container">
