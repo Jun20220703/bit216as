@@ -16,11 +16,12 @@
 /* Top Section - White Background */
 .top-section {
   background: white;
-  min-height: 280px;
+  min-height: 300px;
+  margin-top: -50px;
 }
 
 .top-section .slogan-text {
-  margin-top: 30px;
+  margin-top: 60px;
 }
 
 .top-section .main-message {
@@ -45,7 +46,7 @@
 
 .earth-image {
   max-width: 700px;
-  height: auto;
+  max-height: 700px;
   border-radius: 15px;
   margin-top: 30px;
 }
@@ -58,23 +59,25 @@
 
 .slogan-text {
   color: #4CAF50;
-  font-size: 1.7rem;
+  font-size: 2rem;
   font-style: italic;
-  margin: 0 0 10px 0;
+  margin: 0 0 5px 0; /* 하단 마진을 10px에서 5px로 줄임 */
   line-height: 1.4;
+  white-space: nowrap; /* 텍스트를 한 줄로 강제 */
 }
 
 .main-message {
   color: #2E7D32;
-  font-size: 3rem;
+  font-size: 3.8rem;
   font-weight: bold;
   margin: 0;
+  white-space: nowrap; /* 텍스트를 한 줄로 강제 */
 }
 
 /* Middle Section - Dark Green Background */
 .middle-section {
   background: #1B5E20;
-  min-height: 280px;
+  min-height: 300px;
 }
 
 .middle-section .slogan-text {
@@ -102,11 +105,11 @@
 /* Bottom Section - White Background */
 .bottom-section {
   background: white;
-  min-height: 280px;
+  min-height: 325px;
 }
 
 .bottom-section .slogan-text {
-  margin-top: -15px;
+  margin-top: 0px;
 }
 
 .bottom-section .main-message {
