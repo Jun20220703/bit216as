@@ -21,10 +21,15 @@ const userSchema = new mongoose.Schema({
     minlength: 6
   },
   householdSize: {
-    type: Number,
-    min: 1,
-    max: 20,
-    default: null
+    type: String, // Number에서 String으로 변경하여 "10+" 값 처리
+    default: null,
+    validate: {
+      validator: function(v) {
+        if (v === null || v === undefined || v === '') return true;
+        return v === 'No-Selection' || v === '10+' || (parseInt(v) >= 1 && parseInt(v) <= 9);
+      },
+      message: 'Household size must be between 1-9, "10+", or "No-Selection"'
+    }
   },
   dateOfBirth: {
     type: Date,
