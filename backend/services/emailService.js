@@ -140,7 +140,7 @@ async function sendTwoFactorAuthEmail(email, verificationCode) {
             </div>
             
             <div style="text-align: center; margin: 25px 0;">
-              <a href="http://localhost:4200/account-settings?tab=privacy" 
+              <a href="http://localhost:4200/account-settings?tab=privacy&from=email&2fa=setup" 
                  style="display: inline-block; background-color: #2E6A4B; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; transition: background-color 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
                  onmouseover="this.style.backgroundColor='#1e5a3a'"
                  onmouseout="this.style.backgroundColor='#2E6A4B'">
@@ -149,7 +149,7 @@ async function sendTwoFactorAuthEmail(email, verificationCode) {
             </div>
             
             <p style="color: #666; font-size: 14px; margin: 20px 0 0 0;">
-              This verification code will expire in 10 minutes.
+              This verification code will expire in 2 minutes.
             </p>
           </div>
           
