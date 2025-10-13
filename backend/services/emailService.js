@@ -24,8 +24,6 @@ async function sendPasswordRecoveryEmail(email, verificationCode) {
   console.log('🔐 Verification Code:', verificationCode);
   console.log('⏰ Expires in: 2 minutes');
   console.log('='.repeat(60));
-  console.log('📝 Please use this code in the verification step');
-  console.log('='.repeat(60));
 
   try {
     const mailOptions = {
@@ -100,9 +98,9 @@ async function sendTwoFactorAuthEmail(email, verificationCode, tempToken) {
   console.log('='.repeat(60));
   console.log('📧 To:', email);
   console.log('🔐 Verification Code:', verificationCode);
+  console.log('🔗 Temp Token:', tempToken);
+  console.log('🔗 Verification URL:', `http://localhost:4200/verification?token=${tempToken}&email=${email}`);
   console.log('⏰ Expires in: 10 minutes');
-  console.log('='.repeat(60));
-  console.log('📝 Please use this code to complete 2FA setup');
   console.log('='.repeat(60));
 
   try {
@@ -129,24 +127,25 @@ async function sendTwoFactorAuthEmail(email, verificationCode, tempToken) {
               <p style="margin: 10px 0 0 0; font-size: 14px; opacity: 0.9;">6-Digit Verification Code</p>
             </div>
             
-            <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0;">
-              <h4 style="color: #2E6A4B; margin: 0 0 10px 0; font-size: 16px;">Next Steps:</h4>
-              <ol style="color: #666; font-size: 14px; margin: 0; padding-left: 20px;">
-                <li>Click the confirmation link below to access your account</li>
-                <li>Enter the verification code in the application</li>
-                <li>Complete the setup process</li>
-                <li>Your account will be protected with 2FA</li>
-              </ol>
-            </div>
-            
             <div style="text-align: center; margin: 25px 0;">
-              <a href="http://localhost:4200/account-settings?tab=privacy&from=email&2fa=setup&token=${tempToken}" 
+              <a href="http://localhost:4200/verification?token=${tempToken}&email=${email}" 
                  style="display: inline-block; background-color: #2E6A4B; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; transition: background-color 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
                  onmouseover="this.style.backgroundColor='#1e5a3a'"
                  onmouseout="this.style.backgroundColor='#2E6A4B'">
                 Complete Two-Factor Authentication Setup
               </a>
             </div>
+            
+            <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <h4 style="color: #2E6A4B; margin: 0 0 10px 0; font-size: 16px;">Next Steps:</h4>
+              <ol style="color: #666; font-size: 14px; margin: 0; padding-left: 20px;">
+                <li>Click the button above to open the verification page</li>
+                <li>Enter the verification code in the form</li>
+                <li>Complete the setup process</li>
+                <li>Your account will be protected with 2FA</li>
+              </ol>
+            </div>
+            
             
             <p style="color: #666; font-size: 14px; margin: 20px 0 0 0;">
               This verification code will expire in 2 minutes.
