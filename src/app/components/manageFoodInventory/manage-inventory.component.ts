@@ -35,7 +35,7 @@ loadFoods() {
 
   this.foodService.getFoods(userId).subscribe({
     next: (data) => {
-      this.foodItems = data.filter((f: any) => f.owner === userId);
+      this.foodItems = data.filter((f: any) => f.owner === userId && f.status !== 'donation');
       console.log('Filtered food items:', this.foodItems);
 
     },
@@ -125,13 +125,22 @@ confirmDonate() {
   this.foodService.donateFood(this.selectedDonateItem._id, donationData).subscribe({
     next: (res) => {
       console.log('Donation saved:', res);
-      this.showDonateModal = false;
-      this.selectedDonateItem = null;
-      this.donationDetails = { location: '', availability: '', notes: '' };
-      this.donateError = '';
-
-      this.loadFoods();
-      this.router.navigate(['/donation-list']);
+      this.foodService.updateFoodStatus(this.selectedDonateItem._id, 'donation').subscribe({
+        next: (updateRes) => {
+          console.log('Food status updated to donation:', updateRes);
+          // モーダル閉じて再読み込み
+          this.showDonateModal = false;
+          this.selectedDonateItem = null;
+          this.donationDetails = { location: '', availability: '', notes: '' };
+          this.donateError = '';
+          this.loadFoods();
+          this.router.navigate(['/donation-list']);
+        },
+        error: (err) => {
+          console.error('Error updating food status:', err);
+          this.donateError = 'Failed to update food status. Please try again.';
+        }
+      });
     },
     error: (err) => {
       console.error('Error saving donation:', err);
