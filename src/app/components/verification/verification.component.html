@@ -1,0 +1,39 @@
+<div class="verification-page">
+  <div class="verification-container">
+    <div class="verification-form">
+      <h2 class="verification-title">Two-Factor Authentication Setup</h2>
+      <p class="verification-instructions">Enter the 6-digit verification code sent to your email address.</p>
+      
+      <div class="timer-display">
+        <span class="timer-label">Time remaining:</span>
+        <span class="timer-value">{{ formattedTime }}</span>
+        <div class="timer-debug">Debug: {{ verificationTimeLeft }} seconds</div>
+      </div>
+      
+      <div class="verification-input-group">
+        <label for="verification-code">Verification Code:</label>
+        <input 
+          type="text" 
+          id="verification-code" 
+          [(ngModel)]="verificationCode" 
+          name="verificationCode"
+          placeholder="Enter 6-digit code"
+          maxlength="6"
+          pattern="[0-9]{6}"
+          class="verification-input">
+      </div>
+      
+      <div class="verification-buttons">
+        <button type="button" class="cancel-verification-btn" (click)="onCancelVerification()">Cancel</button>
+        <button type="button" class="verify-code-btn" (click)="onVerifyCode()" [disabled]="isVerifyingCode">
+          <span *ngIf="!isVerifyingCode">Verify Code</span>
+          <span *ngIf="isVerifyingCode">Verifying...</span>
+        </button>
+      </div>
+      
+      <div *ngIf="verificationMessage" class="verification-message" [class.success]="verificationSuccess" [class.error]="!verificationSuccess">
+        {{ verificationMessage }}
+      </div>
+    </div>
+  </div>
+</div>
