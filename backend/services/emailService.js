@@ -132,7 +132,7 @@ async function sendTwoFactorAuthEmail(email, verificationCode) {
             <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0;">
               <h4 style="color: #2E6A4B; margin: 0 0 10px 0; font-size: 16px;">Next Steps:</h4>
               <ol style="color: #666; font-size: 14px; margin: 0; padding-left: 20px;">
-                <li>Enter the verification code above in the application</li>
+                <li>Enter the verification code in the application</li>
                 <li>Complete the setup process</li>
                 <li>Your account will be protected with 2FA</li>
               </ol>
