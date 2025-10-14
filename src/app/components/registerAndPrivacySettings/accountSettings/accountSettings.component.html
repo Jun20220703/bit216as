@@ -115,14 +115,17 @@
       </div>
     </div>
 
-    <!-- Action Buttons - Only show for Account Settings tab -->
-    <div *ngIf="activeTab === 'account'" class="action-buttons">
-      <button class="cancel-button" (click)="onCancel()" [disabled]="isSaving">Cancel</button>
-      <button class="save-button" (click)="onSave()" [disabled]="isSaving">
-        <span *ngIf="!isSaving">Save</span>
-        <span *ngIf="isSaving">Saving...</span>
-      </button>
-    </div>
+     <!-- Action Buttons - Only show for Account Settings tab -->
+     <div *ngIf="activeTab === 'account'" class="action-buttons">
+       <button class="delete-account-button" (click)="onDeleteAccount()" [disabled]="isSaving">Delete Account</button>
+       <div class="right-buttons">
+         <button class="cancel-button" (click)="onCancel()" [disabled]="isSaving">Back</button>
+         <button class="save-button" (click)="onSave()" [disabled]="isSaving">
+           <span *ngIf="!isSaving">Save</span>
+           <span *ngIf="isSaving">Saving...</span>
+         </button>
+       </div>
+     </div>
 
     <!-- Password Reset Confirmation Dialog -->
     <div *ngIf="showPasswordResetDialog" class="dialog-overlay">
