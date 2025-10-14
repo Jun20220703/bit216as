@@ -126,6 +126,8 @@ confirmDonate() {
     notes: this.donationDetails.notes
   };
 
+  console.log('🧾 donationData before sending:', donationData); // ✅ 追加
+
   this.foodService.donateFood(this.selectedDonateItem._id, donationData).subscribe({
     next: (res) => {
       console.log('Donation saved:', res);

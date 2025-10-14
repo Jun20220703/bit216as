@@ -6,6 +6,11 @@ const donationListSchema = new mongoose.Schema({
   location: { type: String, required: true },        // ← これ追加
   availability: { type: String, required: true },    // ← これ追加
   notes: { type: String },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // または Attendee
+    required: true
+  },
   createdAt: { type: Date, default: Date.now }
 });
 

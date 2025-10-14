@@ -5,23 +5,55 @@ const DonationList = require('../models/DonationList');
 // ➕ Add to donation
 router.post('/', async (req, res) => {
   try {
-    const donation = new DonationList(req.body);
+    // 🟢 ここで全ての必要なデータを受け取る
+    const { foodId, owner, qty, location, availability, notes } = req.body;
+
+    // 🟡 バリデーション（必須チェック）
+    if (!foodId || !owner || !qty || !location || !availability) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    // 🟢 新しいDonationListドキュメントを作成
+    const donation = new DonationList({
+      foodId,
+      owner,
+      qty,
+      location,
+      availability,
+      notes,
+      donationAt: new Date()
+    });
+
+    // 🟢 保存
     await donation.save();
+
+    // ✅ 成功レスポンスを返す
     res.status(201).json(donation);
   } catch (err) {
+    console.error('❌ Error saving donation:', err);
     res.status(400).json({ message: err.message });
   }
 });
 
-// 📋 Get all donations
+
+// 📥 Get donations for a specific user
 router.get('/', async (req, res) => {
   try {
-    const donations = await DonationList.find().populate('foodId'); 
+    const { userId } = req.query; // ← URLに?userId=xxxx を渡す
+
+    let query = {};
+    if (userId) {
+      query.owner = userId; // ← ログイン中ユーザーのみ取得
+    }
+
+    const donations = await DonationList.find(query).populate('foodId');
     res.json(donations);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('Error fetching donations:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 // ❌ Remove from donation list
 router.delete('/:id', async (req, res) => {

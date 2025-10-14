@@ -95,17 +95,21 @@ app.delete('/api/foods/:id', async (req, res) => {
 
 app.post('/api/donations', async(req, res)=>{
   try{
-    const { foodId, qty, location, availability, notes } = req.body;
+    const { foodId, owner, qty, location, availability, notes } = req.body;
 
-    if (!foodId || !qty || !location || !availability) {
+    if (!foodId ||  !owner || !qty || !location || !availability) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
 
       const donation = new DonationList({
-        foodId, 
-        qty,
-        donationAt: new Date()
+          foodId,
+          owner,        // 👈 追加
+          qty,
+          location,
+          availability,
+          notes,
+          donationAt: new Date()
       });
       await donation.save();
 
@@ -113,7 +117,7 @@ app.post('/api/donations', async(req, res)=>{
       {
         status:'donation',
         location, 
-        avaiability, 
+        availability, 
         notes
       });
     
