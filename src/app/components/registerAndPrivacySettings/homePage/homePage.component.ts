@@ -47,10 +47,14 @@ export class HomePageComponent implements OnInit {
           queryParams: {},
           replaceUrl: true
         });
-      } else {
-        // 새 사용자가 아닌 경우, 2FA 상태를 항상 확인
-        console.log('Not a new user, checking 2FA status...');
+      } else if (show2FASetupMessage === 'true') {
+        // 로그인 직후에만 2FA 상태를 확인 (show2FASetupMessage 플래그가 있을 때만)
+        console.log('show2FASetupMessage is true, checking 2FA status...');
         this.check2FAStatus();
+      } else {
+        console.log('No conditions met for showing messages');
+        console.log('isNewUser:', isNewUser);
+        console.log('show2FASetupMessage:', show2FASetupMessage);
       }
     }
   }
@@ -99,8 +103,9 @@ export class HomePageComponent implements OnInit {
             console.log('❌ 2FA is enabled, not showing setup message');
           }
           
-          // 플래그 제거
+          // 플래그 제거 (한 번만 표시되도록)
           localStorage.removeItem('show2FASetupMessage');
+          console.log('show2FASetupMessage flag removed - message will not show again until next login');
         },
         error: (error) => {
           console.error('=== API ERROR ===');
