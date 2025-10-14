@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { BrowseFoodService, Food } from '../../services/browse-food.service';
+import { Router } from '@angular/router';
+
 
 interface Item {
   _id: string;
@@ -51,7 +53,8 @@ interface Location {
 export class InventoryComponent implements OnInit {
   constructor(
     private cdr: ChangeDetectorRef,
-    private browseService: BrowseFoodService
+    private browseService: BrowseFoodService,
+    private router: Router   // ✅ 新增
   ) {}
 
   /** 页面状态 */
@@ -426,12 +429,18 @@ export class InventoryComponent implements OnInit {
 
   /** 弹窗逻辑 */
   openConfirm(item: Item, action: 'used' | 'meal' | 'donate' | 'edit') {
-    console.log('🟢 openConfirm', item.name, 'action:', action, 'selectedQty:', item.selectedQty);
-    if (action !== 'edit' && item.selectedQty <= 0) return;
-    this.confirmItem = item;
-    this.confirmAction = action;
-    this.showConfirm = true;
+  if (action === 'donate') {
+    // ✅ 跳转到 Manage 页面，带上 itemId
+    this.router.navigate(['/manage-inventory'], { queryParams: { donateId: item._id } });
+    return;
   }
+
+  console.log('🟢 openConfirm', item.name, 'action:', action, 'selectedQty:', item.selectedQty);
+  if (action !== 'edit' && item.selectedQty <= 0) return;
+  this.confirmItem = item;
+  this.confirmAction = action;
+  this.showConfirm = true;
+}
 
 
   closeConfirm() {
