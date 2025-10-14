@@ -233,6 +233,11 @@
             <span *ngIf="isLoading">Verifying...</span>
           </button>
         </div>
+        
+        <!-- 2FA 메시지 표시 (버튼들 밑에) -->
+        <div *ngIf="recoveryMessage" class="twofa-message" [class.success]="recoverySuccess" [class.error]="!recoverySuccess">
+          {{ recoveryMessage }}
+        </div>
       </form>
     </div>
   </div>
