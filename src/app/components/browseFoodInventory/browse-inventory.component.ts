@@ -312,9 +312,22 @@ export class InventoryComponent implements OnInit {
       (c) => (this.filter.categories[c.key] = true)
     );
 
-    if (source === 'donation') this.filter.expiredIn = 0;
+    if (source === 'donation') {
+      this.browseService.getDonations().subscribe((donations: any[]) => {
+        this.rawFoods = donations.map(d => ({
+          ...d.foodId,          // 展开 Food 基本信息
+          qty: d.qty,           // ✅ 用 DonationList 的数量
+          notes: d.notes,       // ✅ 用 DonationList 的备注
+          status: 'donation',   // 强制标记为 donation
+          owner: d.owner
+        }));
+        this.ensureCategoryKeysInitialized(true);
+        this.refreshView();
+      });
+    } else {
+      this.loadFoods(); // 走 inventory 的逻辑
+    }
 
-    this.refreshView();
     this.showSearch = false;
     this.showFilter = false;
   }
