@@ -264,7 +264,7 @@
   </div>
 
   <!-- Verification Waiting Dialog -->
-  <div *ngIf="showTwoFactorDialog && isWaitingForVerification" class="dialog-overlay">
+  <div *ngIf="showTwoFactorDialog && isWaitingForVerification && !isVerificationCompleted" class="dialog-overlay">
     <div class="dialog-container">
       <div class="dialog-content">
         <div class="waiting-icon">⏳</div>
