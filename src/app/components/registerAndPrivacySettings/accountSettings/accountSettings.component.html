@@ -293,6 +293,61 @@
     </div>
   </div>
 
+  <!-- 2FA Password Change Dialog -->
+  <div *ngIf="show2FAPasswordChangeDialog" class="dialog-overlay">
+    <div class="password-change-container">
+      <div class="password-change-content">
+        <h2 class="password-change-title">🔒 Security Update Required</h2>
+        <p class="password-change-description">For security reasons, you must change your password after enabling Two-Factor Authentication.</p>
+        <div class="password-form">
+          <div class="form-field">
+            <label class="field-label" for="2fa-new-password">New Password*:</label>
+            <div class="input-container">
+              <input 
+                [type]="show2FANewPassword ? 'text' : 'password'" 
+                id="2fa-new-password" 
+                class="form-input" 
+                [(ngModel)]="twoFANewPassword" 
+                placeholder="Enter new password" 
+                title="Enter new password">
+              <button class="password-toggle-button" (click)="toggle2FANewPasswordVisibility()" title="Toggle password visibility">
+                <span *ngIf="!show2FANewPassword">Show</span>
+                <span *ngIf="show2FANewPassword">Hide</span>
+              </button>
+              <button class="clear-button" (click)="clear2FANewPassword()" title="Clear password">×</button>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="field-label" for="2fa-confirm-password">Confirm New Password*:</label>
+            <div class="input-container">
+              <input 
+                [type]="show2FAConfirmPassword ? 'text' : 'password'" 
+                id="2fa-confirm-password" 
+                class="form-input" 
+                [(ngModel)]="twoFAConfirmPassword" 
+                placeholder="Confirm new password" 
+                title="Confirm new password">
+              <button class="password-toggle-button" (click)="toggle2FAConfirmPasswordVisibility()" title="Toggle password visibility">
+                <span *ngIf="!show2FAConfirmPassword">Show</span>
+                <span *ngIf="show2FAConfirmPassword">Hide</span>
+              </button>
+              <button class="clear-button" (click)="clear2FAConfirmPassword()" title="Clear confirm password">×</button>
+            </div>
+          </div>
+          <div *ngIf="twoFAPasswordError" class="password-error-message">
+            {{ twoFAPasswordError }}
+          </div>
+        </div>
+        <div class="password-change-buttons">
+          <button class="change-button" (click)="on2FAPasswordChange()" [disabled]="isChanging2FAPassword">
+            <span *ngIf="!isChanging2FAPassword">Change Password</span>
+            <span *ngIf="isChanging2FAPassword">Changing...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Success Message Modal -->
   <div *ngIf="showSuccessMessage" class="success-overlay">
     <div class="success-container">
