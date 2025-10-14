@@ -89,7 +89,7 @@
         </form>
 
           <!-- Step 2: Verification Code Input -->
-          <form *ngIf="recoveryStep === 'verify'" (ngSubmit)="onVerifyCode()" class="recovery-form">
+          <form *ngIf="recoveryStep === 'verify' && !twoFactorEmail" (ngSubmit)="onVerifyCode()" class="recovery-form">
             <div class="form-group">
               <label for="verification-code">Verification Code:</label>
               <input 
@@ -118,6 +118,36 @@
             <button type="submit" class="verify-code-btn" [disabled]="isRecoveryLoading">
               <span *ngIf="!isRecoveryLoading">Verify Code</span>
               <span *ngIf="isRecoveryLoading">Verifying...</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- 2FA Verification Code Input -->
+        <form *ngIf="recoveryStep === 'verify' && twoFactorEmail" (ngSubmit)="onVerify2FACode()" class="recovery-form">
+          <div class="form-group">
+            <label for="two-factor-code">2FA Verification Code:</label>
+            <input 
+              type="text" 
+              id="two-factor-code" 
+              [(ngModel)]="twoFactorCode" 
+              name="twoFactorCode"
+              placeholder="Enter verification code from email"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              required>
+          </div>
+          
+          <!-- Timer display below input field -->
+          <div *ngIf="timeLeft > 0" class="timer-display">
+            <span class="timer-label">Time remaining:</span>
+            <span class="timer-value">{{ getTimeLeftFormatted() }}</span>
+          </div>
+        
+          <div class="recovery-buttons">
+            <button type="button" class="cancel-recovery-btn" (click)="onCancelRecovery()">Cancel</button>
+            <button type="submit" class="verify-code-btn" [disabled]="isLoading">
+              <span *ngIf="!isLoading">Verify Code</span>
+              <span *ngIf="isLoading">Verifying...</span>
             </button>
           </div>
         </form>
@@ -161,6 +191,49 @@
           {{ recoveryMessage }}
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2FA Verification Code Modal -->
+<div *ngIf="recoveryStep === 'verify' && twoFactorEmail" class="password-recovery-overlay">
+  <div class="password-recovery-modal">
+    <div class="password-recovery-content">
+      <h2>Two-Factor Authentication</h2>
+      <p>Enter the verification code sent to your email address.</p>
+      
+      <form (ngSubmit)="onVerify2FACode()" class="recovery-form">
+        <div class="form-group">
+          <label for="two-factor-code">Verification Code:</label>
+          <input 
+            type="text" 
+            id="two-factor-code" 
+            [(ngModel)]="twoFactorCode" 
+            name="twoFactorCode"
+            placeholder="Enter verification code from email"
+            maxlength="6"
+            pattern="[0-9]{6}"
+            required>
+        </div>
+        
+        <!-- Timer display below input field -->
+        <div *ngIf="timeLeft > 0" class="timer-display">
+          <span class="timer-label">Time remaining:</span>
+          <span class="timer-value">{{ getTimeLeftFormatted() }}</span>
+        </div>
+      
+        <div class="recovery-buttons">
+          <button type="button" class="cancel-recovery-btn" (click)="onCancelRecovery()">Cancel</button>
+          <button type="button" class="resend-code-btn" (click)="onResend2FACode()" [disabled]="isLoading">
+            <span *ngIf="!isLoading">Resend Code</span>
+            <span *ngIf="isLoading">Sending...</span>
+          </button>
+          <button type="submit" class="verify-code-btn" [disabled]="isLoading">
+            <span *ngIf="!isLoading">Verify Code</span>
+            <span *ngIf="isLoading">Verifying...</span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
