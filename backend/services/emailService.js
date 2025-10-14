@@ -230,7 +230,7 @@ async function send2FALoginCodeEmail(email, verificationCode) {
             <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
               <h4 style="color: #856404; margin: 0 0 10px 0; font-size: 16px;">⚠️ Security Notice:</h4>
               <p style="color: #856404; font-size: 14px; margin: 0; line-height: 1.5;">
-                This verification code will expire in 5 minutes for security reasons. 
+                This verification code will expire in 2 minutes for security reasons. 
                 If you didn't attempt to log in, please change your password immediately.
               </p>
             </div>
