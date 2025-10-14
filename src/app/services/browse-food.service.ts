@@ -19,6 +19,7 @@ export interface Food {
 })
 export class BrowseFoodService {
   private apiUrl = 'http://localhost:5001/api/foods';  // 改成 /api/foods
+  private donationsUrl = 'http://localhost:5001/api/donations';  // ✅ 新增
 
   constructor(private http: HttpClient) {}
 
@@ -26,6 +27,13 @@ export class BrowseFoodService {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const userId = user.id;   // ✅ 和 foodService.ts 一致，用 id
     return this.http.get<Food[]>(`${this.apiUrl}?userId=${userId}`);
+  }
+
+  // ✅ 新增 Donation list
+  getDonations(): Observable<any[]> {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userId = user.id;
+    return this.http.get<any[]>(`${this.donationsUrl}?userId=${userId}`);
   }
 
 

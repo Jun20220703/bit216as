@@ -13,6 +13,10 @@ interface Item {
   expiry: string;
   notes?: string;
   owner?: string;
+
+  // ✅ 新增：来自 DonationList 的字段
+  donationAvailability?: string;
+  donationLocation?: string;
 }
 
 type CategoryKey =
@@ -195,6 +199,10 @@ export class InventoryComponent implements OnInit {
         expiry: food.expiry,
         notes: food.notes,
         owner: food.owner,
+
+        // ✅ 新增：把 rawFoods 里的扩展属性映射进 Item
+        donationAvailability: (food as any).donationAvailability,
+        donationLocation: (food as any).donationLocation,
       });
     });
 
@@ -312,9 +320,27 @@ export class InventoryComponent implements OnInit {
       (c) => (this.filter.categories[c.key] = true)
     );
 
-    if (source === 'donation') this.filter.expiredIn = 0;
+    if (source === 'donation') {
+      this.browseService.getDonations().subscribe((donations: any[]) => {
+      this.rawFoods = donations.map(d => ({
+        ...d.foodId,                    // Food 基本信息（name/category/expiry/storage…）
+        qty: d.qty,                     // ✅ DonationList 数量
+        notes: d.notes,                 // ✅ DonationList 备注
+        status: 'donation',
+        owner: d.owner,
 
-    this.refreshView();
+        // ✅ 新增：DonationList 的字段（先存到 raw 里，后面 buildLocations 映射进 Item）
+        donationAvailability: d.availability,
+        donationLocation: d.location,
+        donationId: d._id
+      }));
+      this.ensureCategoryKeysInitialized(true);
+      this.refreshView();
+      });
+    } else {
+      this.loadFoods(); // 走 inventory 的逻辑
+    }
+
     this.showSearch = false;
     this.showFilter = false;
   }
