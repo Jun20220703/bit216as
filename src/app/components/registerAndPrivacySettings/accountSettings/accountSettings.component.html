@@ -364,4 +364,43 @@
       </div>
     </div>
   </div>
+
+  <!-- Delete Account Dialog -->
+  <div *ngIf="showDeleteAccountDialog" class="dialog-overlay">
+    <div class="password-change-container">
+      <div class="password-change-content">
+        <h2 class="password-change-title">⚠️ Delete Account</h2>
+        <p class="password-change-description">This action cannot be undone. All your data will be permanently removed. Please enter your current password to confirm account deletion.</p>
+        <div class="password-form">
+          <div class="form-field">
+            <label class="field-label" for="delete-account-password">Current Password*:</label>
+            <div class="input-container">
+              <input 
+                [type]="showDeleteAccountPassword ? 'text' : 'password'" 
+                id="delete-account-password" 
+                class="form-input" 
+                [(ngModel)]="deleteAccountPassword" 
+                placeholder="Enter your current password" 
+                title="Enter your current password">
+              <button class="password-toggle-button" (click)="toggleDeleteAccountPasswordVisibility()" title="Toggle password visibility">
+                <span *ngIf="!showDeleteAccountPassword">Show</span>
+                <span *ngIf="showDeleteAccountPassword">Hide</span>
+              </button>
+              <button class="clear-button" (click)="clearDeleteAccountPassword()" title="Clear password">×</button>
+            </div>
+          </div>
+          <div *ngIf="deleteAccountError" class="password-error-message">
+            {{ deleteAccountError }}
+          </div>
+        </div>
+        <div class="password-change-buttons">
+          <button class="cancel-password-button" (click)="onDeleteAccountCancel()" [disabled]="isDeletingAccount">Cancel</button>
+          <button class="delete-account-confirm-button" (click)="onDeleteAccountConfirm()" [disabled]="isDeletingAccount">
+            <span *ngIf="!isDeletingAccount">Delete Account</span>
+            <span *ngIf="isDeletingAccount">Deleting...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
