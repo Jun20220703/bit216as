@@ -491,6 +491,46 @@ router.post('/enable-2fa', async (req, res) => {
   }
 });
 
+// 2FA 비활성화
+router.post('/disable-2fa', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    
+    console.log('=== DISABLE 2FA REQUEST ===');
+    console.log('User ID:', userId);
+    
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+    
+    // 사용자 찾기
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // 2FA 비활성화
+    user.twoFactorAuth.isEnabled = false;
+    user.twoFactorAuth.tempCode = undefined;
+    user.twoFactorAuth.tempCodeExpires = undefined;
+    user.twoFactorAuth.verificationCode = undefined;
+    user.twoFactorAuth.codeExpires = undefined;
+    
+    await user.save();
+    
+    console.log('✅ 2FA disabled successfully for user:', user.email);
+    
+    res.json({
+      message: 'Two-Factor Authentication has been disabled successfully',
+      twoFactorEnabled: false
+    });
+    
+  } catch (error) {
+    console.error('Disable 2FA error:', error);
+    res.status(500).json({ message: 'Failed to disable 2FA', error: error.message });
+  }
+});
+
 // Two-Factor Authentication 코드 검증
 router.post('/verify-2fa-code', async (req, res) => {
   try {
