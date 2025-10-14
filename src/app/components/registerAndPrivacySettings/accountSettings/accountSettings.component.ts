@@ -65,6 +65,7 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
   isWaitingForVerification: boolean = false;
   verificationCheckInterval: any = null;
   isEmailSent: boolean = false; // 이메일 발송 상태 추적
+  isVerificationCompleted: boolean = false; // verification 완료 상태 추적
 
   // Email link access state
   showEmailLinkMessage: boolean = false;
@@ -89,6 +90,35 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.stopVerificationCheck();
+    
+    // Remove event listeners
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('storage', this.handleStorageChange);
+      window.removeEventListener('focus', this.handleWindowFocus);
+      document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+      window.removeEventListener('message', this.handlePostMessage);
+    }
+  }
+
+  private handleWindowFocus = () => {
+    console.log('Window focused - checking verification status');
+    this.checkVerificationStatus();
+  }
+
+  private handleVisibilityChange = () => {
+    if (!document.hidden) {
+      console.log('Tab became visible - checking verification status');
+      this.checkVerificationStatus();
+    }
+  }
+
+  private handleStorageChange = (event: StorageEvent) => {
+    console.log('Storage event detected:', event.key, event.newValue);
+    if (event.key === '2faVerificationComplete' && event.newValue === 'true') {
+      console.log('2FA verification complete detected from another tab');
+      // Check verification status immediately (no delay)
+      this.checkVerificationStatus();
+    }
   }
 
   ngOnInit() {
@@ -112,6 +142,15 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
     
     // Start periodic check for verification completion
     this.startVerificationCheck();
+    
+    // Listen for localStorage changes from other tabs
+    this.setupLocalStorageListener();
+    
+    // Listen for window focus and visibility change events
+    this.setupWindowEventListeners();
+    
+    // Listen for postMessage from other tabs
+    this.setupPostMessageListener();
   }
 
   loadUserData() {
@@ -547,6 +586,13 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
     
     console.log('=== Two-Factor Toggle Click Event ===');
     console.log('Current twoFactorEnabled:', this.twoFactorEnabled);
+    console.log('isVerificationCompleted:', this.isVerificationCompleted);
+    
+    // verification이 완료된 경우 다이얼로그를 표시하지 않음
+    if (this.isVerificationCompleted) {
+      console.log('Verification already completed, ignoring toggle click');
+      return;
+    }
     
     if (this.twoFactorEnabled === false) {
       // 토글을 켜려고 할 때
@@ -808,8 +854,10 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
         this.isEmailSent = false; // 이메일 발송 플래그 리셋
         this.isEnablingTwoFactor = false; // 진행 중 플래그도 리셋
         
-        // 취소 메시지를 alert로 표시
-        alert('Enabling 2FA is cancelled');
+        // 취소 메시지를 alert로 표시 (성공 메시지와 충돌하지 않도록)
+        if (!this.showSuccessMessage) {
+          alert('Enabling 2FA is cancelled');
+        }
         
         this.cdr.detectChanges();
         console.log('2FA verification cancelled - UI updated, email flags reset');
@@ -824,8 +872,10 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
         this.isEmailSent = false;
         this.isEnablingTwoFactor = false;
         
-        // 취소 메시지를 alert로 표시
-        alert('Enabling 2FA is cancelled');
+        // 취소 메시지를 alert로 표시 (성공 메시지와 충돌하지 않도록)
+        if (!this.showSuccessMessage) {
+          alert('Enabling 2FA is cancelled');
+        }
         
         this.cdr.detectChanges();
         console.log('2FA verification cancelled - UI updated despite error');
@@ -837,17 +887,60 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
   checkVerificationStatus() {
     if (typeof window !== 'undefined' && window.localStorage) {
       const verificationComplete = localStorage.getItem('2faVerificationComplete');
-      if (verificationComplete === 'true') {
-        // Clear the flag
+      const activationSuccess = localStorage.getItem('2faActivationSuccess');
+      const verificationTimestamp = localStorage.getItem('2faVerificationTimestamp');
+      
+      console.log('=== CHECKING VERIFICATION STATUS ===');
+      console.log('verificationComplete:', verificationComplete);
+      console.log('activationSuccess:', activationSuccess);
+      console.log('verificationTimestamp:', verificationTimestamp);
+      console.log('Current isWaitingForVerification:', this.isWaitingForVerification);
+      console.log('Current showTwoFactorDialog:', this.showTwoFactorDialog);
+      console.log('Current isVerificationCompleted:', this.isVerificationCompleted);
+      
+      // localStorage의 모든 키 확인
+      console.log('All localStorage keys:', Object.keys(localStorage));
+      
+      // activationSuccess가 true이면 verification이 완료된 것으로 간주
+      if (verificationComplete === 'true' || activationSuccess === 'true') {
+        console.log('Verification complete detected, processing...');
+        
+        // Clear the flags immediately to prevent duplicate processing
         localStorage.removeItem('2faVerificationComplete');
-        // Hide waiting state and dialog
-        this.isWaitingForVerification = false;
-        this.showTwoFactorDialog = false;
+        localStorage.removeItem('2faActivationSuccess');
+        localStorage.removeItem('2faVerificationTimestamp');
+        
+        // Hide waiting state and dialog immediately
+        this.ngZone.run(() => {
+          this.isWaitingForVerification = false;
+          this.showTwoFactorDialog = false;
+          this.isVerificationCompleted = true; // verification 완료 플래그 설정
+          
+          console.log('Dialog states reset - isWaitingForVerification:', this.isWaitingForVerification, 'showTwoFactorDialog:', this.showTwoFactorDialog, 'isVerificationCompleted:', this.isVerificationCompleted);
+          
+          // 강제로 change detection 실행
+          this.cdr.detectChanges();
+        });
         
         // Reload user data to get updated 2FA status
         this.loadUserData();
         
+        // Show success message if activation was successful
+        if (activationSuccess === 'true') {
+          console.log('Showing activation success message');
+          
+          // Clear any existing success message first
+          this.showSuccessMessage = false;
+          this.successMessage = '';
+          
+          // Immediately show the activation success message (no delay)
+          this.showSuccessMessage = true;
+          this.successMessage = 'Verification has been activated successfully!';
+        }
+        
         this.cdr.detectChanges();
+        console.log('Verification status updated - isWaitingForVerification:', this.isWaitingForVerification);
+        console.log('Verification status updated - showTwoFactorDialog:', this.showTwoFactorDialog);
       }
     }
   }
@@ -856,7 +949,7 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
   startVerificationCheck() {
     this.verificationCheckInterval = setInterval(() => {
       this.checkVerificationStatus();
-    }, 1000); // Check every second
+    }, 200); // Check every 200ms for faster response
   }
 
   // Stop verification check
@@ -864,6 +957,36 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
     if (this.verificationCheckInterval) {
       clearInterval(this.verificationCheckInterval);
       this.verificationCheckInterval = null;
+    }
+  }
+
+  // Setup localStorage listener for cross-tab communication
+  setupLocalStorageListener() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', this.handleStorageChange);
+    }
+  }
+
+  // Setup window event listeners for tab focus and visibility changes
+  setupWindowEventListeners() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('focus', this.handleWindowFocus);
+      document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    }
+  }
+
+  // Setup postMessage listener for cross-tab communication
+  setupPostMessageListener() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('message', this.handlePostMessage);
+    }
+  }
+
+  private handlePostMessage = (event: MessageEvent) => {
+    console.log('PostMessage received:', event.data);
+    if (event.data && event.data.type === '2FA_VERIFICATION_COMPLETE') {
+      console.log('2FA verification complete message received from other tab');
+      this.checkVerificationStatus();
     }
   }
 
