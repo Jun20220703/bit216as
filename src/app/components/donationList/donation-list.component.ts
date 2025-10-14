@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { FoodService } from '../../services/food.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
+import { DonationService } from '../../services/donation.service';
 @Component({
   selector: 'app-donation-list',
-  standalone: true,
   templateUrl: './donation-list.component.html',
   styleUrls: ['./donation-list.component.css'],
   imports: [CommonModule, SidebarComponent]
@@ -13,7 +14,11 @@ import { ChangeDetectorRef } from '@angular/core';
 export class DonationListComponent implements OnInit{
     donations: any[] = [];
 
-    constructor(private cd: ChangeDetectorRef,private foodService: FoodService){}
+    constructor(
+        private cd: ChangeDetectorRef,
+        private foodService: FoodService, 
+        private router: Router,
+        private donationService: DonationService){}
 
     ngOnInit() {
         this.foodService.getDonations().subscribe({
@@ -38,14 +43,29 @@ export class DonationListComponent implements OnInit{
         });
     }
         
+    
  
  
 
-  edit(item: any) {
-    console.log('Edit:', item);
-  }
+  edit(donation: any) {
+  if (!donation._id) return;
+  this.router.navigate(['/edit-donation', donation._id]);
+}
 
-  delete(item: any) {
-    console.log('Delete:', item);
-  }
+  delete(donation: any) {
+  if (!donation._id) return;
+
+  if (!confirm(`Are you sure you want to delete "${donation.foodId?.name}"?`)) return;
+
+  this.donationService.deleteDonation(donation._id).subscribe({
+    next: (res: any) => {   // ← 型を明示
+      console.log('Donation deleted:', res);
+      this.loadDonations();
+    },
+    error: (err: any) => {  // ← 型を明示
+      console.error('Error deleting donation:', err);
+    }
+  });
+}
+
 }

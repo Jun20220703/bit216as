@@ -29,13 +29,18 @@ export class DonationService {
   }
 
   // Delete a donation
-  deleteDonation(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
-  }
+  deleteDonation(id: string) {
+  return this.http.delete(`http://localhost:5001/api/donations/${id}`);
+}
+
+
 
   // Add a new donation
   addDonation(data: any): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<any>(this.apiUrl, data, { headers });
   }
+
+
+  
 }
