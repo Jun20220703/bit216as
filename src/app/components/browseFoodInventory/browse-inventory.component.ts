@@ -429,18 +429,15 @@ export class InventoryComponent implements OnInit {
 
   /** 弹窗逻辑 */
   openConfirm(item: Item, action: 'used' | 'meal' | 'donate' | 'edit') {
-  if (action === 'donate') {
-    // ✅ 跳转到 Manage 页面，带上 itemId
-    this.router.navigate(['/manage-inventory'], { queryParams: { donateId: item._id } });
-    return;
-  }
+    console.log('🟢 openConfirm', item.name, 'action:', action, 'selectedQty:', item.selectedQty);
 
-  console.log('🟢 openConfirm', item.name, 'action:', action, 'selectedQty:', item.selectedQty);
-  if (action !== 'edit' && item.selectedQty <= 0) return;
-  this.confirmItem = item;
-  this.confirmAction = action;
-  this.showConfirm = true;
-}
+    // ✅ donate 不要直接跳转
+    if (action !== 'edit' && action !== 'donate' && item.selectedQty <= 0) return;
+
+    this.confirmItem = item;
+    this.confirmAction = action;
+    this.showConfirm = true;
+  }
 
 
   closeConfirm() {
@@ -452,35 +449,33 @@ export class InventoryComponent implements OnInit {
 
   /** 执行动作 */
   confirmActionProceed() {
-    if (!this.confirmItem || !this.confirmAction) return;
+      if (!this.confirmItem || !this.confirmAction) return;
 
-    if (this.confirmAction === 'used' || this.confirmAction === 'meal') {
-      const targetItem = this.confirmItem; // ✅ 保存引用
-      const newQty = Math.max(0, targetItem.qty - targetItem.selectedQty);
+      if (this.confirmAction === 'used' || this.confirmAction === 'meal') {
+        // ✅ 原本的逻辑...
+        const targetItem = this.confirmItem;
+        const newQty = Math.max(0, targetItem.qty - targetItem.selectedQty);
 
-      this.browseService.updateFoodQty(targetItem._id, newQty).subscribe({
-        next: (updatedFood) => {
-          // ✅ 更新当前 item
-          targetItem.qty = updatedFood.qty;
-          targetItem.selectedQty = 0;
+        this.browseService.updateFoodQty(targetItem._id, newQty).subscribe({
+          next: (updatedFood) => {
+            targetItem.qty = updatedFood.qty;
+            targetItem.selectedQty = 0;
+            const idx = this.rawFoods.findIndex(f => f._id === targetItem._id);
+            if (idx !== -1) this.rawFoods[idx].qty = updatedFood.qty;
+            this.refreshView();
+          },
+          error: err => console.error('❌ Error updating quantity:', err)
+        });
+      }
 
-          // ✅ 同步 rawFoods
-          const idx = this.rawFoods.findIndex(f => f._id === targetItem._id);
-          if (idx !== -1) {
-            this.rawFoods[idx].qty = updatedFood.qty;
-          }
+      if (this.confirmAction === 'donate') {
+        // ✅ 这里才跳转到 manage
+        this.router.navigate(['/manage-inventory'], { queryParams: { donateId: this.confirmItem._id } });
+      }
 
-          console.log(`✅ ${targetItem.name} 剩余数量更新为 ${updatedFood.qty}`);
-
-          this.refreshView(); // 🔄 重新渲染 UI
-        },
-        error: err => console.error('❌ Error updating quantity:', err)
-      });
-
+      this.closeConfirm();
     }
 
-    this.closeConfirm(); // ✅ 现在关闭弹窗不会影响 targetItem
-  }
 
 
   /** 过期计算 */
