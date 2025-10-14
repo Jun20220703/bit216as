@@ -18,6 +18,8 @@ router.put('/status/:name', async (req, res) => {
   }
 });
 
+
+
 router.get('/', async (req, res) => {
   try {
     const { userId } = req.query;
@@ -38,6 +40,36 @@ router.patch('/:id/status', async (req, res) => {
     res.status(500).json({ message: 'Error updating food status', error: err });
   }
 });
+
+// server.js or routes/foods.js
+router.get('/:id', async (req, res) => {
+  try {
+    const food = await Food.findById(req.params.id); // Mongoose を想定
+    if (!food) return res.status(404).json({ message: 'Food not found' });
+    res.json(food);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+// app.js または foodRoutes.js
+router.put('/api/foods/:id', async (req, res) => {
+  try {
+    const updatedFood = await Food.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }  // 更新後のデータを返す
+    );
+    if (!updatedFood) {
+      return res.status(404).json({ message: 'Food not found' });
+    }
+    res.json(updatedFood);
+  } catch (error) {
+    console.error('Error updating food:', error);
+    res.status(500).json({ message: 'Server error while updating food', error });
+  }
+});
+
+
 
 
 

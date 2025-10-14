@@ -53,9 +53,10 @@ loadFoods() {
     this.router.navigate(['/add-food']);
   }
 
-  editItem(item: any) {
-    console.log('Edit:', item);
-  }
+  openEditPage(item: any) {
+  if (!item._id) return; // 念のためチェック
+  this.router.navigate(['/edit-food', item._id]);
+}
 
   showDeleteModal = false;
   selectedDeleteItem: any = null;

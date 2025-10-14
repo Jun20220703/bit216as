@@ -141,6 +141,23 @@ app.get('/api/donations', async (req, res) => {
 });
 app.options('/api/foods/:id/status', cors());
 
+// app.js または foodRoutes.js
+app.put('/api/foods/:id', async (req, res) => {
+  try {
+    const updatedFood = await Food.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }  // 更新後のデータを返す
+    );
+    if (!updatedFood) {
+      return res.status(404).json({ message: 'Food not found' });
+    }
+    res.json(updatedFood);
+  } catch (error) {
+    console.error('Error updating food:', error);
+    res.status(500).json({ message: 'Server error while updating food', error });
+  }
+});
 
 
 

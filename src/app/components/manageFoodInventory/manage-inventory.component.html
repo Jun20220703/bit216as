@@ -32,7 +32,8 @@
           <td>{{ item.storage }}</td>
           <td>{{ item.notes }}</td>
           <td>
-            <button type="button" (click)="editItem(item)">Edit</button>
+            <!-- テーブル内のボタン -->
+            <button type="button" (click)="openEditPage(item)">Edit</button>
             <button type="button" (click)="openDeleteModal(item)">Delete</button>
             <button 
               type="button" 

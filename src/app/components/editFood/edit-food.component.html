@@ -1,69 +1,60 @@
 <div class="container">
-  <!-- サイドバー -->
   <app-sidebar></app-sidebar>
 
-  <!-- メインコンテンツ -->
   <main class="content">
     <h1>Edit Food Item</h1>
 
-    <form [formGroup]="foodForm" (ngSubmit)="saveFood()" class="food-form">
+    <form [formGroup]="foodForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Item Name</label>
+        <input type="text" formControlName="name" />
+      </div>
 
-    <!-- Name -->
-    <div class="form-group">
-      <label for="name">Food Name</label>
-      <input type="text" id="name" formControlName="name" placeholder="Enter food name" />
-      @if (foodForm.get('name')?.touched && foodForm.get('name')?.invalid) {
-        <small class="error">Name is required</small>
-      }
-    </div>
+      <div class="form-group">
+        <label>Quantity</label>
+        <input type="number" formControlName="qty" />
+      </div>
 
-    <!-- Quantity -->
-    <div class="form-group">
-      <label for="qty">Quantity</label>
-      <input type="number" id="qty" formControlName="qty" placeholder="Enter quantity" />
-      @if (foodForm.get('qty')?.touched && foodForm.get('qty')?.invalid) {
-        <small class="error">Quantity must be at least 1</small>
-      }
-    </div>
+      <div class="form-group">
+        <label>Expiry Date</label>
+        <input type="date" formControlName="expiry" />
+      </div>
 
-    <!-- Expiry -->
-    <div class="form-group">
-      <label for="expiry">Expiry Date</label>
-      <input type="date" id="expiry" formControlName="expiry" />
-      @if (foodForm.get('expiry')?.touched && foodForm.get('expiry')?.invalid) {
-        <small class="error">Expiry date is required</small>
-      }
-    </div>
+      <div class="form-group">
+        <label for="category">Category</label>
+        <select id="category" formControlName="category">
+            <option value="">-- Select Category --</option>
+            <option>Dairy</option>
+            <option>Grain</option>
+            <option>Meat</option>
+            <option>Vegetables</option>
+            <option>Fruits</option>
+            <option>Others</option>
+        </select>
+        </div>
 
-    <!-- Category -->
-    <div class="form-group">
-      <label for="category">Category</label>
-      <input type="text" id="category" formControlName="category" placeholder="e.g. Dairy, Grains" />
-      @if (foodForm.get('category')?.touched && foodForm.get('category')?.invalid) {
-        <small class="error">Category is required</small>
-      }
-    </div>
+        <div class="form-group">
+        <label for="storage">Storage Location</label>
+        <select id="storage" formControlName="storage">
+            <option value="">-- Select Storage --</option>
+            <option>Fridge</option>
+            <option>Freezer</option>
+            <option>Pantry</option>
+            <option>Others</option>
+        </select>
+        </div>
 
-    <!-- Storage -->
-    <div class="form-group">
-      <label for="storage">Storage</label>
-      <select id="storage" formControlName="storage">
-        <option value="">Select storage method</option>
-        <option value="Dry">Dry</option>
-        <option value="Refrigerated">Refrigerated</option>
-        <option value="Frozen">Frozen</option>
-      </select>
-      @if (foodForm.get('storage')?.touched && foodForm.get('storage')?.invalid) {
-        <small class="error">Storage type is required</small>
-      }
-    </div>
 
-    <!-- Buttons -->
-    <div class="form-buttons">
-      <button type="submit" class="btn-primary" [disabled]="foodForm.invalid">Update</button>
-      <button type="button" class="btn-secondary" (click)="cancel()">Cancel</button>
-    </div>
 
-  </form>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea formControlName="notes"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancel()">Cancel</button>
+        <button type="submit" class="btn-primary" [disabled]="foodForm.invalid">Update</button>
+      </div>
+    </form>
   </main>
 </div>

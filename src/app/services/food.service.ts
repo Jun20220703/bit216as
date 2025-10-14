@@ -66,6 +66,15 @@ getDonations(): Observable<any[]> {
         return this.http.patch(`${this.apiUrl}/${foodId}/status`, { status }, { headers });
     }
 
+       // 追加：ID で食品を取得
+  getFoodById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+  
+  // 追加：食品を更新
+  updateFood(id: string, food: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, food);
+  }
 
 
 }
