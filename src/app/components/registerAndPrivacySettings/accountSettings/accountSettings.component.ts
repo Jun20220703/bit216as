@@ -95,6 +95,13 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
   isChanging2FAPassword: boolean = false;
   twoFAPasswordError: string = '';
 
+  // Delete Account Dialog state
+  showDeleteAccountDialog: boolean = false;
+  deleteAccountPassword: string = '';
+  showDeleteAccountPassword: boolean = false;
+  isDeletingAccount: boolean = false;
+  deleteAccountError: string = '';
+
   constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient, private cdr: ChangeDetectorRef, private ngZone: NgZone) {}
 
   ngOnDestroy() {
@@ -250,66 +257,11 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteAccount() {
-    const confirmed = confirm('Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.');
-    if (!confirmed) {
-      return;
-    }
-
-    // Get user ID
-    if (typeof window === 'undefined' || !window.localStorage) {
-      alert('User not authenticated. Please log in again.');
-      this.router.navigate(['/login']);
-      return;
-    }
-    
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      alert('User not authenticated. Please log in again.');
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    // Call delete account API
-    this.http.delete(`http://localhost:5001/api/users/profile/${userId}`)
-      .subscribe({
-        next: (response: any) => {
-          console.log('Account deleted successfully:', response);
-          
-          // Clear all user data from localStorage
-          if (typeof window !== 'undefined' && window.localStorage) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            localStorage.removeItem('userId');
-            localStorage.removeItem('userPassword');
-            localStorage.removeItem('2faVerificationComplete');
-            localStorage.removeItem('2faActivationSuccess');
-            localStorage.removeItem('2faVerificationTimestamp');
-          }
-          
-          // Show success message and redirect to login
-          alert('Your account has been successfully deleted. You will be redirected to the login page.');
-          this.router.navigate(['/login']);
-        },
-        error: (error) => {
-          console.error('Account deletion failed:', error);
-          
-          let errorMessage = 'Failed to delete account';
-          
-          if (error.status === 0) {
-            errorMessage = 'Cannot connect to server. Please check if the backend server is running.';
-          } else if (error.status === 404) {
-            errorMessage = 'User not found. Please log in again.';
-          } else if (error.status === 500) {
-            errorMessage = 'Server error. Please try again later.';
-          } else if (error.error?.message) {
-            errorMessage = error.error.message;
-          } else if (error.message) {
-            errorMessage = error.message;
-          }
-          
-          alert(`Failed to delete account: ${errorMessage}`);
-        }
-      });
+    // Show password confirmation dialog instead of simple confirm
+    this.showDeleteAccountDialog = true;
+    this.deleteAccountPassword = '';
+    this.deleteAccountError = '';
+    this.cdr.detectChanges();
   }
 
   onSave() {
@@ -1194,5 +1146,103 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
     this.show2FAConfirmPassword = false;
     this.twoFAPasswordError = '';
     this.cdr.detectChanges();
+  }
+
+  // Delete Account Dialog methods
+  onDeleteAccountCancel() {
+    this.showDeleteAccountDialog = false;
+    this.deleteAccountPassword = '';
+    this.deleteAccountError = '';
+    this.cdr.detectChanges();
+  }
+
+  toggleDeleteAccountPasswordVisibility() {
+    this.showDeleteAccountPassword = !this.showDeleteAccountPassword;
+  }
+
+  clearDeleteAccountPassword() {
+    this.deleteAccountPassword = '';
+  }
+
+  onDeleteAccountConfirm() {
+    // Clear previous error
+    this.deleteAccountError = '';
+
+    // Validate password input
+    if (!this.deleteAccountPassword) {
+      this.deleteAccountError = 'Please enter your current password to confirm account deletion.';
+      return;
+    }
+
+    // Verify password matches current password
+    if (this.deleteAccountPassword !== this.actualPassword) {
+      this.deleteAccountError = 'Incorrect password. Please enter your current password.';
+      return;
+    }
+
+    // Get user ID
+    if (typeof window === 'undefined' || !window.localStorage) {
+      this.deleteAccountError = 'User not authenticated. Please log in again.';
+      return;
+    }
+    
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      this.deleteAccountError = 'User not authenticated. Please log in again.';
+      return;
+    }
+
+    this.isDeletingAccount = true;
+    this.cdr.detectChanges();
+
+    // Call delete account API
+    this.http.delete(`http://localhost:5001/api/users/profile/${userId}`)
+      .subscribe({
+        next: (response: any) => {
+          console.log('Account deleted successfully:', response);
+          this.isDeletingAccount = false;
+          
+          // Clear all user data from localStorage
+          if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userPassword');
+            localStorage.removeItem('2faVerificationComplete');
+            localStorage.removeItem('2faActivationSuccess');
+            localStorage.removeItem('2faVerificationTimestamp');
+          }
+          
+          // Close dialog and show success message
+          this.showDeleteAccountDialog = false;
+          this.deleteAccountPassword = '';
+          this.deleteAccountError = '';
+          
+          // Show success message and redirect to login
+          alert('Your account has been successfully deleted. You will be redirected to the login page.');
+          this.router.navigate(['/login']);
+        },
+        error: (error) => {
+          console.error('Account deletion failed:', error);
+          this.isDeletingAccount = false;
+          
+          let errorMessage = 'Failed to delete account';
+          
+          if (error.status === 0) {
+            errorMessage = 'Cannot connect to server. Please check if the backend server is running.';
+          } else if (error.status === 404) {
+            errorMessage = 'User not found. Please log in again.';
+          } else if (error.status === 500) {
+            errorMessage = 'Server error. Please try again later.';
+          } else if (error.error?.message) {
+            errorMessage = error.error.message;
+          } else if (error.message) {
+            errorMessage = error.message;
+          }
+          
+          this.deleteAccountError = errorMessage;
+          this.cdr.detectChanges();
+        }
+      });
   }
 }
