@@ -23,8 +23,11 @@ export class BrowseFoodService {
   constructor(private http: HttpClient) {}
 
   getFoods(): Observable<Food[]> {
-    return this.http.get<Food[]>(this.apiUrl);
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userId = user.id;   // ✅ 和 foodService.ts 一致，用 id
+    return this.http.get<Food[]>(`${this.apiUrl}?userId=${userId}`);
   }
+
 
   /** 更新食物状态（Donate / Inventory / Expired） */
 updateFoodStatus(id: string, status: 'inventory' | 'donation' | 'expired'): Observable<any> {
