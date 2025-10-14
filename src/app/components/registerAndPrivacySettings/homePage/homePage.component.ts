@@ -26,13 +26,20 @@ export class HomePageComponent implements OnInit {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const isNewUser = urlParams.get('newUser') === 'true';
+      const show2FASetupMessage = localStorage.getItem('show2FASetupMessage');
       
       console.log('Checking for new user:', { isNewUser, url: window.location.href });
+      console.log('Checking for 2FA setup message:', show2FASetupMessage);
       
-      if (isNewUser) {
-        // 새 사용자인 경우 환영 메시지 표시
+      if (isNewUser || show2FASetupMessage === 'true') {
+        // 새 사용자이거나 2FA가 비활성화된 경우 환영 메시지 표시
         this.showWelcomeMessage = true;
-        console.log('Showing welcome message for new user');
+        console.log('Showing welcome message');
+        
+        // 플래그 제거
+        if (show2FASetupMessage === 'true') {
+          localStorage.removeItem('show2FASetupMessage');
+        }
         
         // URL에서 newUser 파라미터 제거 (새로고침 시 중복 표시 방지)
         this.router.navigate([], {
