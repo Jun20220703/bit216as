@@ -61,6 +61,18 @@
       </div>
     </div>
 
+    <!-- 2FA Setup Message for Users without 2FA -->
+    <div class="welcome-message" *ngIf="show2FASetupMessage">
+      <div class="welcome-content">
+        <h3>🔒 Secure Your Account</h3>
+        <p>Your account security is important! Please enable Two-Factor Authentication (2FA) to protect your account from unauthorized access.</p>
+        <div class="welcome-actions">
+          <button class="setup-btn" (click)="goToAccountSettingsFrom2FA()">Enable 2FA</button>
+          <button class="dismiss-btn" (click)="dismiss2FASetupMessage()">Maybe later</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Navigation Section -->
     <nav class="navigation">
       <button class="nav-btn" (click)="onLogout()">Logout</button>
