@@ -27,7 +27,7 @@
         <tr *ngFor="let item of foodItems">
           <td>{{ item.name }}</td>
           <td>{{ item.qty }}</td>
-          <td>{{ item.expiry }}</td>
+          <td>{{ item.expiry | date:'yyyy-MM-dd' }}</td>
           <td>{{ item.category }}</td>
           <td>{{ item.storage }}</td>
           <td>{{ item.notes }}</td>

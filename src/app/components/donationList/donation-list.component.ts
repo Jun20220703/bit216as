@@ -14,10 +14,15 @@ export class DonationListComponent implements OnInit{
 
     constructor(private foodService: FoodService){}
 
-    ngOnInit(){
-        this.loadDonations();
-        
-    }
+    ngOnInit() {
+        this.foodService.getDonations().subscribe({
+            next: (res) => {
+            console.log('Donations loaded: ', res);
+            this.donations = res;  // これを ngFor で表示
+            },
+            error: (err) => console.error(err)
+        });
+        }
 
     loadDonations(){
         this.foodService.getDonations().subscribe({
