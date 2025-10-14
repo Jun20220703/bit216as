@@ -207,6 +207,9 @@
         <ng-container *ngSwitchCase="'edit'">
           Edit donation item of <strong>{{ confirmItem?.name }}</strong>?
         </ng-container>
+        <ng-container *ngSwitchCase="'donate'">
+          Do you want to donate <strong>{{ confirmItem?.name }}</strong>?
+        </ng-container>
         <ng-container *ngSwitchDefault>
           Do you want to mark {{ confirmItem?.selectedQty }}
           {{ confirmItem?.name }}(s) as {{ confirmAction }}?
