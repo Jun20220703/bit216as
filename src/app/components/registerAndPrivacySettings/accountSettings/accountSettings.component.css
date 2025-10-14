@@ -1148,3 +1148,49 @@
       width: 100%;
     }
   }
+
+/* 2FA Password Change Dialog Styles */
+.password-change-description {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0 0 30px 0;
+  text-align: center;
+}
+
+.password-error-message {
+  color: #e74c3c;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #fdf2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* Responsive Design for 2FA Password Change Dialog */
+@media (max-width: 768px) {
+  .password-change-container {
+    padding: 30px 20px;
+    max-width: 400px;
+  }
+  
+  .password-change-title {
+    font-size: 20px;
+  }
+  
+  .password-change-description {
+    font-size: 14px;
+  }
+  
+  .password-change-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .change-button {
+    width: 100%;
+  }
+}

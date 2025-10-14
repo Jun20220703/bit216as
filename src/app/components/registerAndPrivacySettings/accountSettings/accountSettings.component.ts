@@ -86,6 +86,15 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
   customAlertTitle: string = '';
   customAlertMessage: string = '';
 
+  // 2FA Password Change Dialog state
+  show2FAPasswordChangeDialog: boolean = false;
+  twoFANewPassword: string = '';
+  twoFAConfirmPassword: string = '';
+  show2FANewPassword: boolean = false;
+  show2FAConfirmPassword: boolean = false;
+  isChanging2FAPassword: boolean = false;
+  twoFAPasswordError: string = '';
+
   constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient, private cdr: ChangeDetectorRef, private ngZone: NgZone) {}
 
   ngOnDestroy() {
@@ -936,6 +945,12 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
           // Immediately show the activation success message (no delay)
           this.showSuccessMessage = true;
           this.successMessage = 'Verification has been activated successfully!';
+          
+          // Show 2FA password change dialog after a short delay
+          setTimeout(() => {
+            this.open2FAPasswordChangeDialog();
+            console.log('2FA password change dialog shown');
+          }, 2000); // 2초 후에 비밀번호 변경 다이얼로그 표시
         }
         
         this.cdr.detectChanges();
@@ -1000,6 +1015,121 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
 
   onCustomAlertClose() {
     this.showCustomAlert = false;
+    this.cdr.detectChanges();
+  }
+
+  // 2FA Password Change methods
+  toggle2FANewPasswordVisibility() {
+    this.show2FANewPassword = !this.show2FANewPassword;
+  }
+
+  toggle2FAConfirmPasswordVisibility() {
+    this.show2FAConfirmPassword = !this.show2FAConfirmPassword;
+  }
+
+  clear2FANewPassword() {
+    this.twoFANewPassword = '';
+  }
+
+  clear2FAConfirmPassword() {
+    this.twoFAConfirmPassword = '';
+  }
+
+  on2FAPasswordChange() {
+    // Clear previous error
+    this.twoFAPasswordError = '';
+
+    // Validate inputs
+    if (!this.twoFANewPassword || !this.twoFAConfirmPassword) {
+      this.twoFAPasswordError = 'Please fill in both password fields.';
+      return;
+    }
+
+    if (this.twoFANewPassword !== this.twoFAConfirmPassword) {
+      this.twoFAPasswordError = 'Passwords do not match.';
+      return;
+    }
+
+    // Check if new password is different from current password
+    if (this.twoFANewPassword === this.actualPassword) {
+      this.twoFAPasswordError = 'New password must be different from your current password.';
+      return;
+    }
+
+    // Validate password strength
+    if (this.twoFANewPassword.length < 8) {
+      this.twoFAPasswordError = 'Password must be at least 8 characters long.';
+      return;
+    }
+
+    const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    if (!specialCharRegex.test(this.twoFANewPassword)) {
+      this.twoFAPasswordError = 'Password must contain at least one special character.';
+      return;
+    }
+
+    // Get user ID
+    if (typeof window === 'undefined' || !window.localStorage) {
+      this.twoFAPasswordError = 'User not authenticated. Please log in again.';
+      return;
+    }
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      this.twoFAPasswordError = 'User not authenticated. Please log in again.';
+      return;
+    }
+
+    this.isChanging2FAPassword = true;
+    this.cdr.detectChanges();
+
+    // Call password update API
+    this.http.put(`http://localhost:5001/api/users/profile/${userId}`, {
+      password: this.twoFANewPassword
+    }).subscribe({
+      next: (response: any) => {
+        console.log('2FA password changed successfully');
+        this.isChanging2FAPassword = false;
+        
+        // Close the dialog
+        this.show2FAPasswordChangeDialog = false;
+        this.twoFANewPassword = '';
+        this.twoFAConfirmPassword = '';
+        this.show2FANewPassword = false;
+        this.show2FAConfirmPassword = false;
+        this.twoFAPasswordError = '';
+        
+        // Update local password
+        this.actualPassword = this.twoFANewPassword;
+        this.userData.password = '************';
+        
+        // Update localStorage with new password
+        if (typeof window !== 'undefined' && window.localStorage) {
+          localStorage.setItem('userPassword', this.twoFANewPassword);
+        }
+        
+        // Show success message
+        this.showSuccessMessage = true;
+        this.successMessage = 'Password changed successfully! Your account is now fully secured with Two-Factor Authentication.';
+        
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('2FA password change failed:', error);
+        this.isChanging2FAPassword = false;
+        this.twoFAPasswordError = error.error?.message || 'Failed to change password. Please try again.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // Show 2FA password change dialog
+  open2FAPasswordChangeDialog() {
+    this.show2FAPasswordChangeDialog = true;
+    this.twoFANewPassword = '';
+    this.twoFAConfirmPassword = '';
+    this.show2FANewPassword = false;
+    this.show2FAConfirmPassword = false;
+    this.twoFAPasswordError = '';
     this.cdr.detectChanges();
   }
 }
