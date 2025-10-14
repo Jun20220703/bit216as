@@ -53,6 +53,20 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+// 📥 Get donation by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const donation = await DonationList.findById(req.params.id).populate('foodId');
+    if (!donation) {
+      return res.status(404).json({ message: 'Donation not found' });
+    }
+    res.json(donation);
+  } catch (err) {
+    console.error('Error fetching donation by id:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 
 // ❌ Remove from donation list
@@ -64,5 +78,21 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+// Update donation
+router.put('/:id', async (req, res) => {
+  try {
+    const updatedDonation = await DonationList.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.json(updatedDonation);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error updating donation' });
+  }
+});
+
 
 module.exports = router;

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { FoodService } from '../../services/food.service';
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-donation-list',
   standalone: true,
@@ -12,17 +13,18 @@ import { FoodService } from '../../services/food.service';
 export class DonationListComponent implements OnInit{
     donations: any[] = [];
 
-    constructor(private foodService: FoodService){}
+    constructor(private cd: ChangeDetectorRef,private foodService: FoodService){}
 
     ngOnInit() {
         this.foodService.getDonations().subscribe({
             next: (res) => {
             console.log('Donations loaded: ', res);
             this.donations = res;  // これを ngFor で表示
+            this.cd.detectChanges();
             },
             error: (err) => console.error(err)
         });
-        }
+    }
 
     loadDonations(){
         this.foodService.getDonations().subscribe({
