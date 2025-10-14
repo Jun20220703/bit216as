@@ -29,7 +29,6 @@ export class EditDonationComponent implements OnInit {
     
     // フォーム初期化
     this.donationForm = this.fb.group({
-      qty: ['', Validators.required],
       location: ['', Validators.required],
       availability: ['', Validators.required],
       notes: ['']
