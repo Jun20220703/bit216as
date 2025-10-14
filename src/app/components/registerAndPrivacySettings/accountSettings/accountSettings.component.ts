@@ -692,10 +692,34 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
   onTwoFactorDisableConfirm() {
     // 2FA 끄기 확인
     console.log('2FA disable confirmed');
-    this.twoFactorEnabled = false;
-    this.showTwoFactorDisableDialog = false;
-    this.cdr.detectChanges();
-    console.log('✅ 2FA disabled');
+    
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      alert('User ID not found. Please log in again.');
+      return;
+    }
+    
+    // 백엔드 API 호출하여 2FA 비활성화
+    this.http.post('http://localhost:5001/api/users/disable-2fa', {
+      userId: userId
+    }).subscribe({
+      next: (response: any) => {
+        console.log('2FA disabled successfully:', response);
+        this.twoFactorEnabled = false;
+        this.showTwoFactorDisableDialog = false;
+        this.cdr.detectChanges();
+        console.log('✅ 2FA disabled');
+        
+        // 성공 메시지 표시
+        alert('Two-Factor Authentication has been disabled successfully.');
+      },
+      error: (error) => {
+        console.error('Failed to disable 2FA:', error);
+        alert('Failed to disable Two-Factor Authentication. Please try again.');
+        this.showTwoFactorDisableDialog = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   // Resend verification link
