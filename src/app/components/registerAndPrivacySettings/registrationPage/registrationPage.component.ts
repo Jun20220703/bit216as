@@ -115,8 +115,9 @@ export class RegistrationPageComponent {
             this.confirmPassword = '';
             this.passwordError = '';
             this.emailError = '';
-            // 로그인 페이지로 이동
-            this.router.navigate(['/login']);
+            // 홈페이지로 이동 (새 사용자 플래그와 함께)
+            console.log('Registration successful, navigating to home with newUser=true');
+            this.router.navigate(['/home'], { queryParams: { newUser: 'true' } });
           },
           error: (error) => {
             console.error('Registration failed - Full error:', error);

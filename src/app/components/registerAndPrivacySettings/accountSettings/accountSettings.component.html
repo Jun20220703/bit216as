@@ -188,19 +188,122 @@
 
     <!-- Privacy & Security Settings Tab -->
     <div *ngIf="activeTab === 'privacy'" class="tab-content">
+      <!-- 2FA Verification Form -->
+      <div *ngIf="showVerificationForm" class="verification-form-container">
+        <div class="verification-form">
+          <h2 class="verification-title">Two-Factor Authentication Setup</h2>
+          <p class="verification-instructions">Enter the 6-digit verification code sent to your email address.</p>
+          
+          <div class="verification-input-group">
+            <label for="verification-code">Verification Code:</label>
+            <input 
+              type="text" 
+              id="verification-code" 
+              [(ngModel)]="verificationCode" 
+              name="verificationCode"
+              placeholder="Enter 6-digit code"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              class="verification-input">
+          </div>
+          
+          <div class="verification-buttons">
+            <button type="button" class="cancel-verification-btn" (click)="onCancelVerification()">Cancel</button>
+            <button type="button" class="verify-code-btn" (click)="onVerifyCode()" [disabled]="isVerifyingCode">
+              <span *ngIf="!isVerifyingCode">Verify Code</span>
+              <span *ngIf="isVerifyingCode">Verifying...</span>
+            </button>
+          </div>
+          
+          <div *ngIf="verificationMessage" class="verification-message" [class.success]="verificationSuccess" [class.error]="!verificationSuccess">
+            {{ verificationMessage }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Email Link Access Message -->
+      <div *ngIf="showEmailLinkMessage" class="email-link-message">
+        <div class="email-link-content">
+          <h3>🔐 Two-Factor Authentication Setup</h3>
+          <p>You've accessed this page via the email link. To complete your 2FA setup, please log in first.</p>
+          <div class="email-link-actions">
+            <button class="login-btn" (click)="goToLogin()">Go to Login</button>
+            <button class="dismiss-btn" (click)="dismissEmailMessage()">Dismiss</button>
+          </div>
+        </div>
+      </div>
+
       <div class="settings-card">
         <div class="setting-item">
           <span class="setting-label">Two-Factor Authentication</span>
           <div class="toggle-switch">
-            <input type="checkbox" id="two-factor-auth" class="toggle-input">
+            <input type="checkbox" id="two-factor-auth" class="toggle-input" 
+                   [ngModel]="twoFactorEnabled" 
+                   (click)="onTwoFactorToggleClick($event)">
             <label for="two-factor-auth" class="toggle-label">
               <span class="toggle-slider"></span>
-              <span class="toggle-text">OFF</span>
+              <span class="toggle-text">{{ twoFactorEnabled ? 'ON' : 'OFF' }}</span>
             </label>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Two-Factor Authentication Confirmation Dialog -->
+  <div *ngIf="showTwoFactorDialog && !isWaitingForVerification" class="dialog-overlay">
+    <div class="dialog-container">
+      <div class="dialog-content">
+        <h3>Are you sure to switch on Two-Factor Authentication?</h3>
+        <div class="dialog-buttons">
+          <button class="dialog-button cancel-dialog-button" (click)="onTwoFactorCancel()">Cancel</button>
+          <button class="dialog-button confirm-dialog-button" (click)="onTwoFactorConfirm()">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verification Waiting Dialog -->
+  <div *ngIf="showTwoFactorDialog && isWaitingForVerification && !isVerificationCompleted" class="dialog-overlay">
+    <div class="dialog-container">
+      <div class="dialog-content">
+        <div class="waiting-icon">⏳</div>
+        <h3>Your account is currently verifying to enable use of 2FA</h3>
+        <p class="waiting-message">Please check your email and complete the verification process in the new tab.</p>
+        <div class="dialog-buttons">
+          <button class="dialog-button cancel-dialog-button" (click)="onCancelVerificationWaiting()">Cancel</button>
+          <button class="dialog-button resend-dialog-button" (click)="onResendVerificationLink()">Resend Link</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+  <!-- Two-Factor Authentication Disable Confirmation Dialog -->
+  <div *ngIf="showTwoFactorDisableDialog" class="dialog-overlay">
+    <div class="dialog-container">
+      <div class="dialog-content">
+        <h3>Are you sure to switch off Two-Factor Authentication?</h3>
+        <div class="dialog-buttons">
+          <button class="dialog-button cancel-dialog-button" (click)="onTwoFactorDisableCancel()">Cancel</button>
+          <button class="dialog-button confirm-dialog-button" (click)="onTwoFactorDisableConfirm()">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Message Modal -->
+  <div *ngIf="showSuccessMessage" class="success-overlay">
+    <div class="success-container">
+      <div class="success-content">
+        <div class="success-icon">✓</div>
+        <h3 class="success-title">Success!</h3>
+        <p class="success-message">{{ successMessage }}</p>
+        <div class="success-buttons">
+          <button class="success-btn" (click)="onSuccessClose()">OK</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

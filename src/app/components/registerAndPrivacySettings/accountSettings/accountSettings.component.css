@@ -465,6 +465,21 @@
   text-align: center;
 }
 
+.waiting-icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+  animation: pulse 2s infinite;
+  text-align: center;
+}
+
+.waiting-message {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
 .dialog-buttons {
   display: flex;
   gap: 15px;
@@ -498,6 +513,15 @@
 
 .confirm-dialog-button:hover {
   background: #45a049;
+}
+
+.resend-dialog-button {
+  background: #2196F3;
+  color: white;
+}
+
+.resend-dialog-button:hover {
+  background: #1976D2;
 }
 
 /* Password Change Form */
@@ -682,3 +706,445 @@
     font-size: 13px;
   }
 }
+
+/* Email Link Access Message Styles */
+.email-link-message {
+  background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+  border: 2px solid #2196F3;
+  border-radius: 15px;
+  padding: 30px;
+  margin-bottom: 30px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+}
+
+.email-link-content h3 {
+  color: #1976D2;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+}
+
+.email-link-content p {
+  color: #424242;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0 0 25px 0;
+}
+
+.email-link-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.email-link-actions .login-btn {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.email-link-actions .login-btn:hover {
+  background-color: #1976D2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.email-link-actions .dismiss-btn {
+  background-color: transparent;
+  color: #666;
+  border: 2px solid #ddd;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+}
+
+.email-link-actions .dismiss-btn:hover {
+  background-color: #f5f5f5;
+  color: #333;
+  border-color: #bbb;
+}
+
+/* 2FA Verification Form Styles */
+.verification-form-container {
+  background: white;
+  border-radius: 15px;
+  padding: 40px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 2px solid #2E6A4B;
+}
+
+.verification-form {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.verification-title {
+  color: #2E6A4B;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0 0 20px 0;
+}
+
+.verification-instructions {
+  color: #666;
+  font-size: 16px;
+  margin: 0 0 30px 0;
+  line-height: 1.5;
+}
+
+.verification-input-group {
+  margin-bottom: 30px;
+}
+
+.verification-input-group label {
+  display: block;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.verification-input {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  text-align: center;
+  letter-spacing: 2px;
+  font-family: 'Courier New', monospace;
+  transition: border-color 0.3s ease;
+}
+
+.verification-input:focus {
+  outline: none;
+  border-color: #2E6A4B;
+  box-shadow: 0 0 0 3px rgba(46, 106, 75, 0.1);
+}
+
+.verification-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.verification-buttons button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.cancel-verification-btn {
+  background-color: #f5f5f5;
+  color: #666;
+  border: 2px solid #ddd;
+}
+
+.cancel-verification-btn:hover {
+  background-color: #e9e9e9;
+  color: #333;
+}
+
+
+.verify-code-btn {
+  background-color: #2E6A4B;
+  color: white;
+}
+
+.verify-code-btn:hover:not(:disabled) {
+  background-color: #1e4a2e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 106, 75, 0.3);
+}
+
+.verification-buttons button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.verification-message {
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 20px;
+}
+
+.verification-message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.verification-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Responsive Design for Verification Form */
+@media (max-width: 768px) {
+  .verification-form-container {
+    padding: 30px 20px;
+  }
+  
+  .verification-title {
+    font-size: 24px;
+  }
+  
+  .verification-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .verification-buttons button {
+    width: 100%;
+  }
+}
+
+/* Success Message Modal Styles */
+.success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+
+.success-container {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 50px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+  animation: successSlideIn 0.3s ease-out;
+}
+
+.success-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #4CAF50;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.success-title {
+  color: #2E6A4B;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0 0 15px 0;
+}
+
+.success-message {
+  color: #333;
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 0 25px 0;
+  font-weight: 500;
+}
+
+.success-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.success-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.success-btn:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+@keyframes successSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+  /* Responsive Design for Success Modal */
+  @media (max-width: 768px) {
+    .success-container {
+      padding: 30px 40px;
+      max-width: 400px;
+    }
+    
+    .success-icon {
+      width: 60px;
+      height: 60px;
+      font-size: 35px;
+    }
+    
+    .success-title {
+      font-size: 24px;
+    }
+    
+    .success-message {
+      font-size: 16px;
+    }
+  }
+
+  /* Verification Waiting State Styles */
+  .verification-waiting-container {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 2px solid #2E6A4B;
+    text-align: center;
+  }
+
+  .verification-waiting-content {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .waiting-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+  }
+
+  .waiting-title {
+    color: #2E6A4B;
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0 0 20px 0;
+  }
+
+  .waiting-message {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0 0 30px 0;
+  }
+
+  .waiting-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+  }
+
+  .waiting-buttons button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+  }
+
+  .cancel-waiting-btn {
+    background-color: #f5f5f5;
+    color: #666;
+    border: 2px solid #ddd;
+  }
+
+  .cancel-waiting-btn:hover {
+    background-color: #e9e9e9;
+    color: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  /* Responsive Design for Verification Waiting */
+  @media (max-width: 768px) {
+    .verification-waiting-container {
+      padding: 30px 20px;
+    }
+    
+    .waiting-icon {
+      font-size: 50px;
+    }
+    
+    .waiting-title {
+      font-size: 24px;
+    }
+    
+    .waiting-buttons {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .waiting-buttons button {
+      width: 100%;
+    }
+  }

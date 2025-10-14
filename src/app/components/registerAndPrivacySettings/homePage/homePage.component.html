@@ -49,6 +49,18 @@
     </div>
   </section>
 
+    <!-- Welcome Message for New Users -->
+    <div class="welcome-message" *ngIf="showWelcomeMessage">
+      <div class="welcome-content">
+        <h3>🎉 Welcome to Food Shield!</h3>
+        <p>Complete your account setup to get the most out of your experience.</p>
+        <div class="welcome-actions">
+          <button class="setup-btn" (click)="goToAccountSettings()">Complete Setup</button>
+          <button class="dismiss-btn" (click)="dismissWelcomeMessage()">Later</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Navigation Section -->
     <nav class="navigation">
       <button class="nav-btn" (click)="onLogout()">Logout</button>
