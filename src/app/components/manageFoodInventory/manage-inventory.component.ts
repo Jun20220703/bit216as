@@ -53,9 +53,10 @@ loadFoods() {
     this.router.navigate(['/add-food']);
   }
 
-  editItem(item: any) {
-    console.log('Edit:', item);
-  }
+  openEditPage(item: any) {
+  if (!item._id) return; // 念のためチェック
+  this.router.navigate(['/edit-food', item._id]);
+}
 
   showDeleteModal = false;
   selectedDeleteItem: any = null;
@@ -125,6 +126,8 @@ confirmDonate() {
     availability: this.donationDetails.availability,
     notes: this.donationDetails.notes
   };
+
+  console.log('🧾 donationData before sending:', donationData); // ✅ 追加
 
   this.foodService.donateFood(this.selectedDonateItem._id, donationData).subscribe({
     next: (res) => {

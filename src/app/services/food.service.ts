@@ -37,20 +37,44 @@ export class FoodService {
   }
 
   donateFood(foodId: string, donationData: any): Observable<any> {
-  return this.http.post<any>('http://localhost:5001/api/donations', {
-    foodId,
-    ...donationData
-  });
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const ownerId = user.id; // ✅ _id ではなく id に戻す！
+
+  const donationPayload = {
+    foodId: foodId,
+    owner: ownerId,
+    qty: donationData.qty,
+    location: donationData.location,
+    availability: donationData.availability,
+    notes: donationData.notes
+  };
+
+  console.log('📤 Sending donation payload:', donationPayload);
+
+  return this.http.post<any>('http://localhost:5001/api/donations', donationPayload);
+};
+
+getDonations(): Observable<any[]> {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const userId = user.id;
+  return this.http.get<any[]>(`http://localhost:5001/api/donations?userId=${userId}`);
 }
-    getDonations(): Observable<any[]> {
-    return this.http.get<any[]>('http://localhost:5001/api/donations');
-    }
+
     
     updateFoodStatus(foodId: string, status: string): Observable<any> {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         return this.http.patch(`${this.apiUrl}/${foodId}/status`, { status }, { headers });
     }
 
+       // 追加：ID で食品を取得
+  getFoodById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+  
+  // 追加：食品を更新
+  updateFood(id: string, food: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, food);
+  }
 
 
 }
