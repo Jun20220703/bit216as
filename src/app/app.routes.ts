@@ -21,4 +21,5 @@ export const routes: Routes = [
   { path: 'donation-list', component: DonationListComponent},
   { path: 'verification', component: VerificationComponent},
   { path: '', redirectTo: 'home', pathMatch: 'full' }
+  { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
