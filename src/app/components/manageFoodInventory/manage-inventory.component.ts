@@ -38,7 +38,12 @@ loadFoods() {
 
   this.foodService.getFoods(userId).subscribe({
     next: (data) => {
-      this.foodItems = data.filter((f: any) =>   f.owner === userId && f.status ==='inventory');
+      const today = new Date();
+      this.foodItems = data.filter((f: any) =>   
+        f.owner === userId && 
+        f.status ==='inventory' &&
+        (!f.expiry || new Date(f.expiry) >= today)
+      );
       console.log('Filtered food items:', this.foodItems);
 
         this.cdr.detectChanges();
