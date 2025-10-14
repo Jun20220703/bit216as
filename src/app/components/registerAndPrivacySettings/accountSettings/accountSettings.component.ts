@@ -1122,11 +1122,27 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
           localStorage.setItem('userPassword', this.twoFANewPassword);
         }
         
-        // Show success message
+        // Show success message and redirect to login
         this.showSuccessMessage = true;
-        this.successMessage = 'Password changed successfully! Your account is now fully secured with Two-Factor Authentication.';
+        this.successMessage = '🎉 Two-Factor Authentication setup completed successfully! For security reasons, please log in again with your new password.';
         
         this.cdr.detectChanges();
+        
+        // Clear all authentication data and redirect to login after showing success message
+        setTimeout(() => {
+          if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userPassword');
+            localStorage.removeItem('2faVerificationComplete');
+            localStorage.removeItem('2faActivationSuccess');
+            localStorage.removeItem('2faVerificationTimestamp');
+          }
+          
+          // Redirect to login page
+          this.router.navigate(['/login']);
+        }, 3000); // 3초 후에 로그인 페이지로 리다이렉트
       },
       error: (error) => {
         console.error('2FA password change failed:', error);
