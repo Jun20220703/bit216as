@@ -959,13 +959,13 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
           
           // Immediately show the activation success message (no delay)
           this.showSuccessMessage = true;
-          this.successMessage = 'Verification has been activated successfully!';
+          this.successMessage = '🔐 Two-Factor Authentication has been successfully enabled! Please set up your new password to complete the security setup.';
           
           // Show 2FA password change dialog after a short delay
           setTimeout(() => {
             this.open2FAPasswordChangeDialog();
             console.log('2FA password change dialog shown');
-          }, 2000); // 2초 후에 비밀번호 변경 다이얼로그 표시
+          }, 3000); // 3초 후에 비밀번호 변경 다이얼로그 표시
         }
         
         this.cdr.detectChanges();
