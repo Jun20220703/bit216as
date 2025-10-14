@@ -1,6 +1,9 @@
 <aside class="sidebar">
   <div class="profile">
-    <img *ngIf="profilePhoto" [src]="profilePhoto" alt="avatar" (error)="onImageError($event)">
+    <a routerLink="/home" class="logo-link">
+      <img src="assets/images/image1.png" alt="Food Shield Logo" class="logo">
+    </a>
+    <img [src]="profilePhoto || 'assets/images/avatar1.jpg'" alt="avatar" (error)="onImageError($event)">
     <h2>HELLO,<br>{{username}}</h2>
   </div>
 

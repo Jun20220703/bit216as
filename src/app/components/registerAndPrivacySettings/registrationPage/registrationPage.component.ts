@@ -99,7 +99,7 @@ export class RegistrationPageComponent {
         name: form.value.name,
         email: form.value.email,
         password: this.password,
-        householdSize: form.value.householdSize === 'No-Selection' ? null : parseInt(form.value.householdSize),
+        householdSize: form.value.householdSize === 'No-Selection' ? null : form.value.householdSize,
         dateOfBirth: form.value.dob
       };
 
@@ -116,6 +116,7 @@ export class RegistrationPageComponent {
             this.passwordError = '';
             this.emailError = '';
             // 로그인 페이지로 이동
+            console.log('Registration successful, navigating to login page');
             this.router.navigate(['/login']);
           },
           error: (error) => {

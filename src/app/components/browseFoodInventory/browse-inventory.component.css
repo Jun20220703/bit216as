@@ -35,21 +35,31 @@
   width: 100%;
   padding: 0.5rem 1rem;
   padding-right: 2.5rem;
-  border: none;
-  border-radius: 60px;
-  background: #f0f0f0;
+  border: 2px solid #4caf50;   /* ✅ 绿色边框 */
+  border-radius: 60px;         /* ✅ pill 形状 */
+  background: #ffffff;         /* ✅ 白色背景 */
   font-size: 1rem;
   outline: none;
   appearance: none;
   cursor: pointer;
 }
 
+.select-wrapper select option {
+  background: #ffffff;           /* ✅ 白色背景 */
+  color: #333;                   /* ✅ 深灰文字 */
+}
+
+
+
 .select-wrapper .custom-arrow {
   position: absolute;
   right: 1rem;
   top: 50%;
   transform: translateY(-50%);
+  color: #224e23;              /* ✅ 箭头绿色 */
+  font-weight: bold;
 }
+
 
 /* =============== Header 图标 =============== */
 .header-icons {
@@ -92,6 +102,19 @@
   overflow-y: auto;
   transform: translateX(100%);
 }
+
+/* 🧩 让 Category 的 checkbox 竖直排列 */
+.filter-section label {
+  display: block;             /* 一行一个 */
+  margin-bottom: 0.4rem;      /* 间距 */
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.filter-section input[type="checkbox"] {
+  margin-right: 8px;
+}
+
 .filter-drawer.open {
   transform: translateX(0);
 }
@@ -427,4 +450,45 @@
 
 .donation-row {
   display: contents; /* 保持 grid 布局不破坏 */
+}
+
+.reset-btn {
+  margin-top: 0.5rem;
+  background-color: #e0e0e0; /* 灰色 */
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.reset-btn:hover {
+  background-color: #bdbdbd; /* hover 深灰 */
+}
+
+.item-name {
+  font-size: 1rem;
+  font-weight: 500;
+  padding-left: 6px;
+  position: relative; /* 让 notes 卡片相对于名字定位 */
+}
+
+/* Notes 卡片 */
+.item-notes-card {
+  position: absolute;
+  top: 100%;          /* 在名字的下方 */
+  left: 0;
+  margin-top: 4px;
+  padding: 6px 10px;
+  border: 2px solid #4caf50;   /* ✅ 绿色边框 */
+  background: white;           /* ✅ 白色背景 */
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #333;
+  white-space: nowrap;         /* 单行显示，不换行 */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15); /* 卡片阴影 */
+  z-index: 10;
 }
