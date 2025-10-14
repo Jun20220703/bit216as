@@ -110,6 +110,22 @@ export class LoginPageComponent {
         this.isLoading = false;
         alert('Login successful!');
         
+        // Check if 2FA is enabled
+        const twoFactorEnabled = response.user?.twoFactorAuth?.isEnabled || false;
+        console.log('=== 2FA CHECK ===');
+        console.log('User response:', response);
+        console.log('2FA object:', response.user?.twoFactorAuth);
+        console.log('2FA status:', twoFactorEnabled);
+        
+        if (!twoFactorEnabled) {
+          // 2FA is not enabled, show message on home page
+          localStorage.setItem('show2FASetupMessage', 'true');
+          console.log('✅ 2FA not enabled - will show setup message');
+          console.log('show2FASetupMessage set to:', localStorage.getItem('show2FASetupMessage'));
+        } else {
+          console.log('❌ 2FA is enabled - no message needed');
+        }
+        
         // Navigate to home page
         this.router.navigate(['/home']);
       },
