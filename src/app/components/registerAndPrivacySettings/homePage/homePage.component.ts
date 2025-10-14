@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -13,8 +13,10 @@ import { SidebarComponent } from '../../sidebar/sidebar.component';
 })
 export class HomePageComponent implements OnInit {
   showWelcomeMessage: boolean = false;
+  show2FASetupMessage: boolean = false;
 
-  constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient) {
+  constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient, private cdr: ChangeDetectorRef) {
+    console.log('HomePageComponent constructor called. cdr:', this.cdr);
     this.checkForNewUser();
   }
 
@@ -29,8 +31,10 @@ export class HomePageComponent implements OnInit {
       const isNewUser = urlParams.get('newUser') === 'true';
       const show2FASetupMessage = localStorage.getItem('show2FASetupMessage');
       
+      console.log('=== HOME PAGE CHECK ===');
       console.log('Checking for new user:', { isNewUser, url: window.location.href });
       console.log('Checking for 2FA setup message:', show2FASetupMessage);
+      console.log('All localStorage keys:', Object.keys(localStorage));
       
       if (isNewUser) {
         // 새 사용자인 경우 환영 메시지 표시
@@ -43,8 +47,9 @@ export class HomePageComponent implements OnInit {
           queryParams: {},
           replaceUrl: true
         });
-      } else if (show2FASetupMessage === 'true') {
-        // 2FA 설정 메시지가 있는 경우, 실제 2FA 상태를 확인
+      } else {
+        // 새 사용자가 아닌 경우, 2FA 상태를 항상 확인
+        console.log('Not a new user, checking 2FA status...');
         this.check2FAStatus();
       }
     }
@@ -52,34 +57,56 @@ export class HomePageComponent implements OnInit {
 
   check2FAStatus() {
     const userId = localStorage.getItem('userId');
+    console.log('=== CHECKING 2FA STATUS ===');
+    console.log('userId from localStorage:', userId);
+    
     if (!userId) {
       console.log('No userId found, not showing 2FA setup message');
       return;
     }
 
     console.log('Checking 2FA status for user:', userId);
+    console.log('Making API call to:', `http://localhost:5001/api/users/profile/${userId}`);
     
     // 사용자의 2FA 상태를 백엔드에서 확인
     this.http.get(`http://localhost:5001/api/users/profile/${userId}`)
       .subscribe({
         next: (response: any) => {
+          console.log('=== API RESPONSE ===');
           console.log('User profile response:', response);
+          console.log('twoFactorAuth object:', response.twoFactorAuth);
           const twoFactorEnabled = response.twoFactorAuth?.isEnabled || false;
           console.log('2FA status from backend:', twoFactorEnabled);
+          console.log('twoFactorEnabled type:', typeof twoFactorEnabled);
+          console.log('twoFactorEnabled === false:', twoFactorEnabled === false);
           
           if (!twoFactorEnabled) {
             // 2FA가 비활성화된 경우에만 메시지 표시
-            this.showWelcomeMessage = true;
-            console.log('Showing 2FA setup message - 2FA not enabled');
+            this.show2FASetupMessage = true;
+            console.log('✅ Showing 2FA setup message - 2FA not enabled');
+            console.log('show2FASetupMessage set to:', this.show2FASetupMessage);
+            
+            // setTimeout을 사용하여 다음 tick에서 UI 업데이트
+            setTimeout(() => {
+              console.log('Setting show2FASetupMessage to true in setTimeout');
+              this.show2FASetupMessage = true;
+              if (this.cdr) {
+                this.cdr.detectChanges();
+                console.log('UI update triggered in setTimeout');
+              }
+            }, 0);
           } else {
-            console.log('2FA is enabled, not showing setup message');
+            console.log('❌ 2FA is enabled, not showing setup message');
           }
           
           // 플래그 제거
           localStorage.removeItem('show2FASetupMessage');
         },
         error: (error) => {
+          console.error('=== API ERROR ===');
           console.error('Failed to check 2FA status:', error);
+          console.error('Error status:', error.status);
+          console.error('Error message:', error.message);
           // 오류가 발생해도 플래그는 제거
           localStorage.removeItem('show2FASetupMessage');
         }
@@ -94,6 +121,21 @@ export class HomePageComponent implements OnInit {
   dismissWelcomeMessage() {
     this.showWelcomeMessage = false;
     console.log('Welcome message dismissed');
+  }
+
+  dismiss2FASetupMessage() {
+    this.show2FASetupMessage = false;
+    console.log('2FA setup message dismissed');
+    if (this.cdr) {
+      this.cdr.detectChanges();
+    } else {
+      console.error('ChangeDetectorRef is undefined when trying to call detectChanges in dismiss!');
+    }
+  }
+
+  goToAccountSettingsFrom2FA() {
+    this.router.navigate(['/account-settings'], { queryParams: { tab: 'privacy' } });
+    this.dismiss2FASetupMessage();
   }
 
   onLogout() {
