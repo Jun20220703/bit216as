@@ -88,7 +88,7 @@ router.post('/login', async (req, res) => {
       
       // 사용자에 verification code 저장
       user.twoFactorAuth.tempCode = verificationCode;
-      user.twoFactorAuth.tempCodeExpires = new Date(Date.now() + 5 * 60 * 1000); // 5분 후 만료
+      user.twoFactorAuth.tempCodeExpires = new Date(Date.now() + 2 * 60 * 1000); // 2분 후 만료
       await user.save();
       
       console.log('🔑 Verification code generated:', verificationCode);
@@ -228,7 +228,7 @@ router.post('/resend-2fa-login-code', async (req, res) => {
     // 새 코드 생성 및 저장
     const newCode = generateVerificationCode();
     user.twoFactorAuth.tempCode = newCode;
-    user.twoFactorAuth.tempCodeExpires = new Date(Date.now() + 5 * 60 * 1000); // 5분 후 만료
+    user.twoFactorAuth.tempCodeExpires = new Date(Date.now() + 2 * 60 * 1000); // 2분 후 만료
 
     await user.save();
 
