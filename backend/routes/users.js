@@ -655,4 +655,34 @@ router.post('/cancel-2fa-verification', async (req, res) => {
   }
 });
 
+// 계정 삭제
+router.delete('/profile/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    console.log('🗑️ Delete account request for user ID:', userId);
+
+    // 사용자 존재 확인
+    const user = await User.findById(userId);
+    if (!user) {
+      console.log('❌ User not found for deletion:', userId);
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // 사용자 삭제
+    await User.findByIdAndDelete(userId);
+    console.log('✅ User account deleted successfully:', userId);
+
+    res.status(200).json({ 
+      message: 'Account deleted successfully',
+      deletedUserId: userId
+    });
+  } catch (error) {
+    console.error('❌ Delete account error:', error);
+    res.status(500).json({ 
+      message: 'Failed to delete account', 
+      error: error.message 
+    });
+  }
+});
+
 module.exports = router;
