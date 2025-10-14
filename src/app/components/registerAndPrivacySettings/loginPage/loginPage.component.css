@@ -499,9 +499,16 @@
     text-align: center;
 }
 
+/* 2FA verification code 입력 필드 중앙 정렬 */
+.password-recovery-modal .recovery-form input[type="text"] {
+  text-align: center !important;
+  margin: 0 auto;
+  display: block;
+}
+
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideIn {

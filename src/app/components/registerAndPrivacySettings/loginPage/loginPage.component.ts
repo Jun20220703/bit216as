@@ -29,6 +29,10 @@ export class LoginPageComponent {
   newPassword: string = '';
   confirmPassword: string = '';
   
+  // 2FA properties
+  twoFactorEmail: string = '';
+  twoFactorCode: string = '';
+  
   // Timer properties
   timeLeft: number = 0; // 남은 시간 (초)
   timerInterval: any = null; // 타이머 인터벌
@@ -99,34 +103,37 @@ export class LoginPageComponent {
       password: this.password
     }).subscribe({
       next: (response: any) => {
+        console.log('Login response:', response);
+        
+        // 2FA가 필요한 경우
+        if (response.requires2FA) {
+          console.log('🔐 2FA verification required');
+          this.twoFactorEmail = response.email;
+          this.twoFactorCode = ''; // 입력 필드를 빈칸으로 초기화
+          this.recoveryStep = 'verify';
+          this.recoveryMessage = 'Please check your email for verification code.';
+          this.recoverySuccess = true;
+          this.isLoading = false;
+          this.startTimer(); // 2분 타이머 시작
+          return;
+        }
+        
+        // 일반 로그인 성공
         console.log('Login successful:', response);
         
         // Store user data in localStorage
         localStorage.setItem('token', response.token);
         localStorage.setItem('userId', response.user.id);
         localStorage.setItem('user', JSON.stringify(response.user));
-        localStorage.setItem('userPassword', this.password); // Store the actual password
+        localStorage.setItem('userPassword', this.password);
         
         this.isLoading = false;
-        alert('Login successful!');
+        alert('Logged into your account successfully');
         
         // Check if 2FA is enabled
-        const twoFactorEnabled = response.user?.twoFactorAuth?.isEnabled || false;
-        console.log('=== LOGIN PAGE 2FA CHECK ===');
-        console.log('User response:', response);
-        console.log('2FA object:', response.user?.twoFactorAuth);
-        console.log('2FA status:', twoFactorEnabled);
-        console.log('twoFactorEnabled type:', typeof twoFactorEnabled);
-        console.log('twoFactorEnabled === false:', twoFactorEnabled === false);
-        
+        const twoFactorEnabled = response.user?.twoFactorEnabled || false;
         if (!twoFactorEnabled) {
-          // 2FA is not enabled, show message on home page
           localStorage.setItem('show2FASetupMessage', 'true');
-          console.log('✅ 2FA not enabled - will show setup message');
-          console.log('show2FASetupMessage set to:', localStorage.getItem('show2FASetupMessage'));
-          console.log('show2FASetupMessage === "true":', localStorage.getItem('show2FASetupMessage') === 'true');
-        } else {
-          console.log('❌ 2FA is enabled - no message needed');
         }
         
         // Navigate to home page
@@ -162,6 +169,82 @@ export class LoginPageComponent {
     this.verificationCode = '';
     this.newPassword = '';
     this.confirmPassword = '';
+  }
+
+  // 2FA verification code 확인
+  onVerify2FACode() {
+    if (!this.twoFactorCode) {
+      this.recoveryMessage = 'Please enter the verification code.';
+      this.recoverySuccess = false;
+      return;
+    }
+
+    this.isLoading = true;
+    this.recoveryMessage = ''; // 이전 메시지 초기화
+
+    this.http.post('http://localhost:5001/api/users/verify-2fa-login', {
+      email: this.twoFactorEmail,
+      verificationCode: this.twoFactorCode
+    }).subscribe({
+      next: (response: any) => {
+        console.log('2FA verification successful:', response);
+        
+        // Store user data in localStorage
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('userId', response.user.id);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        localStorage.setItem('userPassword', this.password);
+        
+        this.isLoading = false;
+        this.stopTimer();
+        this.recoveryMessage = 'Logged into your account successfully';
+        this.recoverySuccess = true;
+        
+        // Force UI update to show message
+        this.cdr.detectChanges();
+        
+        // Navigate to home page after showing success message
+        setTimeout(() => {
+          this.router.navigate(['/home']);
+        }, 3000);
+      },
+      error: (error) => {
+        console.error('2FA verification failed:', error);
+        this.isLoading = false;
+        
+        if (error.error && error.error.message) {
+          this.recoveryMessage = `Invalid verification code. Please try again.`;
+        } else {
+          this.recoveryMessage = 'Failed to log in';
+        }
+        this.recoverySuccess = false;
+      }
+    });
+  }
+
+  // 2FA 코드 재전송
+  onResend2FACode() {
+    this.isLoading = true;
+    this.recoveryMessage = ''; // 이전 메시지 초기화
+    
+    this.http.post('http://localhost:5001/api/users/resend-2fa-login-code', { 
+      email: this.twoFactorEmail 
+    }).subscribe({
+      next: (response: any) => {
+        console.log('Resend code successful:', response);
+        this.recoveryMessage = 'New verification code sent successfully!';
+        this.recoverySuccess = true;
+        this.isLoading = false;
+        this.twoFactorCode = ''; // 입력 필드 초기화
+        this.startTimer(); // 타이머 재시작
+      },
+      error: (error) => {
+        console.error('Resend code failed:', error);
+        this.recoveryMessage = 'Failed to resend verification code. Please try again.';
+        this.recoverySuccess = false;
+        this.isLoading = false;
+      }
+    });
   }
 
   onPasswordRecovery() {

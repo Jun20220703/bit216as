@@ -58,6 +58,8 @@ const userSchema = new mongoose.Schema({
     verificationCode: { type: String, default: null },
     codeExpires: { type: Date, default: null },
     tempToken: { type: String, default: null },
+    tempCode: { type: String, default: null },
+    tempCodeExpires: { type: Date, default: null },
     isEnabled: { type: Boolean, default: false }
   },
   createdAt: {
