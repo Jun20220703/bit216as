@@ -109,6 +109,7 @@ export class LoginPageComponent {
         if (response.requires2FA) {
           console.log('🔐 2FA verification required');
           this.twoFactorEmail = response.email;
+          this.twoFactorCode = ''; // 입력 필드를 빈칸으로 초기화
           this.recoveryStep = 'verify';
           this.recoveryMessage = 'Please check your email for verification code.';
           this.recoverySuccess = true;
@@ -173,11 +174,13 @@ export class LoginPageComponent {
   // 2FA verification code 확인
   onVerify2FACode() {
     if (!this.twoFactorCode) {
-      alert('Please enter the verification code.');
+      this.recoveryMessage = 'Please enter the verification code.';
+      this.recoverySuccess = false;
       return;
     }
 
     this.isLoading = true;
+    this.recoveryMessage = ''; // 이전 메시지 초기화
 
     this.http.post('http://localhost:5001/api/users/verify-2fa-login', {
       email: this.twoFactorEmail,
@@ -194,20 +197,27 @@ export class LoginPageComponent {
         
         this.isLoading = false;
         this.stopTimer();
-        alert('Logged into your account successfully');
+        this.recoveryMessage = 'Logged into your account successfully';
+        this.recoverySuccess = true;
         
-        // Navigate to home page
-        this.router.navigate(['/home']);
+        // Force UI update to show message
+        this.cdr.detectChanges();
+        
+        // Navigate to home page after showing success message
+        setTimeout(() => {
+          this.router.navigate(['/home']);
+        }, 3000);
       },
       error: (error) => {
         console.error('2FA verification failed:', error);
         this.isLoading = false;
         
         if (error.error && error.error.message) {
-          alert(`Verification failed: ${error.error.message}`);
+          this.recoveryMessage = `Invalid verification code. Please try again.`;
         } else {
-          alert('Failed to log in');
+          this.recoveryMessage = 'Failed to log in';
         }
+        this.recoverySuccess = false;
       }
     });
   }
@@ -215,21 +225,24 @@ export class LoginPageComponent {
   // 2FA 코드 재전송
   onResend2FACode() {
     this.isLoading = true;
+    this.recoveryMessage = ''; // 이전 메시지 초기화
     
     this.http.post('http://localhost:5001/api/users/resend-2fa-login-code', { 
       email: this.twoFactorEmail 
     }).subscribe({
       next: (response: any) => {
         console.log('Resend code successful:', response);
-        alert('New verification code sent successfully!');
+        this.recoveryMessage = 'New verification code sent successfully!';
+        this.recoverySuccess = true;
         this.isLoading = false;
         this.twoFactorCode = ''; // 입력 필드 초기화
         this.startTimer(); // 타이머 재시작
       },
       error: (error) => {
         console.error('Resend code failed:', error);
+        this.recoveryMessage = 'Failed to resend verification code. Please try again.';
+        this.recoverySuccess = false;
         this.isLoading = false;
-        alert('Failed to resend verification code. Please try again.');
       }
     });
   }
