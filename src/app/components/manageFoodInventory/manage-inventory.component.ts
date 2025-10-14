@@ -4,6 +4,8 @@ import { SidebarComponent } from "../sidebar/sidebar.component";
 import { Router } from '@angular/router';
 import { FoodService } from '../../services/food.service';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+
 @Component({
   selector: 'app-food-inventory',
   templateUrl: './manage-inventory.component.html',
@@ -17,11 +19,27 @@ export class ManageFoodInventory {
   constructor (
     private foodService: FoodService, 
     private router: Router,
-    private cdr: ChangeDetectorRef){}
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute   // ✅ 新增
+  ){}
+
 
   ngOnInit(){
-    this.loadFoods();
-  }
+  this.loadFoods();
+
+  this.route.queryParams.subscribe((params: any) => {
+    const donateId = params['donateId'];
+    if (donateId) {
+      // 等 foods 加载完之后再找 item
+      setTimeout(() => {
+        const target = this.foodItems.find(f => f._id === donateId);
+        if (target) {
+          this.openDonateModal(target); // ✅ 自动打开 donate 弹窗
+        }
+      }, 500);
+    }
+  });
+}
 
 loadFoods() {
   // localStorage からログインユーザー情報を取得
