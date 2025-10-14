@@ -116,7 +116,29 @@ export class VerificationComponent implements OnInit, OnDestroy {
         
         // Set flag to indicate verification is complete
         if (typeof window !== 'undefined' && window.localStorage) {
-          localStorage.setItem('2faVerificationComplete', 'true');
+          console.log('Setting verification complete flags in localStorage');
+          
+          try {
+            localStorage.setItem('2faVerificationComplete', 'true');
+            console.log('2faVerificationComplete set:', localStorage.getItem('2faVerificationComplete'));
+            
+            localStorage.setItem('2faActivationSuccess', 'true');
+            console.log('2faActivationSuccess set:', localStorage.getItem('2faActivationSuccess'));
+            
+            const timestamp = Date.now().toString();
+            localStorage.setItem('2faVerificationTimestamp', timestamp);
+            console.log('2faVerificationTimestamp set:', localStorage.getItem('2faVerificationTimestamp'));
+            
+            console.log('All verification flags set successfully');
+          } catch (error) {
+            console.error('Error setting localStorage flags:', error);
+          }
+          
+          // Send message to other tabs
+          window.postMessage({ type: '2FA_VERIFICATION_COMPLETE' }, '*');
+          console.log('PostMessage sent to other tabs');
+        } else {
+          console.error('localStorage not available');
         }
         
         // UI 업데이트를 즉시 실행
@@ -127,8 +149,8 @@ export class VerificationComponent implements OnInit, OnDestroy {
         
         // 메시지가 표시되도록 충분한 시간을 기다린 후 리다이렉트
         setTimeout(() => {
-          console.log('Redirecting to home page...');
-          this.router.navigate(['/home']);
+          console.log('Redirecting to account settings...');
+          this.router.navigate(['/account-settings'], { queryParams: { tab: 'privacy' } });
         }, 2000);
       },
       error: (error) => {
