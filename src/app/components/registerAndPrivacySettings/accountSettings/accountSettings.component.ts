@@ -249,6 +249,69 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/home']);
   }
 
+  onDeleteAccount() {
+    const confirmed = confirm('Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.');
+    if (!confirmed) {
+      return;
+    }
+
+    // Get user ID
+    if (typeof window === 'undefined' || !window.localStorage) {
+      alert('User not authenticated. Please log in again.');
+      this.router.navigate(['/login']);
+      return;
+    }
+    
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      alert('User not authenticated. Please log in again.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    // Call delete account API
+    this.http.delete(`http://localhost:5001/api/users/profile/${userId}`)
+      .subscribe({
+        next: (response: any) => {
+          console.log('Account deleted successfully:', response);
+          
+          // Clear all user data from localStorage
+          if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userPassword');
+            localStorage.removeItem('2faVerificationComplete');
+            localStorage.removeItem('2faActivationSuccess');
+            localStorage.removeItem('2faVerificationTimestamp');
+          }
+          
+          // Show success message and redirect to login
+          alert('Your account has been successfully deleted. You will be redirected to the login page.');
+          this.router.navigate(['/login']);
+        },
+        error: (error) => {
+          console.error('Account deletion failed:', error);
+          
+          let errorMessage = 'Failed to delete account';
+          
+          if (error.status === 0) {
+            errorMessage = 'Cannot connect to server. Please check if the backend server is running.';
+          } else if (error.status === 404) {
+            errorMessage = 'User not found. Please log in again.';
+          } else if (error.status === 500) {
+            errorMessage = 'Server error. Please try again later.';
+          } else if (error.error?.message) {
+            errorMessage = error.error.message;
+          } else if (error.message) {
+            errorMessage = error.message;
+          }
+          
+          alert(`Failed to delete account: ${errorMessage}`);
+        }
+      });
+  }
+
   onSave() {
     // Validate required fields
     if (!this.userData.name || !this.userData.dateOfBirth) {
