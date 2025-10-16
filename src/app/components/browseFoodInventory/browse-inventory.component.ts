@@ -313,6 +313,17 @@ export class InventoryComponent implements OnInit {
 
     this.viewLocs = locs;
     this.cdr.detectChanges();
+
+    // ✅ 空状态提示逻辑
+    if (this.viewLocs.length === 0) {
+      if (this.selectedSource === 'inventory') {
+        this.successMessage = "There is no food items in inventory 🍂";
+      } else if (this.selectedSource === 'donation') {
+        this.successMessage = "There is no donation items available 🍂";
+      }
+    } else {
+      this.successMessage = null;
+    }
   }
 
 
