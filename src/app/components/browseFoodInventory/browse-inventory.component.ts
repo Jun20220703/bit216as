@@ -5,6 +5,11 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { BrowseFoodService, Food } from '../../services/browse-food.service';
 import { Router } from '@angular/router';
 
+// ⭐新增：用于判断是否在浏览器端
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
+
+
 
 interface Item {
   _id: string;
@@ -55,12 +60,16 @@ export class InventoryComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private browseService: BrowseFoodService,
     private router: Router   // ✅ 新增
+    
   ) {}
 
   /** 页面状态 */
   viewTitle: string = 'Inventory';
   selectedSource: 'inventory' | 'donation' = 'inventory';
   selectedLocation: string = 'All';
+
+    // ✅ 新增：提示消息
+  successMessage: string | null = null;
 
   showFilter = false;
   showSearch = false;
@@ -452,21 +461,43 @@ export class InventoryComponent implements OnInit {
       if (!this.confirmItem || !this.confirmAction) return;
 
       if (this.confirmAction === 'used' || this.confirmAction === 'meal') {
-        // …原有数量更新逻辑
+        const item = this.confirmItem;
+        const newQty = item.qty - item.selectedQty;
+
+        this.browseService.updateFoodQty(item._id, newQty).subscribe({
+          next: () => {
+            // ✅ 更新前端 qty
+            item.qty = newQty;
+            item.selectedQty = 0;
+
+            // ✅ 浏览器弹窗提示
+            alert(`\nUsed ${item.name} successfully✅`);
+          },
+          error: (err) => {
+            console.error('❌ 更新失败:', err);
+            alert(`\nFailed to update ${item.name}❌`);
+          },
+        });
+
       }
 
       if (this.confirmAction === 'donate') {
-        this.router.navigate(['/manage-inventory'], { queryParams: { donateId: this.confirmItem._id } });
+        this.router.navigate(['/manage-inventory'], {
+          queryParams: { donateId: this.confirmItem._id },
+        });
       }
 
-      // ✅ 新增：确认 Edit 后再跳转
       if (this.confirmAction === 'edit') {
-        const editId = (this.confirmItem as any).donationId || this.confirmItem._id;
-        this.router.navigate(['/donation-list'], { queryParams: { editId, returnTo: 'browse' } });
+        const editId =
+          (this.confirmItem as any).donationId || this.confirmItem._id;
+        this.router.navigate(['/donation-list'], {
+          queryParams: { editId, returnTo: 'browse' },
+        });
       }
 
       this.closeConfirm();
     }
+
 
 
 
