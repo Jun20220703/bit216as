@@ -294,18 +294,28 @@ export class InventoryComponent implements OnInit {
           categories: loc.categories
             .map((cat) => ({
               ...cat,
-              items: cat.items.filter((i) =>
-                i.name.toLowerCase().includes(q)
-              ),
+              items: cat.items.filter((i) => i.name.toLowerCase().includes(q)),
             }))
             .filter((cat) => cat.items.length > 0),
         }))
         .filter((loc) => loc.categories.length > 0);
+
+      // ✅ 如果没找到任何结果
+      if (locs.length === 0) {
+        alert(`${this.searchQuery} does not exist ❌`);
+
+        // 清空搜索并刷新所有项目
+        this.searchQuery = '';
+        this.refreshView();
+        return; // 防止继续执行
+      }
     }
 
     this.viewLocs = locs;
     this.cdr.detectChanges();
   }
+
+
 
   /** ✅ UI 控制方法（补齐防止报错） */
   toggleFilterPanel() {
@@ -427,9 +437,14 @@ export class InventoryComponent implements OnInit {
     this.refreshView();
   }
 
-  /** 数量调整 */
+  /** 数量增加 */
   increaseSelected(item: Item) {
-    if (item.selectedQty < item.qty) item.selectedQty++;
+    if (item.selectedQty < item.qty) {
+      item.selectedQty++;
+    } else {
+      // ✅ 已经到最大数量了
+      alert(`${item.name} reach the maximum quantity 🚫`);
+    }
   }
 
   decreaseSelected(item: Item) {
